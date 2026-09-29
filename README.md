@@ -52,8 +52,8 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/H42729/mini-project-.git
-cd mini-project-
+git clone https://github.com/H42729/mini_project-1.git
+cd mini_project-1
 
 # Install dependencies
 npm install
