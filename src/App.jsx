@@ -1,4 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import BuyerLoginScreen from './views/BuyerLoginScreen';
+import BuyerRegisterScreen from './views/BuyerRegisterScreen';
+import BuyerDashboardScreen from './views/BuyerDashboardScreen';
+import RoleSelectScreen from './views/RoleSelectScreen';
 import { 
   Globe, 
   ArrowRight, 
@@ -11,18 +15,54 @@ import {
   MapPin, 
   Menu, 
   X, 
-  Volume2, 
-  VolumeX, 
   ShieldCheck, 
   Sparkles,
-  UserCheck
+  LogIn
 } from 'lucide-react';
 
 export default function App() {
   const [lang, setLang] = useState('ta'); // Tamil default, toggleable to English
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeModal, setActiveModal] = useState(null); // 'farmer' | 'buyer' | 'driver' | 'login' | 'signup'
+  const [activeModal, setActiveModal] = useState(null); // 'farmer' | 'buyer' | 'driver' | 'auth'
+  const [authModalTab, setAuthModalTab] = useState('login'); // 'login' | 'signup'
+  const [authFormData, setAuthFormData] = useState({
+    identifier: '',
+    password: '',
+    shopName: '',
+    fullName: '',
+    phone: '',
+    buyerType: 'hotel',
+    address: 'Madurai'
+  });
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [buyerData, setBuyerData] = useState(null);
+  const [currentView, setCurrentView] = useState(() => {
+    if (typeof window !== 'undefined') {
+      if (window.location.hash === '#buyer-dashboard') return 'buyer-dashboard';
+      if (window.location.hash === '#buyer-register') return 'buyer-register';
+      if (window.location.hash === '#buyer-login') return 'buyer-login';
+      if (window.location.hash === '#role-select' || window.location.hash === '#login-roles') return 'role-select';
+    }
+    return 'home';
+  });
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      if (window.location.hash === '#buyer-dashboard') {
+        setCurrentView('buyer-dashboard');
+      } else if (window.location.hash === '#buyer-register') {
+        setCurrentView('buyer-register');
+      } else if (window.location.hash === '#buyer-login') {
+        setCurrentView('buyer-login');
+      } else if (window.location.hash === '#role-select' || window.location.hash === '#login-roles') {
+        setCurrentView('role-select');
+      } else if (window.location.hash === '#home' || !window.location.hash) {
+        setCurrentView('home');
+      }
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
 
   // Content dictionary
   const content = {
@@ -219,12 +259,196 @@ export default function App() {
   };
 
   const openRoleModal = (role) => {
+    if (role === 'buyer') {
+      openAuthModal('login');
+      return;
+    }
     setActiveModal(role);
   };
 
   const closeModal = () => {
     setActiveModal(null);
   };
+
+  const openAuthModal = (tab = 'login') => {
+    setAuthModalTab(tab);
+    setActiveModal('auth');
+    setMobileMenuOpen(false);
+  };
+
+  const handleAuthModalLogin = (e) => {
+    e.preventDefault();
+    const phoneOrId = authFormData.identifier.trim() || '98401 23456';
+    const profile = {
+      name: 'Grand Palace Luxury Dining',
+      shopName: 'Grand Palace Luxury Dining',
+      businessName: 'Grand Palace Luxury Dining',
+      contactPerson: 'Mr. S. Rajesh (Procurement Head)',
+      fullName: 'Mr. S. Rajesh (Procurement Head)',
+      phone: phoneOrId.startsWith('+91') ? phoneOrId : `+91 ${phoneOrId}`,
+      email: 'procurement@grandpalace.in',
+      buyerType: 'hotel',
+      businessType: 'Hotel & Commercial Kitchen',
+      address: 'Grand Palace Luxury Dining, Bypass Road, Madurai - 625016',
+      gstin: '33AAAAA0000A1Z5',
+      identifier: phoneOrId
+    };
+    try {
+      localStorage.setItem('buyer_current_profile', JSON.stringify(profile));
+    } catch (err) {}
+    setBuyerData(profile);
+    closeModal();
+    setCurrentView('buyer-dashboard');
+    window.location.hash = '#buyer-dashboard';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleAuthModalSignUp = (e) => {
+    e.preventDefault();
+    const phone = authFormData.phone.trim() || '98401 23456';
+    const shopName = authFormData.shopName.trim() || 'Grand Palace Dining';
+    const fullName = authFormData.fullName.trim() || 'Procurement Manager';
+    const profile = {
+      name: shopName,
+      shopName: shopName,
+      businessName: shopName,
+      contactPerson: fullName,
+      fullName: fullName,
+      phone: phone.startsWith('+91') ? phone : `+91 ${phone}`,
+      email: `${shopName.toLowerCase().replace(/[^a-z0-9]/g, '')}@buyerhub.in`,
+      buyerType: authFormData.buyerType || 'hotel',
+      businessType: authFormData.buyerType === 'hotel' ? 'Hotel & Commercial Kitchen' : authFormData.buyerType === 'supermarket' ? 'Supermarket Chain' : 'Produce Retailer',
+      address: `${shopName}, ${authFormData.address || 'Central Market'}, Tamil Nadu`,
+      gstin: '33AAAAA0000A1Z5',
+      identifier: phone
+    };
+    try {
+      localStorage.setItem('buyer_current_profile', JSON.stringify(profile));
+    } catch (err) {}
+    setBuyerData(profile);
+    closeModal();
+    setCurrentView('buyer-dashboard');
+    window.location.hash = '#buyer-dashboard';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const navigateToBuyerLogin = () => {
+    stopSpeaking();
+    setCurrentView('buyer-login');
+    window.location.hash = '#buyer-login';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const navigateToBuyerRegister = () => {
+    stopSpeaking();
+    setCurrentView('buyer-register');
+    window.location.hash = '#buyer-register';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const navigateToRoleSelect = () => {
+    stopSpeaking();
+    setCurrentView('role-select');
+    window.location.hash = '#role-select';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  if (currentView === 'role-select') {
+    return (
+      <RoleSelectScreen
+        lang={lang}
+        setLang={setLang}
+        onBack={() => {
+          setCurrentView('home');
+          window.location.hash = '';
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+        onSelectFarmer={() => openRoleModal('farmer')}
+        onSelectBuyer={() => navigateToBuyerLogin()}
+        onSelectDriver={() => openRoleModal('driver')}
+      />
+    );
+  }
+
+  if (currentView === 'buyer-dashboard') {
+    const fullProfile = buyerData ? {
+      name: buyerData.shopName || buyerData.businessName || buyerData.name || (buyerData.identifier ? `${buyerData.identifier}'s Hotel` : 'Grand Palace Hotel'),
+      shopName: buyerData.shopName || buyerData.businessName || buyerData.name || 'Grand Palace Hotel',
+      businessName: buyerData.shopName || buyerData.businessName || buyerData.name || 'Grand Palace Hotel',
+      contactPerson: buyerData.fullName || buyerData.name || buyerData.contactPerson || buyerData.identifier || 'Mr. S. Rajesh (Procurement Head)',
+      phone: buyerData.phone || '+91 98401 23456',
+      email: buyerData.email || 'procurement@grandpalace.in',
+      buyerType: buyerData.buyerType || 'hotel',
+      businessType: buyerData.buyerType 
+        ? `${buyerData.buyerType.toUpperCase()} Commercial Kitchen` 
+        : (buyerData.businessType || 'Hotel & Commercial Kitchen'),
+      address: buyerData.address || 'Grand Palace Luxury Dining, Bypass Road, Madurai - 625016',
+      gstin: buyerData.gstin || '33AAAAA0000A1Z5',
+      photo: buyerData.photoPreview || buyerData.photo || 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=300&auto=format&fit=crop&q=80',
+      photoPreview: buyerData.photoPreview || buyerData.photo || 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=300&auto=format&fit=crop&q=80'
+    } : undefined;
+
+    return (
+      <BuyerDashboardScreen 
+        defaultLang={lang}
+        buyerProfile={fullProfile}
+        onLogout={() => {
+          setBuyerData(null);
+          try {
+            localStorage.removeItem('buyer_current_profile');
+          } catch (e) {}
+          setCurrentView('buyer-login');
+          window.location.hash = '#buyer-login';
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+      />
+    );
+  }
+
+  if (currentView === 'buyer-register') {
+    return (
+      <BuyerRegisterScreen 
+        defaultLang={lang}
+        onBack={() => {
+          setCurrentView('home');
+          window.location.hash = '';
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+        onNavigateToLogin={() => {
+          setCurrentView('buyer-login');
+          window.location.hash = '#buyer-login';
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+        onRegisterSuccess={(data) => {
+          console.log('Buyer registration successful:', data);
+          setBuyerData(data);
+          setCurrentView('buyer-dashboard');
+          window.location.hash = '#buyer-dashboard';
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+      />
+    );
+  }
+
+  if (currentView === 'buyer-login') {
+    return (
+      <BuyerLoginScreen 
+        defaultLang={lang}
+        onBack={() => {
+          setCurrentView('home');
+          window.location.hash = '';
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+        onNavigateToRegister={navigateToBuyerRegister}
+        onLoginSuccess={(data) => {
+          setBuyerData(data);
+          setCurrentView('buyer-dashboard');
+          window.location.hash = '#buyer-dashboard';
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+      />
+    );
+  }
 
   return (
     <div className="website-root">
@@ -252,7 +476,6 @@ export default function App() {
           {/* Simple Navigation Menu */}
           <nav className="header-nav">
             <a href="#home" className="nav-link active">{t.navHome}</a>
-            <a href="#roles" className="nav-link">{lang === 'ta' ? 'சேவைகள்' : 'Roles'}</a>
             <a href="#how-it-works" className="nav-link">{t.navHowItWorks}</a>
             <a href="#about" className="nav-link">{t.navAbout}</a>
             <a href="#contact" className="nav-link">{t.navContact}</a>
@@ -260,15 +483,6 @@ export default function App() {
 
           {/* Language Toggle & Login/Sign Up Buttons on Right */}
           <div className="header-right">
-            {/* Audio narration button for accessibility */}
-            <button
-              onClick={handleSpeakPage}
-              className={`btn-tts-speaker ${isSpeaking ? 'speaking' : ''}`}
-              title={isSpeaking ? t.stopAudio : t.listenPage}
-              aria-label="Text to speech"
-            >
-              {isSpeaking ? <VolumeX size={18} /> : <Volume2 size={18} />}
-            </button>
 
             {/* Language Toggle */}
             <button 
@@ -280,13 +494,10 @@ export default function App() {
               <span>{t.switchLangText}</span>
             </button>
 
-            {/* Auth Buttons */}
+            {/* Desktop Auth Button (Redirects to #role-select) */}
             <div className="auth-buttons-group">
-              <button className="btn-login" onClick={() => openRoleModal('login')}>
+              <button className="btn-login" onClick={navigateToRoleSelect}>
                 {t.btnLogin}
-              </button>
-              <button className="btn-signup" onClick={() => openRoleModal('signup')}>
-                {t.btnSignUp}
               </button>
             </div>
 
@@ -301,22 +512,13 @@ export default function App() {
           </div>
         </div>
 
-        {/* Mobile Dropdown Menu */}
+        {/* Mobile Dropdown Menu (Clean Navigation Links - Auth Buttons removed as requested) */}
         {mobileMenuOpen && (
           <div className="mobile-menu-drawer">
             <a href="#home" className="nav-link" onClick={() => setMobileMenuOpen(false)}>{t.navHome}</a>
-            <a href="#roles" className="nav-link" onClick={() => setMobileMenuOpen(false)}>{lang === 'ta' ? 'சேவைகள்' : 'Roles'}</a>
             <a href="#how-it-works" className="nav-link" onClick={() => setMobileMenuOpen(false)}>{t.navHowItWorks}</a>
             <a href="#about" className="nav-link" onClick={() => setMobileMenuOpen(false)}>{t.navAbout}</a>
             <a href="#contact" className="nav-link" onClick={() => setMobileMenuOpen(false)}>{t.navContact}</a>
-            <div className="mobile-auth-row">
-              <button className="btn-login" onClick={() => { setMobileMenuOpen(false); openRoleModal('login'); }}>
-                {t.btnLogin}
-              </button>
-              <button className="btn-signup" onClick={() => { setMobileMenuOpen(false); openRoleModal('signup'); }}>
-                {t.btnSignUp}
-              </button>
-            </div>
           </div>
         )}
       </header>
@@ -350,140 +552,9 @@ export default function App() {
           <p className="hero-description">
             {t.heroSubtitle}
           </p>
-
-          <div className="hero-cta-instruction">
-            {t.whoAreYou}
-          </div>
-
-          {/* Three Large Buttons Side by Side */}
-          <div className="hero-role-buttons">
-            {/* Button 1: Farmer */}
-            <button 
-              className="role-button role-button-farmer"
-              onClick={() => openRoleModal('farmer')}
-              aria-label={t.farmerBtn}
-            >
-              <span className="role-button-icon">🌾</span>
-              <div className="role-button-text-group">
-                <span className="role-button-label-main">{t.farmerBtn}</span>
-                <span className="role-button-label-sub">{t.farmerBtnSub} ➔</span>
-              </div>
-            </button>
-
-            {/* Button 2: Buyer */}
-            <button 
-              className="role-button role-button-buyer"
-              onClick={() => openRoleModal('buyer')}
-              aria-label={t.buyerBtn}
-            >
-              <span className="role-button-icon">🧺</span>
-              <div className="role-button-text-group">
-                <span className="role-button-label-main">{t.buyerBtn}</span>
-                <span className="role-button-label-sub">{t.buyerBtnSub} ➔</span>
-              </div>
-            </button>
-
-            {/* Button 3: Driver */}
-            <button 
-              className="role-button role-button-driver"
-              onClick={() => openRoleModal('driver')}
-              aria-label={t.driverBtn}
-            >
-              <span className="role-button-icon">🚚</span>
-              <div className="role-button-text-group">
-                <span className="role-button-label-main">{t.driverBtn}</span>
-                <span className="role-button-label-sub">{t.driverBtnSub} ➔</span>
-              </div>
-            </button>
-          </div>
         </div>
       </section>
 
-      {/* ====================================================================
-          3. ROLE-BASED QUICK INFO CARDS
-          ==================================================================== */}
-      <section id="roles" className="section-roles">
-        <div className="site-container">
-          <div className="section-title-center">
-            <h2 className="section-heading">{t.roleSectionTitle}</h2>
-            <p className="section-subheading">{t.roleSectionSub}</p>
-          </div>
-
-          <div className="roles-grid">
-            {/* Farmer Card */}
-            <article className="role-card farmer-card">
-              <div>
-                <div className="card-icon-circle">
-                  🌱
-                </div>
-                <div className="role-card-badge">
-                  {lang === 'ta' ? 'விவசாயிகளுக்கு' : 'For Farmers'}
-                </div>
-                <h3 className="role-card-title">
-                  {t.farmerCardTitle}
-                </h3>
-                <p className="role-card-description">
-                  {t.farmerCardDesc}
-                </p>
-              </div>
-              <button 
-                className="role-card-btn"
-                onClick={() => openRoleModal('farmer')}
-              >
-                <span>{t.farmerCardBtn}</span>
-              </button>
-            </article>
-
-            {/* Buyer Card */}
-            <article className="role-card buyer-card">
-              <div>
-                <div className="card-icon-circle">
-                  🛒
-                </div>
-                <div className="role-card-badge">
-                  {lang === 'ta' ? 'வாங்குவோருக்கு' : 'For Buyers'}
-                </div>
-                <h3 className="role-card-title">
-                  {t.buyerCardTitle}
-                </h3>
-                <p className="role-card-description">
-                  {t.buyerCardDesc}
-                </p>
-              </div>
-              <button 
-                className="role-card-btn"
-                onClick={() => openRoleModal('buyer')}
-              >
-                <span>{t.buyerCardBtn}</span>
-              </button>
-            </article>
-
-            {/* Driver Card */}
-            <article className="role-card driver-card">
-              <div>
-                <div className="card-icon-circle">
-                  🚚
-                </div>
-                <div className="role-card-badge">
-                  {lang === 'ta' ? 'ஓட்டுநர்களுக்கு' : 'For Drivers'}
-                </div>
-                <h3 className="role-card-title">
-                  {t.driverCardTitle}
-                </h3>
-                <p className="role-card-description">
-                  {t.driverCardDesc}
-                </p>
-              </div>
-              <button 
-                className="role-card-btn"
-                onClick={() => openRoleModal('driver')}
-              >
-                <span>{t.driverCardBtn}</span>
-              </button>
-            </article>
-          </div>
-        </div>
-      </section>
 
       {/* ====================================================================
           4. HOW IT WORKS SECTION (Simple 3-Step Visual)
@@ -616,7 +687,6 @@ export default function App() {
               <h4 className="footer-col-heading">{lang === 'ta' ? 'விரைவு இணைப்புகள்' : 'Quick Navigation'}</h4>
               <ul className="footer-links-list">
                 <li className="footer-link-item"><a href="#home">{t.navHome}</a></li>
-                <li className="footer-link-item"><a href="#roles">{lang === 'ta' ? 'சேவைகள்' : 'Roles'}</a></li>
                 <li className="footer-link-item"><a href="#how-it-works">{t.navHowItWorks}</a></li>
                 <li className="footer-link-item"><a href="#about">{t.navAbout}</a></li>
                 <li className="footer-link-item"><a href="#contact">{t.navContact}</a></li>
@@ -710,30 +780,178 @@ export default function App() {
               </div>
             )}
 
-            {/* Buyer Role Modal */}
-            {activeModal === 'buyer' && (
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 50, marginBottom: 12 }}>🧺</div>
-                <h3 style={{ fontSize: 24, fontWeight: 800, color: '#b45309', marginBottom: 8 }}>
-                  {lang === 'ta' ? 'புதிய விளைபொருள் அங்காடி (வாங்குவோர்)' : 'Welcome, Buyer!'}
-                </h3>
-                <p style={{ fontSize: 16, color: '#475569', marginBottom: 20, lineHeight: 1.5 }}>
-                  {lang === 'ta'
-                    ? 'விவசாயிகளிடம் இருந்து நேரடியாக பறிக்கப்பட்ட புதிய காய்கறி, பழங்களை மலிவான விலையில் பெற பதிவு செய்யுங்கள்.'
-                    : 'Purchase tree-fresh vegetables, paddy, and fruits straight from local farms with doorstep delivery.'}
-                </p>
-                <input
-                  type="tel"
-                  placeholder={lang === 'ta' ? 'உங்கள் அலைபேசி எண் (Mobile Number)' : 'Enter 10-digit mobile number'}
-                  style={{ width: '100%', minHeight: 48, padding: '10px 14px', borderRadius: 12, border: '2px solid #cbd5e1', fontSize: 16, marginBottom: 14, outline: 'none' }}
-                />
-                <button
-                  onClick={() => { alert(lang === 'ta' ? 'வாங்குவோர் உள்நுழைவு தொடங்கியது!' : 'Buyer portal login started!'); closeModal(); }}
-                  className="role-card-btn"
-                  style={{ background: '#f59e0b', color: '#451a03' }}
-                >
-                  {lang === 'ta' ? 'பண்ணை உணவு வாங்க தொடர ➔' : 'Start Shopping Fresh ➔'}
-                </button>
+            {/* Commercial Buyer Auth (Login / Sign Up) Pop-Up Modal */}
+            {(activeModal === 'auth' || activeModal === 'buyer') && (
+              <div className="auth-modal-content">
+                {/* Modal Tab Switcher */}
+                <div className="auth-modal-tabs">
+                  <button
+                    type="button"
+                    className={`auth-modal-tab-btn ${authModalTab === 'login' ? 'active' : ''}`}
+                    onClick={() => setAuthModalTab('login')}
+                  >
+                    <span>{lang === 'ta' ? 'உள்நுழைக' : 'Login'}</span>
+                  </button>
+                  <button
+                    type="button"
+                    className={`auth-modal-tab-btn ${authModalTab === 'signup' ? 'active' : ''}`}
+                    onClick={() => setAuthModalTab('signup')}
+                  >
+                    <span>{lang === 'ta' ? 'புதிய பதிவு' : 'Sign Up'}</span>
+                  </button>
+                </div>
+
+                {authModalTab === 'login' ? (
+                  /* LOGIN TAB */
+                  <div>
+                    <div style={{ textAlign: 'center', marginBottom: 18 }}>
+                      <div style={{ fontSize: 38, marginBottom: 4 }}>🛒</div>
+                      <h3 style={{ fontSize: 21, fontWeight: 800, color: '#14532d', margin: '0 0 4px 0' }}>
+                        {lang === 'ta' ? 'வணிக வாங்குவோர் உள்நுழைவு' : 'Commercial Buyer Login'}
+                      </h3>
+                      <p style={{ fontSize: 13, color: '#64748b', margin: 0 }}>
+                        {lang === 'ta' 
+                          ? 'பண்ணை-வாயில் மொத்த விலையில் புதிய விளைபொருட்களை பெறவும்' 
+                          : 'Procure farm-gate fresh produce at transparent wholesale prices'}
+                      </p>
+                    </div>
+
+                    <form onSubmit={handleAuthModalLogin}>
+                      <div className="auth-form-field">
+                        <label className="auth-form-label">
+                          {lang === 'ta' ? 'அலைபேசி எண் / ஜிஎஸ்டி எண்' : 'Mobile Number / GSTIN'}
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          className="auth-form-input"
+                          placeholder={lang === 'ta' ? 'எ.கா: 98401 23456' : 'e.g. 98401 23456 or GSTIN'}
+                          value={authFormData.identifier}
+                          onChange={(e) => setAuthFormData({ ...authFormData, identifier: e.target.value })}
+                        />
+                      </div>
+
+                      <div className="auth-form-field">
+                        <label className="auth-form-label">
+                          {lang === 'ta' ? 'கடவுச்சொல் / 4-இலக்க PIN' : 'Password / 4-Digit PIN'}
+                        </label>
+                        <input
+                          type="password"
+                          required
+                          className="auth-form-input"
+                          placeholder="••••••••"
+                          value={authFormData.password}
+                          onChange={(e) => setAuthFormData({ ...authFormData, password: e.target.value })}
+                        />
+                      </div>
+
+                      <button type="submit" className="auth-submit-btn">
+                        <span>{lang === 'ta' ? 'டாஷ்போர்டில் உள்நுழைக ➔' : 'Sign In to Dashboard ➔'}</span>
+                      </button>
+
+                      <div className="auth-modal-footer-switch">
+                        <span>{lang === 'ta' ? 'புதிய வாங்குபவரா? ' : "Don't have an account? "}</span>
+                        <button
+                          type="button"
+                          className="auth-switch-link"
+                          onClick={() => setAuthModalTab('signup')}
+                        >
+                          {lang === 'ta' ? 'இப்போதே பதிவு செய்க' : 'Sign Up Free'}
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                ) : (
+                  /* SIGN UP TAB */
+                  <div>
+                    <div style={{ textAlign: 'center', marginBottom: 16 }}>
+                      <div style={{ fontSize: 36, marginBottom: 4 }}>🏢</div>
+                      <h3 style={{ fontSize: 21, fontWeight: 800, color: '#14532d', margin: '0 0 4px 0' }}>
+                        {lang === 'ta' ? 'வணிக வாங்குவோர் பதிவு' : 'Commercial Buyer Registration'}
+                      </h3>
+                      <p style={{ fontSize: 13, color: '#64748b', margin: 0 }}>
+                        {lang === 'ta' 
+                          ? 'ஹோட்டல், சூப்பர் மார்க்கெட், திருமண மண்டபங்களுக்கான நேரடி கொள்முதல்' 
+                          : 'Zero middlemen procurement for hotels, supermarkets & caterers'}
+                      </p>
+                    </div>
+
+                    <form onSubmit={handleAuthModalSignUp}>
+                      <div className="auth-form-field">
+                        <label className="auth-form-label">
+                          {lang === 'ta' ? 'வணிக நிறுவனம் / ஹோட்டல் பெயர்' : 'Business / Shop / Hotel Name'}
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          className="auth-form-input"
+                          placeholder={lang === 'ta' ? 'எ.கா: கிராண்ட் பேலஸ் ஹோட்டல்' : 'e.g. Grand Palace Dining'}
+                          value={authFormData.shopName}
+                          onChange={(e) => setAuthFormData({ ...authFormData, shopName: e.target.value })}
+                        />
+                      </div>
+
+                      <div className="auth-form-field">
+                        <label className="auth-form-label">
+                          {lang === 'ta' ? 'தொடர்பு நபர் பெயர்' : 'Authorized Contact Person'}
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          className="auth-form-input"
+                          placeholder={lang === 'ta' ? 'எ.கா: எஸ். ராஜேஷ்' : 'e.g. Rajesh Kumar'}
+                          value={authFormData.fullName}
+                          onChange={(e) => setAuthFormData({ ...authFormData, fullName: e.target.value })}
+                        />
+                      </div>
+
+                      <div className="auth-form-field">
+                        <label className="auth-form-label">
+                          {lang === 'ta' ? 'மொபைல் எண் (Mobile Number)' : '10-Digit Mobile Number'}
+                        </label>
+                        <input
+                          type="tel"
+                          required
+                          className="auth-form-input"
+                          placeholder="9840123456"
+                          value={authFormData.phone}
+                          onChange={(e) => setAuthFormData({ ...authFormData, phone: e.target.value })}
+                        />
+                      </div>
+
+                      <div className="auth-form-field">
+                        <label className="auth-form-label">
+                          {lang === 'ta' ? 'வாங்குபவர் பிரிவு' : 'Buyer Category'}
+                        </label>
+                        <select
+                          className="auth-form-input"
+                          value={authFormData.buyerType}
+                          onChange={(e) => setAuthFormData({ ...authFormData, buyerType: e.target.value })}
+                        >
+                          <option value="hotel">{lang === 'ta' ? 'ஹோட்டல் & உணவகம் (Hotel & Kitchen)' : 'Hotel & Commercial Kitchen'}</option>
+                          <option value="supermarket">{lang === 'ta' ? 'சூப்பர் மார்க்கெட் (Supermarket)' : 'Supermarket & Grocery'}</option>
+                          <option value="retailer">{lang === 'ta' ? 'சில்லறை வியாபாரி (Produce Store)' : 'Retail Produce Store'}</option>
+                          <option value="mahal">{lang === 'ta' ? 'திருமண மண்டபம் (Banquet / Mahal)' : 'Mandapam / Function Hall'}</option>
+                        </select>
+                      </div>
+
+                      <button type="submit" className="auth-submit-btn">
+                        <span>{lang === 'ta' ? 'பதிவு செய்து தொடங்கு ➔' : 'Register & Enter Hub ➔'}</span>
+                      </button>
+
+                      <div className="auth-modal-footer-switch">
+                        <span>{lang === 'ta' ? 'ஏற்கனவே கணக்கு உள்ளதா? ' : 'Already have an account? '}</span>
+                        <button
+                          type="button"
+                          className="auth-switch-link"
+                          onClick={() => setAuthModalTab('login')}
+                        >
+                          {lang === 'ta' ? 'உள்நுழைக' : 'Log In Here'}
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                )}
               </div>
             )}
 
@@ -793,6 +1011,18 @@ export default function App() {
           </div>
         </div>
       )}
+      {/* Mobile Floating Action Button (FAB) for Login */}
+      <button
+        type="button"
+        className="mobile-floating-login-fab"
+        onClick={navigateToRoleSelect}
+        aria-label="Login / Choose Role"
+      >
+        <div className="mobile-fab-icon-wrap">
+          <LogIn size={18} />
+        </div>
+        <span className="mobile-fab-label">{lang === 'ta' ? 'உள்நுழைக' : 'Login'}</span>
+      </button>
     </div>
   );
 }

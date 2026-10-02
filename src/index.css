@@ -79,10 +79,18 @@ body {
 }
 
 /* Accessible Minimum Touch Target */
-button, a, input, select {
+button,
+a,
+select,
+input:not([type="checkbox"]):not([type="radio"]) {
   font-family: inherit;
   min-height: 40px;
   touch-action: manipulation;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  min-height: auto;
 }
 
 /* Fluid Container */
@@ -180,7 +188,8 @@ button, a, input, select {
   white-space: nowrap;
 }
 
-.nav-link:hover, .nav-link.active {
+.nav-link:hover,
+.nav-link.active {
   color: var(--primary-700);
   background: var(--primary-50);
 }
@@ -224,8 +233,13 @@ button, a, input, select {
 }
 
 @keyframes pulseSpeaking {
-  0% { transform: scale(1); }
-  100% { transform: scale(1.08); }
+  0% {
+    transform: scale(1);
+  }
+
+  100% {
+    transform: scale(1.08);
+  }
 }
 
 /* Language Toggle Button */
@@ -262,20 +276,22 @@ button, a, input, select {
 
 .btn-login {
   min-height: 40px;
-  padding: 5px clamp(10px, 1.3vw, 16px);
-  background: transparent;
-  color: var(--primary-900);
-  border: 1.5px solid var(--primary-700);
+  padding: 5px clamp(14px, 1.5vw, 20px);
+  background: linear-gradient(135deg, #15803d 0%, #16a34a 100%);
+  color: #ffffff;
+  border: 1px solid #86efac;
   border-radius: var(--radius-md);
   font-size: 14px;
   font-weight: 800;
   cursor: pointer;
+  box-shadow: 0 3px 8px rgba(22, 163, 74, 0.22);
   transition: all 0.15s ease;
   white-space: nowrap;
 }
 
 .btn-login:hover {
-  background: var(--primary-50);
+  background: #14532d;
+  transform: translateY(-1px);
 }
 
 .btn-signup {
@@ -356,7 +372,7 @@ button, a, input, select {
 .hero-section {
   position: relative;
   background: linear-gradient(180deg, rgba(5, 46, 22, 0.90) 0%, rgba(20, 83, 45, 0.85) 100%),
-              url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=1600&auto=format&fit=crop&q=80') center/cover no-repeat;
+    url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=1600&auto=format&fit=crop&q=80') center/cover no-repeat;
   color: #ffffff;
   padding: clamp(44px, 8vw, 84px) clamp(16px, 4vw, 32px) clamp(52px, 9vw, 92px) clamp(16px, 4vw, 32px);
   text-align: center;
@@ -460,14 +476,32 @@ button, a, input, select {
   transform: scale(0.98);
 }
 
-.role-button-farmer { border-color: #86efac; }
-.role-button-farmer:hover { border-color: #16a34a; background: #f0fdf4; }
+.role-button-farmer {
+  border-color: #86efac;
+}
 
-.role-button-buyer { border-color: #fde047; }
-.role-button-buyer:hover { border-color: #f59e0b; background: #fefce8; }
+.role-button-farmer:hover {
+  border-color: #16a34a;
+  background: #f0fdf4;
+}
 
-.role-button-driver { border-color: #fdba74; }
-.role-button-driver:hover { border-color: #ea580c; background: #fff7ed; }
+.role-button-buyer {
+  border-color: #fde047;
+}
+
+.role-button-buyer:hover {
+  border-color: #f59e0b;
+  background: #fefce8;
+}
+
+.role-button-driver {
+  border-color: #fdba74;
+}
+
+.role-button-driver:hover {
+  border-color: #ea580c;
+  background: #fff7ed;
+}
 
 .role-button-icon {
   font-size: clamp(28px, 4.5vw, 36px);
@@ -550,9 +584,17 @@ button, a, input, select {
   box-shadow: 0 12px 24px rgba(20, 83, 45, 0.1);
 }
 
-.role-card.farmer-card { border-top: 5px solid #16a34a; }
-.role-card.buyer-card { border-top: 5px solid #f59e0b; }
-.role-card.driver-card { border-top: 5px solid #ea580c; }
+.role-card.farmer-card {
+  border-top: 5px solid #16a34a;
+}
+
+.role-card.buyer-card {
+  border-top: 5px solid #f59e0b;
+}
+
+.role-card.driver-card {
+  border-top: 5px solid #ea580c;
+}
 
 .card-icon-circle {
   width: clamp(52px, 7vw, 68px);
@@ -566,9 +608,20 @@ button, a, input, select {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
 }
 
-.farmer-card .card-icon-circle { background: #dcfce7; color: #15803d; }
-.buyer-card .card-icon-circle { background: #fef3c7; color: #b45309; }
-.driver-card .card-icon-circle { background: #ffedd5; color: #c2410c; }
+.farmer-card .card-icon-circle {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.buyer-card .card-icon-circle {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.driver-card .card-icon-circle {
+  background: #ffedd5;
+  color: #c2410c;
+}
 
 .role-card-badge {
   font-size: 12.5px;
@@ -578,9 +631,17 @@ button, a, input, select {
   margin-bottom: 6px;
 }
 
-.farmer-card .role-card-badge { color: #15803d; }
-.buyer-card .role-card-badge { color: #b45309; }
-.driver-card .role-card-badge { color: #c2410c; }
+.farmer-card .role-card-badge {
+  color: #15803d;
+}
+
+.buyer-card .role-card-badge {
+  color: #b45309;
+}
+
+.driver-card .role-card-badge {
+  color: #c2410c;
+}
 
 .role-card-title {
   font-size: clamp(19px, 3vw, 23px);
@@ -617,21 +678,31 @@ button, a, input, select {
   color: #ffffff;
   box-shadow: 0 3px 10px rgba(22, 163, 74, 0.25);
 }
-.farmer-card .role-card-btn:hover { background: #15803d; }
+
+.farmer-card .role-card-btn:hover {
+  background: #15803d;
+}
 
 .buyer-card .role-card-btn {
   background: #f59e0b;
   color: #451a03;
   box-shadow: 0 3px 10px rgba(245, 158, 11, 0.25);
 }
-.buyer-card .role-card-btn:hover { background: #d97706; color: #ffffff; }
+
+.buyer-card .role-card-btn:hover {
+  background: #d97706;
+  color: #ffffff;
+}
 
 .driver-card .role-card-btn {
   background: #ea580c;
   color: #ffffff;
   box-shadow: 0 3px 10px rgba(234, 88, 12, 0.25);
 }
-.driver-card .role-card-btn:hover { background: #c2410c; }
+
+.driver-card .role-card-btn:hover {
+  background: #c2410c;
+}
 
 /* ==========================================================================
    4. HOW IT WORKS SECTION
@@ -679,9 +750,17 @@ button, a, input, select {
   color: #ffffff;
 }
 
-.step-1 .step-number-badge { background: #16a34a; }
-.step-2 .step-number-badge { background: #f59e0b; }
-.step-3 .step-number-badge { background: #ea580c; }
+.step-1 .step-number-badge {
+  background: #16a34a;
+}
+
+.step-2 .step-number-badge {
+  background: #f59e0b;
+}
+
+.step-3 .step-number-badge {
+  background: #ea580c;
+}
 
 .step-illustration-icon {
   font-size: clamp(34px, 5vw, 44px);
@@ -936,20 +1015,248 @@ button, a, input, select {
   color: #0f172a;
 }
 
+/* Auth (Login / Sign Up) Pop-Up Modal */
+.auth-modal-content {
+  width: 100%;
+}
+
+.auth-modal-tabs {
+  display: flex;
+  background: #f1f5f9;
+  padding: 4px;
+  border-radius: var(--radius-md);
+  margin-bottom: 20px;
+  gap: 6px;
+}
+
+.auth-modal-tab-btn {
+  flex: 1;
+  padding: 9px 12px;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #64748b;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.auth-modal-tab-btn.active {
+  background: #ffffff;
+  color: #14532d;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.auth-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 14px;
+  text-align: left;
+}
+
+.auth-form-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #334155;
+}
+
+.auth-form-input {
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1.5px solid #cbd5e1;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: #0f172a;
+  background: #f8fafc;
+  outline: none;
+  transition: all 0.16s ease;
+  box-sizing: border-box;
+}
+
+.auth-form-input:focus {
+  border-color: #15803d;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.12);
+}
+
+.auth-submit-btn {
+  width: 100%;
+  min-height: 48px;
+  border: none;
+  border-radius: 12px;
+  background: #15803d;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+  transition: all 0.18s ease;
+  box-shadow: 0 4px 12px rgba(21, 128, 61, 0.25);
+}
+
+.auth-submit-btn:hover {
+  background: #166534;
+  transform: translateY(-1px);
+}
+
+.auth-modal-footer-switch {
+  margin-top: 16px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.auth-switch-link {
+  color: #15803d;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-size: inherit;
+  padding: 0 4px;
+  text-decoration: underline;
+}
+
+/* Mobile Floating Action Button (FAB) for Login */
+.mobile-floating-login-fab {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  .mobile-floating-login-fab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: fixed;
+    bottom: 22px;
+    right: 18px;
+    z-index: 999;
+    background: linear-gradient(135deg, #15803d 0%, #16a34a 100%);
+    color: #ffffff;
+    border: 2px solid #86efac;
+    border-radius: var(--radius-full, 999px);
+    padding: 10px 18px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 800;
+    box-shadow: 0 8px 24px rgba(21, 128, 61, 0.45), 0 2px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: fabEntrance 0.35s ease-out, fabPulse 3s infinite 1s;
+    text-decoration: none;
+  }
+
+  .mobile-floating-login-fab:active {
+    transform: scale(0.95);
+  }
+
+  .mobile-fab-icon-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.22);
+    border-radius: 50%;
+    padding: 4px;
+  }
+
+  .mobile-fab-label {
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
+  @keyframes fabEntrance {
+    from {
+      opacity: 0;
+      transform: translateY(20px) scale(0.8);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes fabPulse {
+    0%, 100% {
+      box-shadow: 0 8px 24px rgba(21, 128, 61, 0.45), 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+    50% {
+      box-shadow: 0 10px 30px rgba(34, 197, 94, 0.6), 0 0 0 6px rgba(134, 239, 172, 0.3);
+    }
+  }
+}
+
+/* Hero Section Primary Portal CTA Button */
+.hero-cta-portal-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #15803d 0%, #16a34a 100%);
+  color: #ffffff;
+  border: 2px solid #86efac;
+  border-radius: var(--radius-full, 999px);
+  padding: 14px 28px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(22, 163, 74, 0.35);
+  transition: all 0.2s ease;
+  font-family: inherit;
+  margin-top: 10px;
+}
+
+.hero-cta-portal-btn:hover {
+  background: #14532d;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(22, 163, 74, 0.45);
+}
+
 /* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes scaleUp {
-  from { opacity: 0; transform: scale(0.94); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 @keyframes slideDown {
-  from { opacity: 0; transform: translateY(-8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ==========================================================================
@@ -961,23 +1268,29 @@ button, a, input, select {
   .header-nav {
     display: none;
   }
+
   .auth-buttons-group {
     display: none;
   }
+
   .mobile-menu-toggle {
     display: flex;
   }
+
   .roles-grid {
     grid-template-columns: repeat(3, 1fr);
     gap: 16px;
   }
+
   .how-it-works-grid {
     grid-template-columns: repeat(3, 1fr);
     gap: 16px;
   }
+
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
   .footer-grid {
     grid-template-columns: 1fr 1fr;
     gap: 28px;
@@ -991,6 +1304,7 @@ button, a, input, select {
     max-width: 500px;
     gap: 12px;
   }
+
   .role-button {
     flex-direction: row;
     justify-content: flex-start;
@@ -998,17 +1312,21 @@ button, a, input, select {
     gap: 14px;
     text-align: left;
   }
+
   .role-button-icon {
     flex-shrink: 0;
   }
+
   .role-button-text-group {
     align-items: flex-start;
   }
+
   .roles-grid {
     grid-template-columns: 1fr;
     max-width: 520px;
     margin: 0 auto;
   }
+
   .how-it-works-grid {
     grid-template-columns: 1fr;
     max-width: 520px;
@@ -1021,17 +1339,22 @@ button, a, input, select {
   .header-inner {
     height: 64px;
   }
+
   .brand-tagline-sub {
-    display: none; /* Keep header clean and single-line on mobile */
+    display: none;
+    /* Keep header clean and single-line on mobile */
   }
+
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
   }
+
   .footer-grid {
     grid-template-columns: 1fr;
     gap: 24px;
   }
+
   .footer-bottom-row {
     flex-direction: column;
     text-align: center;
@@ -1044,9 +1367,11 @@ button, a, input, select {
   .lang-toggle-button span {
     font-size: 11.5px;
   }
+
   .lang-toggle-button {
     padding: 4px 8px;
   }
+
   .stats-grid {
     grid-template-columns: 1fr;
   }
