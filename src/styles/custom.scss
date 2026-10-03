@@ -1,0 +1,101 @@
+// 1. Functions first
+@import "bootstrap/scss/functions";
+
+// 2. Variable overrides before variables import
+$primary: #14532d;
+$success: #16a34a;
+$warning: #d97706;
+$body-color: #0f172a;
+$body-bg: #f8fafc;
+$border-color: #e2e8f0;
+$font-family-sans-serif: 'Plus Jakarta Sans', 'Noto Sans Tamil', 'Mukta Malar', system-ui, sans-serif;
+$border-radius: 8px;
+$border-radius-lg: 12px;
+$border-radius-xl: 18px;
+$headings-line-height: 1.35;
+$line-height-base: 1.5;
+
+// 3. Default Bootstrap variables & foundation
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/variables-dark";
+@import "bootstrap/scss/maps";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/utilities";
+
+// 4. Layout & Core Components
+@import "bootstrap/scss/root";
+@import "bootstrap/scss/reboot";
+@import "bootstrap/scss/type";
+@import "bootstrap/scss/containers";
+@import "bootstrap/scss/grid";
+@import "bootstrap/scss/helpers";
+
+// 5. Components actually used
+@import "bootstrap/scss/buttons";
+@import "bootstrap/scss/transitions";
+@import "bootstrap/scss/dropdown";
+@import "bootstrap/scss/button-group";
+@import "bootstrap/scss/nav";
+@import "bootstrap/scss/navbar";
+@import "bootstrap/scss/card";
+@import "bootstrap/scss/badge";
+@import "bootstrap/scss/alert";
+@import "bootstrap/scss/close";
+@import "bootstrap/scss/modal";
+@import "bootstrap/scss/offcanvas";
+@import "bootstrap/scss/placeholders";
+@import "bootstrap/scss/forms";
+@import "bootstrap/scss/spinners";
+
+// 6. Utilities API
+@import "bootstrap/scss/utilities/api";
+
+// 7. Tamil anti-clipping & Typography rules
+.badge,
+.btn,
+.nav-link,
+.dropdown-item {
+  line-height: 1.35;
+}
+
+// 8. Custom Brand Utilities
+.btn-ghost {
+  background: transparent;
+  color: var(--primary-800, #166534);
+  border-color: transparent;
+  &:hover, &:focus {
+    background: var(--primary-50, #f0fdf4);
+    color: var(--primary-900, #14532d);
+    border-color: transparent;
+  }
+}
+
+.btn-harvest {
+  background-color: var(--harvest-600, #ea580c);
+  border-color: var(--harvest-600, #ea580c);
+  color: #ffffff;
+  &:hover, &:focus {
+    background-color: var(--harvest-700, #c2410c);
+    border-color: var(--harvest-700, #c2410c);
+    color: #ffffff;
+  }
+}
+
+.bg-amber {
+  background-color: #f59e0b !important;
+  color: #1e293b !important;
+}
+
+.ui-card-interactive {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px -5px rgba(20, 83, 45, 0.12) !important;
+  }
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+

@@ -1,0 +1,465 @@
+/* Track Delivery Page Styles */
+
+.buyer-active-order-picker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.buyer-picker-label {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--buyer-text-muted);
+}
+
+/* 5-Stage Status Indicator */
+.buyer-tracking-stepper-card {
+  background-color: #ffffff;
+  border: 1px solid var(--buyer-border-light);
+  border-radius: var(--buyer-radius-lg);
+  padding: 24px 28px;
+  box-shadow: var(--buyer-shadow-card);
+}
+
+.buyer-stepper-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+}
+
+.buyer-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+
+.buyer-step-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  transition: all 0.2s ease;
+}
+
+.buyer-step.completed .buyer-step-circle {
+  background-color: var(--buyer-primary);
+  color: #ffffff;
+}
+
+.buyer-step.active .buyer-step-circle {
+  background-color: #10b981;
+  color: #ffffff;
+}
+
+.buyer-step.pending .buyer-step-circle {
+  background-color: #f1f5f9;
+  border: 2px solid var(--buyer-border-light);
+  color: var(--buyer-text-dim);
+}
+
+.pulse-circle {
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.25);
+  animation: pulseBeacon 1.5s infinite;
+}
+
+.buyer-step-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--buyer-text-muted);
+}
+
+.buyer-step-title.active {
+  color: #10b981;
+  font-weight: 700;
+}
+
+.buyer-step-time {
+  font-size: 0.68rem;
+  color: var(--buyer-text-dim);
+  margin-top: 2px;
+}
+
+.buyer-step-line {
+  flex: 1;
+  height: 3px;
+  background-color: #f1f5f9;
+  margin: 0 8px 24px 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.buyer-step-line.completed {
+  background-color: var(--buyer-primary);
+}
+
+.buyer-step-line.active {
+  background: linear-gradient(90deg, var(--buyer-primary) 0%, #10b981 100%);
+}
+
+/* Map Tracking Layout */
+.buyer-map-tracking-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 20px;
+  align-items: start;
+}
+
+.buyer-map-container {
+  background-color: #ffffff;
+  border: 1px solid var(--buyer-border-light);
+  border-radius: var(--buyer-radius-lg);
+  overflow: hidden;
+  box-shadow: var(--buyer-shadow-card);
+  display: flex;
+  flex-direction: column;
+}
+
+.buyer-map-header-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background-color: #ffffff;
+  border-bottom: 1px solid var(--buyer-border-light);
+}
+
+.buyer-map-legend {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--buyer-text-muted);
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.dot.hub {
+  background-color: #0f4a30;
+}
+
+.dot.vehicle {
+  background-color: #10b981;
+}
+
+.dot.destination {
+  background-color: #dc2626;
+}
+
+.buyer-map-speed-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  background-color: var(--buyer-accent-subtle);
+  color: var(--buyer-accent-text);
+  padding: 4px 10px;
+  border-radius: var(--buyer-radius-full);
+}
+
+.buyer-svg-map-wrapper {
+  width: 100%;
+  background-color: #f1f5f9;
+  position: relative;
+}
+
+.buyer-logistics-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.svg-node-label {
+  font-size: 11px;
+  fill: #0f172a;
+}
+
+.svg-node-sub {
+  font-size: 9px;
+  fill: #64748b;
+}
+
+.buyer-animated-route-path {
+  stroke-dasharray: 10 5;
+  animation: dashMove 20s linear infinite;
+}
+
+@keyframes dashMove {
+  to {
+    stroke-dashoffset: -1000;
+  }
+}
+
+.animate-ping-slow {
+  animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.buyer-map-footer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  background-color: #ffffff;
+  border-top: 1px solid var(--buyer-border-light);
+}
+
+.buyer-gps-text {
+  font-size: 0.76rem;
+  color: var(--buyer-text-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.live-gps-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #22c55e;
+  animation: pulseBeacon 1.2s infinite;
+}
+
+.buyer-map-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: transparent;
+  border: 1px solid var(--buyer-border-light);
+  border-radius: var(--buyer-radius-sm);
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--buyer-text-main);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.buyer-map-action-btn:hover {
+  background-color: var(--buyer-bg-canvas);
+}
+
+/* Sidebar Telemetry Cards */
+.buyer-telemetry-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.buyer-status-card,
+.buyer-driver-card,
+.buyer-farmer-dispatched-card {
+  background-color: #ffffff;
+  border: 1px solid var(--buyer-border-light);
+  border-radius: var(--buyer-radius-lg);
+  padding: 18px 20px;
+  box-shadow: var(--buyer-shadow-card);
+}
+
+.buyer-status-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.buyer-radar-pulse {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: rgba(16, 185, 129, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pulse-dot-inner {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #10b981;
+}
+
+.buyer-status-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--buyer-text-dim);
+  display: block;
+}
+
+.buyer-status-main {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--buyer-text-main);
+  margin: 2px 0 0 0;
+}
+
+.buyer-status-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--buyer-border-light);
+}
+
+.buyer-status-stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-label {
+  font-size: 0.68rem;
+  color: var(--buyer-text-dim);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.stat-val {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--buyer-text-main);
+  margin-top: 2px;
+}
+
+.stat-val.highlight {
+  color: #15803d;
+}
+
+/* Driver Card */
+.buyer-driver-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.buyer-driver-heading {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--buyer-text-main);
+}
+
+.buyer-vehicle-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  background-color: var(--buyer-accent-subtle);
+  color: var(--buyer-accent-text);
+  padding: 2px 7px;
+  border-radius: var(--buyer-radius-full);
+}
+
+.buyer-driver-profile-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.buyer-driver-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: var(--buyer-accent-subtle);
+  color: var(--buyer-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.buyer-driver-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.buyer-driver-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--buyer-text-main);
+  margin: 0;
+}
+
+.buyer-driver-rating {
+  font-size: 0.74rem;
+  color: #eab308;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+.buyer-dot {
+  color: var(--buyer-text-dim);
+}
+
+.buyer-driver-vehicle-specs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 0;
+  border-top: 1px solid var(--buyer-border-light);
+  border-bottom: 1px solid var(--buyer-border-light);
+  margin-bottom: 14px;
+}
+
+.buyer-spec-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8rem;
+}
+
+.spec-name {
+  color: var(--buyer-text-muted);
+}
+
+.spec-value {
+  color: var(--buyer-text-main);
+  font-weight: 600;
+}
+
+.pin-highlight {
+  background-color: #fefce8;
+  padding: 6px 10px;
+  border-radius: var(--buyer-radius-sm);
+  margin-top: 4px;
+}
+
+.pin-code {
+  font-family: monospace;
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+  color: #854d0e;
+}
+
+.buyer-farmer-dispatched-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+@media (max-width: 1024px) {
+  .buyer-map-tracking-layout {
+    grid-template-columns: 1fr;
+  }
+}
