@@ -1156,50 +1156,109 @@ input[type="radio"] {
 
 @media (max-width: 860px) {
   .mobile-floating-login-fab {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     position: fixed;
-    bottom: 22px;
-    right: 18px;
-    z-index: 999;
-    background: linear-gradient(135deg, #15803d 0%, #16a34a 100%);
+    bottom: max(22px, env(safe-area-inset-bottom, 22px));
+    right: 20px;
+    z-index: 1040;
+
+    /* Luxury Forest/Emerald Gradient with Glass Sheen */
+    background: linear-gradient(135deg, #0f5132 0%, #15803d 52%, #16a34a 100%);
     color: #ffffff;
-    border: 2px solid #86efac;
-    border-radius: var(--radius-full, 999px);
-    padding: 10px 18px;
+
+    /* Modern crisp border & multi-layered ambient shadow */
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 9999px;
+    height: 48px;
+    padding: 0 18px 0 10px;
+
     font-family: inherit;
     font-size: 0.95rem;
-    font-weight: 800;
-    box-shadow: 0 8px 24px rgba(21, 128, 61, 0.45), 0 2px 8px rgba(0, 0, 0, 0.2);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1;
+    white-space: nowrap;
+
+    box-shadow: 
+      0 12px 28px -6px rgba(15, 81, 50, 0.45),
+      0 4px 12px -2px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.32);
+
     cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    animation: fabEntrance 0.35s ease-out, fabPulse 3s infinite 1s;
+    user-select: none;
     text-decoration: none;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+
+    /* Smooth transitions */
+    transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+                background 0.22s ease;
+    animation: fabEntrance 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+               fabAmbientGlow 4s ease-in-out infinite 1s;
+  }
+
+  .mobile-floating-login-fab:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 
+      0 16px 32px -6px rgba(15, 81, 50, 0.55),
+      0 6px 16px -2px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.45);
+    background: linear-gradient(135deg, #0c3e26 0%, #166534 52%, #15803d 100%);
+    color: #ffffff;
   }
 
   .mobile-floating-login-fab:active {
-    transform: scale(0.95);
+    transform: translateY(1px) scale(0.96);
+    box-shadow: 
+      0 6px 16px -4px rgba(15, 81, 50, 0.4),
+      0 2px 6px -1px rgba(0, 0, 0, 0.2);
   }
 
   .mobile-fab-icon-wrap {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.22);
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.22);
     border-radius: 50%;
-    padding: 4px;
+    color: #ffffff;
+    flex-shrink: 0;
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+
+  .mobile-floating-login-fab:hover .mobile-fab-icon-wrap {
+    transform: scale(1.06);
+    background: rgba(255, 255, 255, 0.26);
   }
 
   .mobile-fab-label {
-    letter-spacing: 0.02em;
-    white-space: nowrap;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 0.01em;
+  }
+
+  .mobile-fab-arrow {
+    margin-left: 2px;
+    opacity: 0.85;
+    color: #86efac;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .mobile-floating-login-fab:hover .mobile-fab-arrow {
+    opacity: 1;
+    transform: translateX(3px);
   }
 
   @keyframes fabEntrance {
     from {
       opacity: 0;
-      transform: translateY(20px) scale(0.8);
+      transform: translateY(24px) scale(0.85);
     }
     to {
       opacity: 1;
@@ -1207,12 +1266,18 @@ input[type="radio"] {
     }
   }
 
-  @keyframes fabPulse {
+  @keyframes fabAmbientGlow {
     0%, 100% {
-      box-shadow: 0 8px 24px rgba(21, 128, 61, 0.45), 0 2px 8px rgba(0, 0, 0, 0.2);
+      box-shadow: 
+        0 12px 28px -6px rgba(15, 81, 50, 0.45),
+        0 4px 12px -2px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.32);
     }
     50% {
-      box-shadow: 0 10px 30px rgba(34, 197, 94, 0.6), 0 0 0 6px rgba(134, 239, 172, 0.3);
+      box-shadow: 
+        0 14px 34px -4px rgba(22, 163, 74, 0.52),
+        0 4px 14px -2px rgba(0, 0, 0, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.48);
     }
   }
 }

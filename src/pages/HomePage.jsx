@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, ShieldCheck, LogIn } from 'lucide-react';
+import { Sparkles, ShieldCheck, LogIn, ArrowRight } from 'lucide-react';
 import { useT } from '../i18n';
 import { ROUTES } from '../router/routes';
 import { Navbar, Footer } from '../components/layout';
@@ -135,18 +135,18 @@ export default function HomePage({ onBuyerAuthSuccess: _onBuyerAuthSuccess }) {
       <Footer />
 
       {/* Mobile Floating Action Button (FAB) for Login */}
-      <Button
+      <button
         type="button"
-        variant="primary"
         className="mobile-floating-login-fab"
         onClick={navigateToRoleSelect}
         aria-label="Login / Choose Role"
       >
-        <div className="mobile-fab-icon-wrap">
-          <LogIn size={18} />
-        </div>
+        <span className="mobile-fab-icon-wrap">
+          <LogIn size={17} strokeWidth={2.2} />
+        </span>
         <span className="mobile-fab-label">{t('mobileLogin')}</span>
-      </Button>
+        <ArrowRight size={14} strokeWidth={2.4} className="mobile-fab-arrow" />
+      </button>
     </div>
   );
 }
