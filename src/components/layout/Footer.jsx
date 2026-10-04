@@ -2,7 +2,7 @@ import React from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { Globe, Phone, Mail, MapPin } from 'lucide-react';
+import { Phone, Mail, MapPin } from 'lucide-react';
 import { useT } from '../../i18n';
 
 /**
@@ -10,7 +10,7 @@ import { useT } from '../../i18n';
  * Extracted with bilingual support via useT('common').
  */
 export default function Footer({ className = '' }) {
-  const { t, toggleLang } = useT('common');
+  const { t } = useT('common');
 
   return (
     <footer id="contact" className={`bg-dark text-white pt-5 pb-4 mt-auto border-top border-dark-subtle ${className}`} style={{ backgroundColor: '#052e16' }}>
@@ -35,21 +35,9 @@ export default function Footer({ className = '' }) {
               </span>
             </div>
 
-            <p className="text-white-50 mb-3 small lh-base" style={{ maxWidth: 420 }}>
+            <p className="text-white-50 mb-0 small lh-base" style={{ maxWidth: 420 }}>
               {t('footerDesc')}
             </p>
-
-            <div>
-              <button
-                type="button"
-                className="btn btn-outline-success btn-sm d-inline-flex align-items-center gap-1.5 rounded-pill px-3 py-1.5 text-white border-success-subtle fw-semibold"
-                onClick={toggleLang}
-                aria-label="Toggle Language in footer"
-              >
-                <Globe size={16} />
-                <span>{t('switchLangText')}</span>
-              </button>
-            </div>
           </Col>
 
           {/* Column 2: Quick Links */}
