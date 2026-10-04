@@ -1156,103 +1156,127 @@ input[type="radio"] {
 
 @media (max-width: 860px) {
   .mobile-floating-login-fab {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    position: fixed;
-    bottom: max(22px, env(safe-area-inset-bottom, 22px));
-    right: 20px;
-    z-index: 1040;
+    display: inline-flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    position: fixed !important;
+    bottom: max(22px, env(safe-area-inset-bottom, 22px)) !important;
+    right: 20px !important;
+    z-index: 1040 !important;
 
     /* Luxury Forest/Emerald Gradient with Glass Sheen */
-    background: linear-gradient(135deg, #0f5132 0%, #15803d 52%, #16a34a 100%);
-    color: #ffffff;
+    background: linear-gradient(135deg, #0f5132 0%, #15803d 52%, #16a34a 100%) !important;
+    color: #ffffff !important;
 
     /* Modern crisp border & multi-layered ambient shadow */
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 9999px;
-    height: 48px;
-    padding: 0 18px 0 10px;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    border-radius: 9999px !important;
+    height: 48px !important;
+    padding: 0 18px 0 10px !important;
 
-    font-family: inherit;
-    font-size: 0.95rem;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    line-height: 1;
-    white-space: nowrap;
+    font-family: inherit !important;
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.01em !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+    box-sizing: border-box !important;
 
     box-shadow: 
       0 12px 28px -6px rgba(15, 81, 50, 0.45),
       0 4px 12px -2px rgba(0, 0, 0, 0.15),
-      inset 0 1px 0 rgba(255, 255, 255, 0.32);
+      inset 0 1px 0 rgba(255, 255, 255, 0.32) !important;
 
-    cursor: pointer;
-    user-select: none;
-    text-decoration: none;
-    outline: none;
-    -webkit-tap-highlight-color: transparent;
+    cursor: pointer !important;
+    user-select: none !important;
+    text-decoration: none !important;
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent !important;
 
     /* Smooth transitions */
     transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
                 box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
-                background 0.22s ease;
+                background 0.22s ease !important;
     animation: fabEntrance 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-               fabAmbientGlow 4s ease-in-out infinite 1s;
+               fabAmbientGlow 4s ease-in-out infinite 1s !important;
   }
 
   .mobile-floating-login-fab:hover {
-    transform: translateY(-2px) scale(1.02);
+    transform: translateY(-2px) scale(1.02) !important;
     box-shadow: 
       0 16px 32px -6px rgba(15, 81, 50, 0.55),
       0 6px 16px -2px rgba(0, 0, 0, 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 0.45);
-    background: linear-gradient(135deg, #0c3e26 0%, #166534 52%, #15803d 100%);
-    color: #ffffff;
+      inset 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+    background: linear-gradient(135deg, #0c3e26 0%, #166534 52%, #15803d 100%) !important;
+    color: #ffffff !important;
   }
 
   .mobile-floating-login-fab:active {
-    transform: translateY(1px) scale(0.96);
+    transform: translateY(1px) scale(0.96) !important;
     box-shadow: 
       0 6px 16px -4px rgba(15, 81, 50, 0.4),
-      0 2px 6px -1px rgba(0, 0, 0, 0.2);
+      0 2px 6px -1px rgba(0, 0, 0, 0.2) !important;
+  }
+
+  /* In case of any wrapping element */
+  .mobile-floating-login-fab > span:not(.mobile-fab-icon-wrap):not(.mobile-fab-label) {
+    display: inline-flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    gap: 10px !important;
   }
 
   .mobile-fab-icon-wrap {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    background: rgba(255, 255, 255, 0.18);
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    border-radius: 50%;
-    color: #ffffff;
-    flex-shrink: 0;
-    transition: transform 0.2s ease, background 0.2s ease;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+    background: rgba(255, 255, 255, 0.18) !important;
+    border: 1px solid rgba(255, 255, 255, 0.22) !important;
+    border-radius: 50% !important;
+    color: #ffffff !important;
+    flex-shrink: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transition: transform 0.2s ease, background 0.2s ease !important;
   }
 
   .mobile-floating-login-fab:hover .mobile-fab-icon-wrap {
-    transform: scale(1.06);
-    background: rgba(255, 255, 255, 0.26);
+    transform: scale(1.06) !important;
+    background: rgba(255, 255, 255, 0.26) !important;
   }
 
   .mobile-fab-label {
-    font-weight: 700;
-    color: #ffffff;
-    letter-spacing: 0.01em;
+    display: inline-block !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    letter-spacing: 0.01em !important;
+    white-space: nowrap !important;
+    margin: 0 !important;
+    line-height: 1 !important;
+    vertical-align: middle !important;
   }
 
   .mobile-fab-arrow {
-    margin-left: 2px;
-    opacity: 0.85;
-    color: #86efac;
-    transition: transform 0.2s ease, opacity 0.2s ease;
-    flex-shrink: 0;
+    display: inline-block !important;
+    margin-left: 2px !important;
+    opacity: 0.85 !important;
+    color: #86efac !important;
+    transition: transform 0.2s ease, opacity 0.2s ease !important;
+    flex-shrink: 0 !important;
+    vertical-align: middle !important;
   }
 
   .mobile-floating-login-fab:hover .mobile-fab-arrow {
-    opacity: 1;
-    transform: translateX(3px);
+    opacity: 1 !important;
+    transform: translateX(3px) !important;
   }
 
   @keyframes fabEntrance {
