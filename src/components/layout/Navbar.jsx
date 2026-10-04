@@ -47,48 +47,46 @@ export default function PublicNavbar({
       style={{ backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}
     >
       <Container fluid="xl" className="px-3 px-md-4">
-        {/* Brand Logo, Title & External Language Switcher */}
-        <div className="d-flex align-items-center gap-2 me-auto">
-          <BNavbar.Brand
-            href="#home"
-            onClick={handleBrandClick}
-            className="d-flex align-items-center gap-2 text-decoration-none py-0 me-1"
-          >
-            <img
-              src="/logo.jpg"
-              alt="Naam Uzhavar"
-              width={40}
-              height={40}
-              className="rounded-circle border border-2 border-success object-fit-cover shadow-sm flex-shrink-0"
-              onError={(e) => {
-                e.currentTarget.src =
-                  'https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?w=100&auto=format&fit=crop&q=80';
-              }}
-            />
-            <div className="d-flex flex-column">
-              <span className="fw-bolder fs-5 text-dark lh-sm" style={{ letterSpacing: '-0.3px' }}>
-                {t('appName')}
-              </span>
-              <span className="fw-bold text-success" style={{ fontSize: '0.72rem' }}>
-                {t('appSubtitle')}
-              </span>
-            </div>
-          </BNavbar.Brand>
+        {/* Brand Logo & Title */}
+        <BNavbar.Brand
+          href="#home"
+          onClick={handleBrandClick}
+          className="d-flex align-items-center gap-2 text-decoration-none py-0 me-2 me-lg-3"
+        >
+          <img
+            src="/logo.jpg"
+            alt="Naam Uzhavar"
+            width={44}
+            height={44}
+            className="rounded-circle border border-2 border-success object-fit-cover shadow-sm flex-shrink-0"
+            onError={(e) => {
+              e.currentTarget.src =
+                'https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?w=100&auto=format&fit=crop&q=80';
+            }}
+          />
+          <div className="d-flex flex-column">
+            <span className="fw-bolder fs-5 text-dark lh-sm" style={{ letterSpacing: '-0.3px' }}>
+              {t('appName')}
+            </span>
+            <span className="fw-bold text-success" style={{ fontSize: '0.72rem' }}>
+              {t('appSubtitle')}
+            </span>
+          </div>
+        </BNavbar.Brand>
 
-          {/* Language Switcher Button KEPT OUTSIDE next to Naam Uzhavar Logo */}
-          {showLangToggle && (
-            <button
-              type="button"
-              className="btn btn-outline-success btn-sm d-inline-flex align-items-center justify-content-center gap-1.5 rounded-pill px-2.5 py-1 fw-semibold ms-1"
-              onClick={toggleLang}
-              aria-label="Toggle Language"
-              style={{ fontSize: '0.82rem', height: '32px', whiteSpace: 'nowrap' }}
-            >
-              <Globe size={14} />
-              <span>{t('switchLangText')}</span>
-            </button>
-          )}
-        </div>
+        {/* Mobile-Only Language Switcher: Kept OUTSIDE beside logo on mobile view */}
+        {showLangToggle && (
+          <button
+            type="button"
+            className="btn btn-outline-success btn-sm d-inline-flex d-lg-none align-items-center justify-content-center gap-1.5 rounded-pill px-2.5 py-1 fw-semibold me-auto ms-1"
+            onClick={toggleLang}
+            aria-label="Toggle Language"
+            style={{ fontSize: '0.82rem', height: '32px', whiteSpace: 'nowrap' }}
+          >
+            <Globe size={14} />
+            <span>{t('switchLangText')}</span>
+          </button>
+        )}
 
         {/* Mobile Hamburger Toggle Button */}
         {showNavLinks && (
@@ -98,7 +96,7 @@ export default function PublicNavbar({
           />
         )}
 
-        {/* Collapsible Nav Links (Login button completely removed from mobile menu) */}
+        {/* Collapsible Nav Links & Desktop Actions */}
         <BNavbar.Collapse id="public-navbar-nav">
           {showNavLinks && (
             <Nav className="mx-auto my-2 my-lg-0 gap-lg-2">
@@ -117,9 +115,21 @@ export default function PublicNavbar({
             </Nav>
           )}
 
-          {/* Desktop-only Auth Button (d-none on mobile view) */}
-          {showAuthButton && (
-            <div className="d-none d-lg-inline-flex ms-lg-auto">
+          {/* Desktop-Only Actions: Original Desktop Design (Language button + Login button) */}
+          <div className="d-none d-lg-flex align-items-center gap-2 ms-lg-auto">
+            {showLangToggle && (
+              <button
+                type="button"
+                className="btn btn-outline-success btn-sm d-inline-flex align-items-center justify-content-center gap-1.5 rounded-pill px-3 py-1.5 fw-semibold"
+                onClick={toggleLang}
+                aria-label="Toggle Language"
+              >
+                <Globe size={16} />
+                <span>{t('switchLangText')}</span>
+              </button>
+            )}
+
+            {showAuthButton && (
               <button
                 type="button"
                 className="btn btn-primary btn-sm d-inline-flex align-items-center justify-content-center gap-1.5 rounded-pill px-3.5 py-1.5 fw-semibold shadow-sm"
@@ -128,8 +138,8 @@ export default function PublicNavbar({
                 <LogIn size={15} />
                 <span>{t('btnLogin')}</span>
               </button>
-            </div>
-          )}
+            )}
+          </div>
         </BNavbar.Collapse>
       </Container>
     </BNavbar>
