@@ -1,11 +1,12 @@
 /* ==========================================================================
    ROLE SELECT SCREEN / THREE LOGIN PORTAL
+   Cohesive Botanical Light Theme matching the main website
    ========================================================================== */
 .role-select-root {
   min-height: 100vh;
   width: 100%;
-  background: radial-gradient(circle at 50% 10%, #0d3d27 0%, #062014 60%, #03130c 100%);
-  color: #ffffff;
+  background: radial-gradient(100% 60% at 50% 0%, #ecfdf5 0%, #f8fafc 40%, #f1f5f9 100%);
+  color: #0f172a;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -21,7 +22,7 @@
   left: 20%;
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, rgba(34, 197, 94, 0.12) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(22, 163, 74, 0.08) 0%, transparent 70%);
   pointer-events: none;
   filter: blur(60px);
 }
@@ -30,10 +31,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px clamp(16px, 4vw, 36px);
-  background: rgba(6, 32, 20, 0.7);
+  padding: 14px clamp(16px, 4vw, 36px);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(134, 239, 172, 0.18);
+  border-bottom: 1.5px solid #e2e8f0;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03);
   position: sticky;
   top: 0;
   z-index: 50;
@@ -48,12 +50,12 @@
 }
 
 .role-select-logo-img {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
   object-fit: cover;
-  border: 1.5px solid #86efac;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  border: 1.5px solid #16a34a;
+  box-shadow: 0 2px 8px rgba(22, 163, 74, 0.18);
 }
 
 .role-select-brand-text {
@@ -64,14 +66,14 @@
 .role-select-brand-name {
   font-size: 1.15rem;
   font-weight: 800;
-  color: #ffffff;
+  color: #0f2e1d;
   letter-spacing: -0.01em;
 }
 
 .role-select-brand-sub {
-  font-size: 0.72rem;
-  color: #86efac;
-  font-weight: 600;
+  font-size: 0.75rem;
+  color: #15803d;
+  font-weight: 700;
 }
 
 .role-select-topbar-actions {
@@ -84,52 +86,55 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(255, 255, 255, 0.08);
-  color: #e2e8f0;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: #ffffff;
+  color: #334155;
+  border: 1.5px solid #cbd5e1;
   border-radius: var(--radius-full, 999px);
-  padding: 7px 14px;
+  padding: 7px 16px;
   font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.18s ease;
   font-family: inherit;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .role-select-back-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
-  color: #ffffff;
-  border-color: #86efac;
+  background: #f8fafc;
+  color: #0f172a;
+  border-color: #94a3b8;
 }
 
 .role-select-lang-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(22, 163, 74, 0.25);
-  color: #86efac;
-  border: 1px solid rgba(134, 239, 172, 0.35);
+  background: #f0fdf4;
+  color: #15803d;
+  border: 1.5px solid #86efac;
   border-radius: var(--radius-full, 999px);
-  padding: 7px 14px;
+  padding: 7px 16px;
   font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.18s ease;
   font-family: inherit;
+  box-shadow: 0 1px 3px rgba(22, 163, 74, 0.08);
 }
 
 .role-select-lang-btn:hover {
-  background: rgba(22, 163, 74, 0.45);
-  color: #ffffff;
+  background: #dcfce7;
+  color: #166534;
+  border-color: #4ade80;
 }
 
 /* Main Content Area */
 .role-select-container {
   flex: 1;
-  max-width: 1080px;
+  max-width: 1100px;
   width: 100%;
   margin: 0 auto;
-  padding: clamp(24px, 5vh, 48px) clamp(16px, 4vw, 32px);
+  padding: clamp(28px, 6vh, 52px) clamp(16px, 4vw, 32px);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -138,61 +143,63 @@
 
 .role-select-header-box {
   text-align: center;
-  max-width: 680px;
-  margin-bottom: clamp(28px, 5vh, 42px);
+  max-width: 720px;
+  margin-bottom: clamp(28px, 5vh, 44px);
 }
 
 .role-select-badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(254, 240, 138, 0.12);
-  color: #fde047;
-  border: 1px solid rgba(254, 240, 138, 0.3);
-  padding: 5px 14px;
+  background-color: #ecfdf5 !important;
+  color: #065f46 !important;
+  border: 1.5px solid #a7f3d0 !important;
+  padding: 6px 16px;
   border-radius: 999px;
   font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  margin-bottom: 14px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 4px rgba(16, 185, 129, 0.1);
 }
 
 .role-select-title {
-  font-size: clamp(1.6rem, 3.5vw, 2.3rem);
+  font-size: clamp(1.65rem, 3.5vw, 2.35rem);
   font-weight: 900;
-  color: #fef08a;
-  letter-spacing: 0.02em;
+  color: #0f2e1d;
+  letter-spacing: -0.01em;
   text-transform: uppercase;
-  margin: 0 0 10px 0;
+  margin: 0 0 12px 0;
   line-height: 1.25;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  text-shadow: none;
 }
 
 .role-select-sub {
-  font-size: clamp(0.92rem, 1.8vw, 1.05rem);
-  color: #cbd5e1;
-  line-height: 1.5;
+  font-size: clamp(0.95rem, 1.8vw, 1.08rem);
+  color: #475569;
+  line-height: 1.55;
   margin: 0;
+  font-weight: 500;
 }
 
 /* Three Role Cards Grid */
 .role-select-cards-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  gap: 22px;
   width: 100%;
-  margin-bottom: 36px;
+  margin-bottom: 40px;
 }
 
 .role-select-card {
   background: #ffffff;
   border-radius: 20px;
-  padding: 28px 22px;
+  padding: 30px 24px;
   display: flex;
   flex-direction: column;
   color: #0f172a;
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
-  border: 3px solid transparent;
+  box-shadow: 0 10px 25px -4px rgba(15, 23, 42, 0.06), 0 4px 10px -2px rgba(15, 23, 42, 0.03);
+  border: 1.5px solid #e2e8f0;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
@@ -202,29 +209,34 @@
 
 .role-select-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 22px 48px rgba(0, 0, 0, 0.45);
 }
 
 /* Card Themes */
 .role-select-card.farmer-theme {
-  border-top: 6px solid #16a34a;
+  border-top: 5px solid #16a34a;
 }
 .role-select-card.farmer-theme:hover {
-  border-color: #16a34a;
+  border-color: #86efac;
+  border-top-color: #16a34a;
+  box-shadow: 0 20px 35px -4px rgba(22, 163, 74, 0.16), 0 8px 16px -4px rgba(22, 163, 74, 0.08);
 }
 
 .role-select-card.buyer-theme {
-  border-top: 6px solid #eab308;
+  border-top: 5px solid #eab308;
 }
 .role-select-card.buyer-theme:hover {
-  border-color: #eab308;
+  border-color: #fde047;
+  border-top-color: #eab308;
+  box-shadow: 0 20px 35px -4px rgba(234, 179, 8, 0.18), 0 8px 16px -4px rgba(234, 179, 8, 0.08);
 }
 
 .role-select-card.driver-theme {
-  border-top: 6px solid #ea580c;
+  border-top: 5px solid #ea580c;
 }
 .role-select-card.driver-theme:hover {
-  border-color: #ea580c;
+  border-color: #fdba74;
+  border-top-color: #ea580c;
+  box-shadow: 0 20px 35px -4px rgba(234, 88, 12, 0.18), 0 8px 16px -4px rgba(234, 88, 12, 0.08);
 }
 
 /* Card Elements */
@@ -268,21 +280,21 @@
 }
 
 .farmer-theme .role-card-tag {
-  background: #f0fdf4;
-  color: #15803d;
-  border: 1px solid #bbf7d0;
+  background-color: #f0fdf4 !important;
+  color: #15803d !important;
+  border: 1px solid #bbf7d0 !important;
 }
 
 .buyer-theme .role-card-tag {
-  background: #fefce8;
-  color: #a16207;
-  border: 1px solid #fef08a;
+  background-color: #fefce8 !important;
+  color: #a16207 !important;
+  border: 1px solid #fef08a !important;
 }
 
 .driver-theme .role-card-tag {
-  background: #fff7ed;
-  color: #c2410c;
-  border: 1px solid #fed7aa;
+  background-color: #fff7ed !important;
+  color: #c2410c !important;
+  border: 1px solid #fed7aa !important;
 }
 
 .role-card-heading {
@@ -368,18 +380,20 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 14px;
-  padding: 12px 20px;
-  font-size: 0.85rem;
-  color: #94a3b8;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 999px;
+  padding: 10px 24px;
+  font-size: 0.88rem;
+  color: #475569;
   flex-wrap: wrap;
   justify-content: center;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
 }
 
 .role-select-footer-note strong {
-  color: #86efac;
+  color: #15803d;
+  font-weight: 700;
 }
 
 /* ==========================================================================

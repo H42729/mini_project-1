@@ -241,12 +241,12 @@ export default function RoleSelectPage({
         {/* Footer Support Info */}
         <div className="role-select-footer-note">
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-            <Phone size={15} color="#86efac" />
+            <Phone size={15} color="#16a34a" />
             <span>{t('helpline')} <strong>1800-180-1551</strong></span>
           </span>
           <span>•</span>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-            <ShieldCheck size={15} color="#86efac" />
+            <ShieldCheck size={15} color="#16a34a" />
             <span>{t('verifiedNetwork')}</span>
           </span>
         </div>
