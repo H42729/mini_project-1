@@ -50,6 +50,7 @@ export default function AppRouter() {
           </ProtectedRoute>
         }
       />
+      <Route path="/buyer/login" element={<Navigate to={ROUTES.BUYER_LOGIN} replace />} />
       <Route
         path={ROUTES.BUYER_REGISTER}
         element={
@@ -58,6 +59,8 @@ export default function AppRouter() {
           </ProtectedRoute>
         }
       />
+      <Route path="/buyer/register" element={<Navigate to={ROUTES.BUYER_REGISTER} replace />} />
+      <Route path="/buyer/dashboard/*" element={<Navigate to={ROUTES.BUYER_DASHBOARD} replace />} />
 
       {/* 4. Commercial Buyer Hub Dashboard (Auth Protected: unauthenticated go to login) */}
       <Route

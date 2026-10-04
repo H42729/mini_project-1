@@ -287,14 +287,24 @@ export default function RoleSelectPage({
                 onChange={(e) => setFarmerPhone(e.target.value)}
               />
 
-              <Button
-                type="submit"
-                variant="primary"
-                fullWidth
-                style={{ background: '#16a34a', borderColor: '#16a34a' }}
-              >
-                <span>{t('farmerSubmitBtn')}</span>
-              </Button>
+              <div className="d-flex gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  fullWidth
+                  onClick={() => setActiveModal(null)}
+                >
+                  <span>{t('common.cancel')}</span>
+                </Button>
+                <Button
+                  type="submit"
+                  variant="primary"
+                  fullWidth
+                  style={{ background: '#16a34a', borderColor: '#16a34a' }}
+                >
+                  <span>{t('farmerSubmitBtn')}</span>
+                </Button>
+              </div>
             </form>
           </div>
         ) : (
@@ -328,13 +338,23 @@ export default function RoleSelectPage({
                 onChange={(e) => setDriverPhone(e.target.value)}
               />
 
-              <Button
-                type="submit"
-                variant="harvest"
-                fullWidth
-              >
-                <span>{t('driverSubmitBtn')}</span>
-              </Button>
+              <div className="d-flex gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  fullWidth
+                  onClick={() => setActiveModal(null)}
+                >
+                  <span>{t('common.cancel')}</span>
+                </Button>
+                <Button
+                  type="submit"
+                  variant="harvest"
+                  fullWidth
+                >
+                  <span>{t('driverSubmitBtn')}</span>
+                </Button>
+              </div>
             </form>
           </div>
         )}

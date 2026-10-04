@@ -43,14 +43,16 @@ export default function Modal({
       style={style}
       {...rest}
     >
-      {(title || description) && (
+      {(title || description) ? (
         <BModal.Header closeButton={!!onClose} className="border-bottom">
           <div>
             {title && <BModal.Title as="h5" className="fw-bold mb-0">{title}</BModal.Title>}
             {description && <p className="text-muted small mb-0 mt-1">{description}</p>}
           </div>
         </BModal.Header>
-      )}
+      ) : onClose ? (
+        <BModal.Header closeButton className="border-0 pb-0 justify-content-end" />
+      ) : null}
 
       <BModal.Body>{children}</BModal.Body>
 
