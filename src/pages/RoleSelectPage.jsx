@@ -1,9 +1,15 @@
+// What this file does: Role selection portal for choosing between Farmer, Buyer, or Driver flows.
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Globe, Sparkles, ShieldCheck, Phone, CheckCircle2, Truck } from 'lucide-react';
-import { useT } from '../i18n';
-import { ROUTES } from '../router/routes';
-import { Card, Badge, Button, Input, Modal } from '../components/ui';
+import { useT } from '../hooks/useT';
+import { ROUTES } from '../routes';
+import Card from '../components/Card';
+import Badge from '../components/Badge';
+import Button from '../components/Button';
+import Input from '../components/Input';
+import Modal from '../components/Modal';
 import './RoleSelectPage.css';
 
 export default function RoleSelectPage({
@@ -34,7 +40,12 @@ export default function RoleSelectPage({
     if (onSelectBuyer) {
       onSelectBuyer();
     } else {
-      navigate(ROUTES.BUYER_LOGIN);
+      try {
+        sessionStorage.removeItem('buyer_explicit_signout');
+      } catch {
+        // ignore storage error
+      }
+      navigate(ROUTES.BUYER_DASHBOARD);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
