@@ -1,3 +1,5 @@
+// What this file does: Global React context providing bilingual language state ('en' | 'ta') and toggle handler.
+
 /* oxlint-disable react/only-export-components */
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
 
