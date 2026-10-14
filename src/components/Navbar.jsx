@@ -22,6 +22,16 @@ export default function PublicNavbar({
 }) {
   const { t, toggleLang } = useT('common');
   const navigate = useNavigate();
+  const [isScrolled, setIsScrolled] = React.useState(false);
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleBrandClick = (e) => {
     e.preventDefault();
@@ -45,8 +55,17 @@ export default function PublicNavbar({
     <BNavbar
       expand="lg"
       sticky="top"
-      className={`bg-white bg-opacity-95 shadow-sm border-bottom border-light-subtle py-2.5 ${className}`}
-      style={{ backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}
+      className={`bg-white bg-opacity-95 border-bottom py-2.5 ${
+        isScrolled ? 'shadow-sm border-secondary-subtle' : 'border-light-subtle'
+      } ${className}`}
+      style={{
+        position: 'sticky',
+        top: 0,
+        zIndex: 1030,
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+        transition: 'box-shadow 0.2s ease, border-color 0.2s ease',
+      }}
     >
       <Container fluid="xl" className="px-3 px-md-4">
         {/* Brand Logo & Title */}

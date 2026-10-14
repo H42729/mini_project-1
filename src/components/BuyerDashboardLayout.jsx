@@ -12,7 +12,6 @@ import {
   ChevronDown,
   ChevronRight,
   X,
-  Bell,
   User,
   Building2,
   Info,
@@ -45,7 +44,6 @@ function BuyerDashboardContent() {
   const mainViewportRef = useRef(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
 
   const buyer = useBuyer();
@@ -134,87 +132,19 @@ function BuyerDashboardContent() {
             {t('common.switchLangText')}
           </button>
 
-          {/* Notifications Bell */}
-          <div className="buyer-topbar-dropdown-wrap buyer-topbar-notif-wrap">
-            <button
-              type="button"
-              className="buyer-icon-circle-btn"
-              onClick={() => {
-                setNotificationsOpen(!notificationsOpen);
-                setProfileDropdownOpen(false);
-              }}
-              aria-label="Notifications"
-            >
-              <Bell size={18} />
-              <span className="buyer-bell-dot">4</span>
-            </button>
-
-            {notificationsOpen && (
-              <div className="buyer-dropdown-menu buyer-notif-dropdown">
-                <div className="buyer-dropdown-header">
-                  <span className="buyer-dropdown-title">
-                    {t('notifications')}
-                  </span>
-                  <span className="buyer-dropdown-count">{t('newNotifications', { n: 4 })}</span>
-                </div>
-                <div className="buyer-notif-list">
-                  <div className="buyer-notif-item unread">
-                    <div className="buyer-notif-icon green">
-                      <Truck size={14} />
-                    </div>
-                    <div className="buyer-notif-content">
-                      <p className="buyer-notif-text">{t('notifTataAce')}</p>
-                      <span className="buyer-notif-time">{t('notifTataAceTime')}</span>
-                    </div>
-                  </div>
-                  <div className="buyer-notif-item unread">
-                    <div className="buyer-notif-icon green">
-                      <CheckCircle2 size={14} />
-                    </div>
-                    <div className="buyer-notif-content">
-                      <p className="buyer-notif-text">{t('notifFarmer')}</p>
-                      <span className="buyer-notif-time">{t('notifFarmerTime')}</span>
-                    </div>
-                  </div>
-                  <div className="buyer-notif-item">
-                    <div className="buyer-notif-icon blue">
-                      <Clock size={14} />
-                    </div>
-                    <div className="buyer-notif-content">
-                      <p className="buyer-notif-text">{t('notifOrderArrival')}</p>
-                      <span className="buyer-notif-time">{t('notifOrderArrivalTime')}</span>
-                    </div>
-                  </div>
-                  <div className="buyer-notif-item">
-                    <div className="buyer-notif-icon gray">
-                      <PackageCheck size={14} />
-                    </div>
-                    <div className="buyer-notif-content">
-                      <p className="buyer-notif-text">{t('notifOrderDelivered')}</p>
-                      <span className="buyer-notif-time">{t('notifOrderDeliveredTime')}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
           {/* Buyer Profile Pill with Dropdown */}
           <div className="buyer-topbar-dropdown-wrap buyer-topbar-profile-wrap">
             <button
               type="button"
               className="buyer-profile-chip-btn"
-              onClick={() => {
-                setProfileDropdownOpen(!profileDropdownOpen);
-                setNotificationsOpen(false);
-              }}
+              onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
               aria-label="Buyer profile menu"
             >
               <div className="buyer-avatar-badge has-photo">
                 {profile.photo || profile.photoPreview ? (
                   <img
                     src={profile.photo || profile.photoPreview}
-                    alt={profile.shopName || profile.name}
+                    alt={profile.fullName || profile.name}
                     className="buyer-avatar-img"
                     onError={(e) => {
                       e.target.style.display = 'none';
@@ -225,8 +155,12 @@ function BuyerDashboardContent() {
                 )}
               </div>
               <div className="buyer-profile-info-text">
-                <span className="buyer-name-truncate">{profile.shopName || profile.name}</span>
-                <span className="buyer-role-subtext">{profile.contactPerson || profile.phone}</span>
+                <span className="buyer-profile-full-name">
+                  {profile.fullName || profile.contactPerson || profile.name}
+                </span>
+                <span className="buyer-role-subtext">
+                  {profile.shopName || profile.businessName}
+                </span>
               </div>
               <ChevronDown size={14} className="buyer-dropdown-caret" />
             </button>
@@ -238,7 +172,7 @@ function BuyerDashboardContent() {
                     {profile.photo || profile.photoPreview ? (
                       <img
                         src={profile.photo || profile.photoPreview}
-                        alt={profile.name}
+                        alt={profile.fullName || profile.name}
                         className="buyer-profile-dropdown-img"
                         onError={(e) => {
                           e.target.style.display = 'none';
@@ -249,8 +183,9 @@ function BuyerDashboardContent() {
                     )}
                   </div>
                   <div className="buyer-profile-header-info">
-                    <h4 className="buyer-card-title">{profile.shopName || profile.name}</h4>
-                    <p className="buyer-card-sub">👤 {profile.contactPerson || profile.name}</p>
+                    <h4 className="buyer-card-title">{profile.fullName || profile.name}</h4>
+                    <p className="buyer-card-sub">🏢 {profile.shopName || profile.businessName}</p>
+                    <p className="buyer-card-sub">👤 {profile.contactPerson || profile.fullName || profile.name}</p>
                     <p className="buyer-card-sub font-mono">📞 {profile.phone}</p>
                     <p className="buyer-card-sub">✉️ {profile.email}</p>
                     <span className="buyer-gstin-tag">GSTIN: {profile.gstin}</span>

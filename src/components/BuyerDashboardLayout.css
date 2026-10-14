@@ -306,19 +306,25 @@
   flex-direction: column;
 }
 
-.buyer-name-truncate {
-  font-size: 0.85rem;
-  font-weight: 600;
+.buyer-name-truncate,
+.buyer-profile-full-name {
+  font-size: 0.88rem;
+  font-weight: 700;
   color: var(--buyer-text-main);
-  max-width: 140px;
+  max-width: 280px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  letter-spacing: -0.01em;
 }
 
 .buyer-role-subtext {
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   color: var(--buyer-text-muted);
+  max-width: 280px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .buyer-dropdown-caret {
@@ -619,7 +625,6 @@
 }
 
 .buyer-nav-label {
-  flex: 1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -636,7 +641,11 @@
   color: var(--buyer-accent-text);
   padding: 2px 8px;
   border-radius: var(--buyer-radius-full);
-  margin-left: auto;
+  margin-left: -2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2;
 }
 
 .buyer-nav-badge.neutral {
@@ -654,7 +663,8 @@
   background-color: #10b981;
   border-radius: 50%;
   animation: pulseBeacon 1.5s infinite;
-  margin-left: auto;
+  margin-left: -2px;
+  flex-shrink: 0;
 }
 
 .buyer-sidebar.collapsed .buyer-nav-dot-pulse {
@@ -1321,23 +1331,25 @@
   position: absolute;
   top: 10px;
   right: 10px;
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   font-weight: 700;
-  padding: 3px 9px;
+  padding: 3px 10px;
   border-radius: var(--buyer-radius-full);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.22);
+  z-index: 2;
+  letter-spacing: 0.2px;
 }
 
 .buyer-crop-grade-tag.grade-a {
-  background-color: #dcfce7;
-  color: #15803d;
-  border: 1px solid #bbf7d0;
+  background-color: #15803d !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
 }
 
 .buyer-crop-grade-tag.grade-b {
-  background-color: #fef3c7;
-  color: #92400e;
-  border: 1px solid #fde68a;
+  background-color: #d97706 !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
 }
 
 /* Card Body */
@@ -3530,11 +3542,13 @@
   }
 
   .buyer-profile-info-text {
-    display: none;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
   }
 
   .buyer-profile-chip-btn {
-    padding: 4px;
+    padding: 4px 10px 4px 6px;
   }
 
   .buyer-main-viewport {
@@ -3940,10 +3954,11 @@
     text-align: left !important;
   }
 
-  .buyer-name-truncate {
-    font-size: 0.82rem !important;
+  .buyer-name-truncate,
+  .buyer-profile-full-name {
+    font-size: 0.85rem !important;
     font-weight: 700 !important;
-    max-width: 220px !important;
+    max-width: 260px !important;
   }
 
   .buyer-role-subtext {

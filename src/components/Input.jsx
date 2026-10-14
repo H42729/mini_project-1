@@ -1,13 +1,14 @@
-// What this file does: Reusable form input and textarea component wrapping React-Bootstrap Form controls with error states and icons.
+// What this file does: Reusable form input component with seamless integrated prefix/suffix icons, focus states, and validation feedback.
 
-import React, { forwardRef, useId } from 'react';
+import React, { forwardRef, useId, useState } from 'react';
 import Form from 'react-bootstrap/Form';
-import InputGroup from 'react-bootstrap/InputGroup';
 import { AlertCircle } from 'lucide-react';
+import './Input.css';
 
 /**
- * Reusable Input Component (Thin wrapper around react-bootstrap/Form and InputGroup)
- * Preserves exact props API: label, error, helperText, startIcon, endIcon, fullWidth.
+ * Reusable Input Component
+ * Features a seamless single-box container for inputs with prefix icons and suffix action buttons (e.g. password eye toggle),
+ * preventing mismatched borders, vertical divider lines, or background clipping.
  */
 const Input = forwardRef(function Input(
   {
@@ -27,6 +28,8 @@ const Input = forwardRef(function Input(
     type = 'text',
     disabled = false,
     fullWidth = false,
+    onFocus,
+    onBlur,
     ...rest
   },
   ref
@@ -35,34 +38,46 @@ const Input = forwardRef(function Input(
   const inputId = id || generatedId;
   const errorId = `${inputId}-error`;
   const helperId = `${inputId}-helper`;
+  const [isFocused, setIsFocused] = useState(false);
 
   const effectiveLeftIcon = startIcon || leftIcon || icon;
   const effectiveRightIcon = endIcon || rightIcon;
 
   return (
-    <Form.Group className={`mb-3 ${fullWidth ? 'w-100' : ''} ${className}`} controlId={inputId}>
+    <Form.Group className={`app-input-group mb-3 ${fullWidth ? 'w-100' : ''} ${className}`} controlId={inputId}>
       {label && (
-        <Form.Label className="fw-semibold small mb-1">
-          {label} {required && <span className="text-danger">*</span>}
+        <Form.Label className="app-input-label fw-semibold small mb-1.5 d-flex align-items-center gap-1">
+          <span>{label}</span>
+          {required && <span className="text-danger fw-bold">*</span>}
         </Form.Label>
       )}
 
-      <InputGroup hasValidation={!!error}>
+      <div
+        className={`app-input-wrapper ${isFocused ? 'is-focused' : ''} ${error ? 'is-invalid' : ''} ${disabled ? 'is-disabled' : ''}`}
+      >
         {effectiveLeftIcon && (
-          <InputGroup.Text className="bg-transparent text-muted border-end-0">
+          <span className="app-input-icon app-input-icon-left" aria-hidden="true">
             {effectiveLeftIcon}
-          </InputGroup.Text>
+          </span>
         )}
 
-        <Form.Control
+        <input
           ref={ref}
+          id={inputId}
           type={type}
-          isInvalid={!!error}
           disabled={disabled}
           required={required}
           aria-invalid={!!error}
           aria-describedby={error ? errorId : helperText ? helperId : undefined}
-          className={`${effectiveLeftIcon ? 'border-start-0' : ''} ${effectiveRightIcon ? 'border-end-0' : ''} ${inputClassName}`}
+          onFocus={(e) => {
+            setIsFocused(true);
+            onFocus && onFocus(e);
+          }}
+          onBlur={(e) => {
+            setIsFocused(false);
+            onBlur && onBlur(e);
+          }}
+          className={`app-input-control ${inputClassName}`}
           {...rest}
         />
 
@@ -70,29 +85,30 @@ const Input = forwardRef(function Input(
           onRightIconClick ? (
             <button
               type="button"
-              className="btn btn-outline-secondary border-start-0 bg-transparent"
+              className="app-input-icon-btn"
               onClick={onRightIconClick}
+              tabIndex={-1}
               aria-label="Toggle input action"
             >
               {effectiveRightIcon}
             </button>
           ) : (
-            <InputGroup.Text className="bg-transparent text-muted border-start-0">
+            <span className="app-input-icon app-input-icon-right" aria-hidden="true">
               {effectiveRightIcon}
-            </InputGroup.Text>
+            </span>
           )
         )}
+      </div>
 
-        {error && (
-          <Form.Control.Feedback type="invalid" className="d-flex align-items-center gap-1 mt-1 small">
-            <AlertCircle size={14} className="flex-shrink-0" />
-            <span>{error}</span>
-          </Form.Control.Feedback>
-        )}
-      </InputGroup>
+      {error && (
+        <div id={errorId} className="app-input-error-msg d-flex align-items-center gap-1 mt-1.5 small text-danger">
+          <AlertCircle size={14} className="flex-shrink-0" />
+          <span>{error}</span>
+        </div>
+      )}
 
       {!error && helperText && (
-        <Form.Text id={helperId} className="text-muted small">
+        <Form.Text id={helperId} className="text-muted small mt-1">
           {helperText}
         </Form.Text>
       )}
