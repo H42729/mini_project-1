@@ -8,7 +8,6 @@ import {
   Truck,
   PackageCheck,
   CheckCircle2,
-  Clock,
   ChevronDown,
   ChevronRight,
   X,
@@ -481,44 +480,58 @@ function BuyerDashboardContent() {
       />
 
       {/* ====================================================================
-          SIGN OUT CONFIRMATION MODAL
+          SIGN OUT CONFIRMATION MODAL (Clean Single-Box Architecture)
           ==================================================================== */}
       <Modal
         isOpen={signOutModalOpen}
         onClose={() => setSignOutModalOpen(false)}
         size="sm"
-        title={t('modals.confirmSignOutTitle')}
-        description={t('modals.confirmSignOutDesc')}
-        footer={
-          <>
+        hideHeader
+        centered
+        className="buyer-signout-modal"
+      >
+        <div className="buyer-signout-box">
+          <button
+            type="button"
+            className="buyer-signout-x-btn"
+            onClick={() => setSignOutModalOpen(false)}
+            aria-label="Close"
+          >
+            <X size={18} />
+          </button>
+
+          <div className="buyer-signout-icon-ring">
+            <LogOut size={26} strokeWidth={2.2} />
+          </div>
+
+          <h3 className="buyer-signout-title">
+            {t('modals.confirmSignOutTitle')}
+          </h3>
+
+          <p className="buyer-signout-msg">
+            {t('modals.confirmSignOutPrompt')}
+          </p>
+
+          <div className="buyer-signout-btn-row">
             <Button
               type="button"
               variant="secondary"
               onClick={() => setSignOutModalOpen(false)}
+              className="buyer-signout-cancel-btn"
             >
               {t('common.cancel')}
             </Button>
             <Button
               type="button"
               variant="danger"
-              leftIcon={<LogOut size={15} />}
+              leftIcon={<LogOut size={16} />}
               onClick={handleSignOut}
+              className="buyer-signout-confirm-btn"
             >
               <span>{t('modals.yesSignOut')}</span>
             </Button>
-          </>
-        }
-      >
-        <p
-          style={{
-            margin: 0,
-            fontSize: '0.94rem',
-            color: 'var(--buyer-text-main)',
-            lineHeight: 1.55
-          }}
-        >
-          {t('modals.confirmSignOutPrompt')}
-        </p>
+          </div>
+        </div>
       </Modal>
 
       {/* ====================================================================

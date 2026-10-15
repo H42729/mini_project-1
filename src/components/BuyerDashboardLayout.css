@@ -2742,6 +2742,110 @@
   max-width: 440px;
 }
 
+/* ==========================================================================
+   CLEAN SINGLE-BOX LOGOUT / SIGN OUT MODAL
+   Removes header/footer compartments and renders message & actions in ONE box
+   ========================================================================== */
+.buyer-signout-modal .modal-content {
+  border-radius: 20px !important;
+  border: 1px solid rgba(15, 23, 42, 0.12) !important;
+  box-shadow: 0 24px 48px -12px rgba(15, 23, 42, 0.28) !important;
+  background-color: #ffffff !important;
+  overflow: hidden !important;
+}
+
+.buyer-signout-modal .modal-header,
+.buyer-signout-modal .modal-footer {
+  display: none !important;
+}
+
+.buyer-signout-modal .modal-body {
+  padding: 0 !important;
+  background-color: #ffffff !important;
+}
+
+.buyer-signout-box {
+  padding: 32px 24px 26px 24px;
+  background: #ffffff;
+  border-radius: 20px;
+  text-align: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.buyer-signout-x-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  min-height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.buyer-signout-x-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.buyer-signout-icon-ring {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: #fee2e2;
+  color: #dc2626;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  border: 4px solid #fef2f2;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.14);
+}
+
+.buyer-signout-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 10px 0;
+  line-height: 1.3;
+}
+
+.buyer-signout-msg {
+  font-size: 0.92rem;
+  color: #475569;
+  line-height: 1.55;
+  margin: 0 0 24px 0;
+  max-width: 380px;
+}
+
+.buyer-signout-btn-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.buyer-signout-cancel-btn,
+.buyer-signout-confirm-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  font-weight: 700;
+  border-radius: 12px;
+}
+
 .buyer-modal-header {
   padding: 18px 24px;
   padding-right: 52px;
@@ -3512,7 +3616,12 @@
 
 @media (max-width: 768px) {
   .buyer-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 90;
     padding: 0 16px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   }
 
   /* Mobile: Completely remove side navbar, overlay & hamburger menu (down navbar handles navigation) */
