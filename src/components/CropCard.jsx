@@ -1,7 +1,7 @@
 // What this file does: Reusable card component displaying crop listing details, pricing, farmer info, and action buttons.
 
 import React from 'react';
-import { Clock, MapPin } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 import Badge from './Badge';
 import Button from './Button';
 import Card from './Card';
@@ -13,7 +13,7 @@ import Card from './Card';
 export default function CropCard({ crop, _lang, t, onAccept, onDecline }) {
   return (
     <Card className="buyer-crop-card" padding="none">
-      {/* Crop Image with harvest time badge */}
+      {/* Crop Image with grade badge */}
       <div className="buyer-crop-img-wrap">
         <img
           src={crop.image}
@@ -25,9 +25,6 @@ export default function CropCard({ crop, _lang, t, onAccept, onDecline }) {
               'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&auto=format&fit=crop&q=80';
           }}
         />
-        <span className="buyer-crop-harvest-badge">
-          <Clock size={11} /> {crop.harvestTime}
-        </span>
         {crop.grade && (
           <Badge
             grade={crop.grade}

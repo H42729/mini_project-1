@@ -34,9 +34,12 @@ export default function Badge({
   switch (resolvedVariant) {
     case 'success':
     case 'delivered':
+      bg = 'success';
+      break;
     case 'grade-a':
     case 'grade-a+':
       bg = 'success';
+      customClass = 'text-white fw-bold';
       break;
     case 'warning':
     case 'in-transit':
@@ -58,8 +61,8 @@ export default function Badge({
       customClass = 'bg-amber text-dark';
       break;
     case 'grade-b':
-      bg = 'primary';
-      customClass = 'bg-opacity-75';
+      bg = 'warning';
+      customClass = 'text-white fw-bold';
       break;
     case 'brand':
       bg = 'success-subtle';

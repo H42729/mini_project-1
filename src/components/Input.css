@@ -1,0 +1,135 @@
+/* ==========================================================================
+   Input.css - Seamless Unified Input Box
+   Zero divider lines, seamless eye toggle, high-contrast focus & error states
+   ========================================================================== */
+
+.app-input-group {
+  position: relative;
+  width: 100%;
+}
+
+.app-input-label {
+  color: #0f172a;
+  font-size: 0.88rem;
+  letter-spacing: -0.01em;
+}
+
+.app-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 44px;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease, background-color 0.16s ease;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.app-input-wrapper:hover:not(.is-disabled):not(.is-invalid) {
+  border-color: #cbd5e1;
+}
+
+.app-input-wrapper.is-focused {
+  border-color: #15803d !important;
+  box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.14) !important;
+  background-color: #ffffff;
+}
+
+.app-input-wrapper.is-invalid {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12) !important;
+  background-color: #fffafa;
+}
+
+.app-input-wrapper.is-disabled {
+  background-color: #f8fafc;
+  border-color: #e2e8f0;
+  cursor: not-allowed;
+  opacity: 0.75;
+}
+
+.app-input-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.app-input-icon-left {
+  padding-left: 14px;
+  padding-right: 2px;
+}
+
+.app-input-icon-right {
+  padding-right: 14px;
+  padding-left: 2px;
+}
+
+.app-input-control {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 42px;
+  min-height: 42px;
+  padding: 8px 12px;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #0f172a;
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+
+.app-input-control::placeholder {
+  color: #94a3b8;
+  font-weight: 400;
+  opacity: 1;
+}
+
+.app-input-icon-left + .app-input-control {
+  padding-left: 8px;
+}
+
+.app-input-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none !important;
+  background: transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
+  padding: 0;
+  margin-right: 8px;
+  height: 34px;
+  width: 34px;
+  min-height: 34px;
+  border-radius: 8px;
+  color: #64748b;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color 0.15s ease, background-color 0.15s ease, transform 0.1s ease;
+}
+
+.app-input-icon-btn:hover {
+  color: #0f172a;
+  background-color: #f1f5f9 !important;
+}
+
+.app-input-icon-btn:active {
+  transform: scale(0.92);
+}
+
+.app-input-error-msg {
+  font-size: 0.82rem;
+  line-height: 1.35;
+  color: #dc2626 !important;
+}

@@ -306,19 +306,25 @@
   flex-direction: column;
 }
 
-.buyer-name-truncate {
-  font-size: 0.85rem;
-  font-weight: 600;
+.buyer-name-truncate,
+.buyer-profile-full-name {
+  font-size: 0.88rem;
+  font-weight: 700;
   color: var(--buyer-text-main);
-  max-width: 140px;
+  max-width: 280px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  letter-spacing: -0.01em;
 }
 
 .buyer-role-subtext {
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   color: var(--buyer-text-muted);
+  max-width: 280px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .buyer-dropdown-caret {
@@ -619,7 +625,6 @@
 }
 
 .buyer-nav-label {
-  flex: 1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -636,7 +641,11 @@
   color: var(--buyer-accent-text);
   padding: 2px 8px;
   border-radius: var(--buyer-radius-full);
-  margin-left: auto;
+  margin-left: -2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2;
 }
 
 .buyer-nav-badge.neutral {
@@ -654,7 +663,8 @@
   background-color: #10b981;
   border-radius: 50%;
   animation: pulseBeacon 1.5s infinite;
-  margin-left: auto;
+  margin-left: -2px;
+  flex-shrink: 0;
 }
 
 .buyer-sidebar.collapsed .buyer-nav-dot-pulse {
@@ -1321,23 +1331,25 @@
   position: absolute;
   top: 10px;
   right: 10px;
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   font-weight: 700;
-  padding: 3px 9px;
+  padding: 3px 10px;
   border-radius: var(--buyer-radius-full);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.22);
+  z-index: 2;
+  letter-spacing: 0.2px;
 }
 
 .buyer-crop-grade-tag.grade-a {
-  background-color: #dcfce7;
-  color: #15803d;
-  border: 1px solid #bbf7d0;
+  background-color: #15803d !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
 }
 
 .buyer-crop-grade-tag.grade-b {
-  background-color: #fef3c7;
-  color: #92400e;
-  border: 1px solid #fde68a;
+  background-color: #d97706 !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
 }
 
 /* Card Body */
@@ -2730,6 +2742,110 @@
   max-width: 440px;
 }
 
+/* ==========================================================================
+   CLEAN SINGLE-BOX LOGOUT / SIGN OUT MODAL
+   Removes header/footer compartments and renders message & actions in ONE box
+   ========================================================================== */
+.buyer-signout-modal .modal-content {
+  border-radius: 20px !important;
+  border: 1px solid rgba(15, 23, 42, 0.12) !important;
+  box-shadow: 0 24px 48px -12px rgba(15, 23, 42, 0.28) !important;
+  background-color: #ffffff !important;
+  overflow: hidden !important;
+}
+
+.buyer-signout-modal .modal-header,
+.buyer-signout-modal .modal-footer {
+  display: none !important;
+}
+
+.buyer-signout-modal .modal-body {
+  padding: 0 !important;
+  background-color: #ffffff !important;
+}
+
+.buyer-signout-box {
+  padding: 32px 24px 26px 24px;
+  background: #ffffff;
+  border-radius: 20px;
+  text-align: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.buyer-signout-x-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  min-height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.buyer-signout-x-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.buyer-signout-icon-ring {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: #fee2e2;
+  color: #dc2626;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  border: 4px solid #fef2f2;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.14);
+}
+
+.buyer-signout-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 10px 0;
+  line-height: 1.3;
+}
+
+.buyer-signout-msg {
+  font-size: 0.92rem;
+  color: #475569;
+  line-height: 1.55;
+  margin: 0 0 24px 0;
+  max-width: 380px;
+}
+
+.buyer-signout-btn-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.buyer-signout-cancel-btn,
+.buyer-signout-confirm-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  font-weight: 700;
+  border-radius: 12px;
+}
+
 .buyer-modal-header {
   padding: 18px 24px;
   padding-right: 52px;
@@ -3500,7 +3616,12 @@
 
 @media (max-width: 768px) {
   .buyer-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 90;
     padding: 0 16px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   }
 
   /* Mobile: Completely remove side navbar, overlay & hamburger menu (down navbar handles navigation) */
@@ -3530,11 +3651,13 @@
   }
 
   .buyer-profile-info-text {
-    display: none;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
   }
 
   .buyer-profile-chip-btn {
-    padding: 4px;
+    padding: 4px 10px 4px 6px;
   }
 
   .buyer-main-viewport {
@@ -3940,10 +4063,11 @@
     text-align: left !important;
   }
 
-  .buyer-name-truncate {
-    font-size: 0.82rem !important;
+  .buyer-name-truncate,
+  .buyer-profile-full-name {
+    font-size: 0.85rem !important;
     font-weight: 700 !important;
-    max-width: 220px !important;
+    max-width: 260px !important;
   }
 
   .buyer-role-subtext {

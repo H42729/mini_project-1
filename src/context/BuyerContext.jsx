@@ -27,6 +27,13 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
 
     return {
       name: saved?.name || buyerProfile?.name || 'Grand Palace Hotel',
+      fullName:
+        saved?.fullName ||
+        saved?.contactPerson ||
+        saved?.name ||
+        buyerProfile?.fullName ||
+        buyerProfile?.contactPerson ||
+        'Mr. S. Rajesh',
       shopName:
         saved?.shopName ||
         saved?.businessName ||
