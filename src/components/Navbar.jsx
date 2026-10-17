@@ -8,6 +8,7 @@ import Nav from 'react-bootstrap/Nav';
 import { Globe, LogIn } from 'lucide-react';
 import { useT } from '../hooks/useT';
 import { ROUTES } from '../routes';
+import './Navbar.css';
 
 /**
  * PublicNavbar Component (built with react-bootstrap/Navbar, Container, Nav)
@@ -53,9 +54,10 @@ export default function PublicNavbar({
 
   return (
     <BNavbar
+      collapseOnSelect
       expand="lg"
       sticky="top"
-      className={`public-navbar bg-white bg-opacity-95 border-bottom py-2.5 ${
+      className={`public-navbar bg-white bg-opacity-95 border-bottom py-2 py-lg-2.5 ${
         isScrolled ? 'shadow-sm border-secondary-subtle' : 'border-light-subtle'
       } ${className}`}
       style={{
@@ -67,58 +69,61 @@ export default function PublicNavbar({
         transition: 'box-shadow 0.2s ease, border-color 0.2s ease',
       }}
     >
-      <Container fluid="xl" className="px-3 px-md-4">
-        {/* Brand Logo & Title */}
-        <BNavbar.Brand
-          href="#home"
-          onClick={handleBrandClick}
-          className="d-flex align-items-center gap-2 text-decoration-none py-0 me-2 me-lg-3"
-        >
-          <img
-            src="/logo.jpg"
-            alt="Naam Uzhavar"
-            width={44}
-            height={44}
-            className="rounded-circle border border-2 border-success object-fit-cover shadow-sm flex-shrink-0"
-            onError={(e) => {
-              e.currentTarget.src =
-                'https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?w=100&auto=format&fit=crop&q=80';
-            }}
-          />
-          <div className="d-flex flex-column">
-            <span className="fw-bolder fs-5 text-dark lh-sm" style={{ letterSpacing: '-0.3px' }}>
-              {t('appName')}
-            </span>
-            <span className="fw-bold text-success" style={{ fontSize: '0.72rem' }}>
-              {t('appSubtitle')}
-            </span>
-          </div>
-        </BNavbar.Brand>
-
-        {/* Mobile-Only Language Switcher: Kept OUTSIDE beside logo on mobile view */}
-        {showLangToggle && (
-          <button
-            type="button"
-            className="btn btn-outline-success btn-sm d-inline-flex d-lg-none align-items-center justify-content-center gap-1.5 rounded-pill px-2.5 py-1 fw-semibold me-auto ms-1"
-            onClick={toggleLang}
-            aria-label="Toggle Language"
-            style={{ fontSize: '0.82rem', height: '32px', whiteSpace: 'nowrap' }}
+      <Container fluid="xl" className="public-navbar-container px-2 px-sm-3 px-md-4">
+        {/* Top bar row: keeps Brand and Mobile Actions (Language button & Navbar toggle) unified and moved UP on mobile */}
+        <div className="public-navbar-topbar">
+          {/* Brand Logo & Title */}
+          <BNavbar.Brand
+            href="#home"
+            onClick={handleBrandClick}
+            className="public-navbar-brand d-flex align-items-center gap-2 text-decoration-none py-0 me-2 me-lg-3"
           >
-            <Globe size={14} />
-            <span>{t('switchLangText')}</span>
-          </button>
-        )}
+            <img
+              src="/logo.jpg"
+              alt="Naam Uzhavar"
+              width={44}
+              height={44}
+              className="public-navbar-logo rounded-circle border border-2 border-success object-fit-cover shadow-sm flex-shrink-0"
+              onError={(e) => {
+                e.currentTarget.src =
+                  'https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?w=100&auto=format&fit=crop&q=80';
+              }}
+            />
+            <div className="public-navbar-brand-text d-flex flex-column">
+              <span className="public-navbar-title fw-bolder fs-5 text-dark lh-sm" style={{ letterSpacing: '-0.3px' }}>
+                {t('appName')}
+              </span>
+              <span className="public-navbar-subtitle fw-bold text-success" style={{ fontSize: '0.72rem' }}>
+                {t('appSubtitle')}
+              </span>
+            </div>
+          </BNavbar.Brand>
 
-        {/* Mobile Hamburger Toggle Button */}
-        {showNavLinks && (
-          <BNavbar.Toggle
-            aria-controls="public-navbar-nav"
-            className="border-0 shadow-none px-2 py-1 ms-2"
-          />
-        )}
+          {/* Mobile Right Controls: Language switch button & Navbar button (hamburger) moved UP to the top row */}
+          <div className="public-navbar-mobile-actions d-flex d-lg-none align-items-center gap-1.5 ms-auto flex-shrink-0">
+            {showLangToggle && (
+              <button
+                type="button"
+                className="btn btn-outline-success btn-sm public-navbar-lang-btn fw-semibold"
+                onClick={toggleLang}
+                aria-label="Toggle Language"
+              >
+                <Globe size={13} className="flex-shrink-0" />
+                <span className="public-navbar-lang-text">{t('switchLangText')}</span>
+              </button>
+            )}
+
+            {showNavLinks && (
+              <BNavbar.Toggle
+                aria-controls="public-navbar-nav"
+                className="public-navbar-toggler"
+              />
+            )}
+          </div>
+        </div>
 
         {/* Collapsible Nav Links & Desktop Actions */}
-        <BNavbar.Collapse id="public-navbar-nav">
+        <BNavbar.Collapse id="public-navbar-nav" className="public-navbar-collapse">
           {showNavLinks && (
             <Nav className="mx-auto my-2 my-lg-0 gap-lg-2">
               <Nav.Link href="#home" className="fw-semibold px-2.5 py-1.5 text-secondary">
@@ -162,19 +167,7 @@ export default function PublicNavbar({
             )}
           </div>
 
-          {/* Mobile Collapse Login Action */}
-          {showAuthButton && (
-            <div className="d-flex d-lg-none pt-2 pb-1 border-top mt-2">
-              <button
-                type="button"
-                className="btn btn-primary btn-sm w-100 d-inline-flex align-items-center justify-content-center gap-1.5 rounded-pill py-2 fw-semibold shadow-sm"
-                onClick={handleAuthClick}
-              >
-                <LogIn size={15} />
-                <span>{t('btnLogin')}</span>
-              </button>
-            </div>
-          )}
+          {/* Note: Mobile view navbar login button removed as requested */}
         </BNavbar.Collapse>
       </Container>
     </BNavbar>

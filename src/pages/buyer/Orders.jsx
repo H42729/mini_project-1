@@ -7,7 +7,8 @@ import {
   Clock,
   CheckCircle2,
   Truck,
-  Navigation
+  Navigation,
+  Receipt
 } from 'lucide-react';
 import './Orders.css';
 import { ROUTES } from '../../routes';
@@ -135,25 +136,35 @@ export default function Orders() {
                 </div>
                 <div className="buyer-order-actions">
                   {order.status !== 'delivered' ? (
-                    <button
-                      type="button"
-                      className="buyer-btn-primary small"
-                      onClick={() => {
-                        setSelectedTrackingOrderId(order.orderId);
-                        navigate(ROUTES.BUYER_DASHBOARD_TRACK);
-                      }}
-                    >
-                      <Navigation size={14} />
-                      <span>{t('orders.trackDelivery')}</span>
-                    </button>
+                    <>
+                      <button
+                        type="button"
+                        className="buyer-btn-outline small"
+                        onClick={() => navigate(`${ROUTES.BUYER_DASHBOARD_INVOICES}?orderId=${order.orderId}`)}
+                        title="View Farm Tax Invoice"
+                      >
+                        <Receipt size={14} />
+                        <span>{t('orders.viewInvoice') || 'Invoice'}</span>
+                      </button>
+                      <button
+                        type="button"
+                        className="buyer-btn-primary small"
+                        onClick={() => {
+                          setSelectedTrackingOrderId(order.orderId);
+                          navigate(ROUTES.BUYER_DASHBOARD_TRACK);
+                        }}
+                      >
+                        <Navigation size={14} />
+                        <span>{t('orders.trackDelivery')}</span>
+                      </button>
+                    </>
                   ) : (
                     <button
                       type="button"
-                      className="buyer-btn-outline small"
-                      onClick={() =>
-                        showToast('info', t('orders.invoiceDownloaded', { id: order.orderId }))
-                      }
+                      className="buyer-btn-primary small"
+                      onClick={() => navigate(`${ROUTES.BUYER_DASHBOARD_INVOICES}?orderId=${order.orderId}`)}
                     >
+                      <Receipt size={14} />
                       <span>{t('orders.viewInvoice')}</span>
                     </button>
                   )}

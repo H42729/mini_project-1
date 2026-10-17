@@ -239,8 +239,7 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
   };
 
   const handleOpenAccept = (crop) => {
-    setAcceptModalCrop(crop);
-    setAcceptedQuantity(Math.min(200, crop.availableKg));
+    handleConfirmOrder(crop);
   };
 
   const handleProceedToFarmer = () => {
@@ -261,9 +260,12 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
     );
   };
 
-  const handleConfirmOrder = () => {
-    if (!farmerDetailsCrop) return;
-    const crop = farmerDetailsCrop;
+  const handleConfirmOrder = (targetCrop) => {
+    const crop = targetCrop || farmerDetailsCrop || acceptModalCrop;
+    if (!crop) return;
+    const qty = targetCrop ? Math.min(200, targetCrop.availableKg || 200) : (farmerDetailsCrop?.selectedQty || acceptedQuantity || 200);
+    const unitPrice = crop.pricePerKg || 40;
+    const total = farmerDetailsCrop?.estimatedTotal || (qty * unitPrice);
     const newOrderId = `NU-2026-${Math.floor(10000 + Math.random() * 90000)}`;
 
     const newOrder = {
@@ -271,16 +273,16 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
       cropName: crop.name,
       tamilCropName: crop.tamilName,
       grade: crop.grade,
-      quantityKg: crop.selectedQty,
-      unitPrice: crop.pricePerKg,
-      totalPrice: crop.estimatedTotal,
+      quantityKg: qty,
+      unitPrice: unitPrice,
+      totalPrice: total,
       orderTime: 'Just now',
       status: 'confirmed',
-      hub: crop.hubName,
+      hub: crop.hubName || 'Hub A',
       farmer: {
-        name: crop.farmer.name,
-        phone: crop.farmer.phone,
-        location: crop.farmer.village
+        name: crop.farmer?.name || 'Selvam K.',
+        phone: crop.farmer?.phone || '+91 98421 54321',
+        location: crop.farmer?.village || 'Alanganallur'
       },
       driver: {
         name: 'Kumar M.',
@@ -293,18 +295,19 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
       },
       liveTracking: {
         currentStatus: 'Order Confirmed - Dispatch Queue Scheduled at Hub',
-        currentLocation: `${crop.hubName} Sorting Bay`,
+        currentLocation: `${crop.hubName || 'Hub A'} Sorting Bay`,
         estimatedMinutes: 35,
-        distanceKm: crop.distanceKm,
+        distanceKm: crop.distanceKm || 12,
         lastUpdated: 'Just now',
         speedKmh: 0,
         batteryPct: 92,
-        origin: crop.hubName,
-        destination: profile.address || buyerProfile?.address
+        origin: crop.hubName || 'Hub A',
+        destination: profile.address || buyerProfile?.address || 'Madurai Unloading Bay'
       }
     };
 
     setOrders((prev) => [newOrder, ...prev]);
+    setAcceptModalCrop(null);
     setFarmerDetailsCrop(null);
     setOrderConfirmationData(newOrder);
   };

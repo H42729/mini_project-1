@@ -275,18 +275,15 @@ export default function HomePage({ onBuyerAuthSuccess: _onBuyerAuthSuccess }) {
       {/* 6. REUSABLE FOOTER */}
       <Footer />
 
-      {/* Mobile Floating Action Button (FAB) for Quick Access */}
+      {/* Mobile Floating Action Button (Pop Login) */}
       <button
         type="button"
         className="mobile-floating-login-fab"
         onClick={navigateToRoleSelect}
-        aria-label="Login / Choose Role"
+        aria-label="Login"
       >
-        <span className="mobile-fab-icon-wrap">
-          <LogIn size={17} strokeWidth={2.4} />
-        </span>
-        <span>{t('mobileLogin')}</span>
-        <ArrowRight size={15} strokeWidth={2.4} />
+        <LogIn size={15} />
+        <span>{t('common.btnLogin')}</span>
       </button>
     </div>
   );

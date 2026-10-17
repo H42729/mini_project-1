@@ -17,6 +17,7 @@ const Overview = lazy(() => import('./pages/buyer/Overview.jsx'));
 const Crops = lazy(() => import('./pages/buyer/Crops.jsx'));
 const Orders = lazy(() => import('./pages/buyer/Orders.jsx'));
 const Track = lazy(() => import('./pages/buyer/Track.jsx'));
+const Invoices = lazy(() => import('./pages/buyer/Invoices.jsx'));
 const Messages = lazy(() => import('./pages/buyer/Messages.jsx'));
 const Profile = lazy(() => import('./pages/buyer/Profile.jsx'));
 
@@ -71,6 +72,7 @@ export default function App() {
         <Route path="/buyer/dashboard/crops" element={<Navigate to={ROUTES.BUYER_DASHBOARD_CROPS} replace />} />
         <Route path="/buyer/dashboard/orders" element={<Navigate to={ROUTES.BUYER_DASHBOARD_ORDERS} replace />} />
         <Route path="/buyer/dashboard/track" element={<Navigate to={ROUTES.BUYER_DASHBOARD_TRACK} replace />} />
+        <Route path="/buyer/dashboard/invoices" element={<Navigate to={ROUTES.BUYER_DASHBOARD_INVOICES} replace />} />
         <Route path="/buyer/dashboard/messages" element={<Navigate to={ROUTES.BUYER_DASHBOARD_MESSAGES} replace />} />
         <Route path="/buyer/dashboard/profile" element={<Navigate to={ROUTES.BUYER_DASHBOARD_PROFILE} replace />} />
         <Route path="/buyer/dashboard/*" element={<Navigate to={ROUTES.BUYER_DASHBOARD} replace />} />
@@ -113,6 +115,14 @@ export default function App() {
             element={
               <Suspense fallback={<DashboardPageFallback />}>
                 <Track />
+              </Suspense>
+            }
+          />
+          <Route
+            path="invoices"
+            element={
+              <Suspense fallback={<DashboardPageFallback />}>
+                <Invoices />
               </Suspense>
             }
           />

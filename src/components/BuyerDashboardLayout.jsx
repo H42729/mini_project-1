@@ -7,6 +7,7 @@ import {
   ShoppingBag,
   Truck,
   PackageCheck,
+  Receipt,
   CheckCircle2,
   ChevronDown,
   ChevronRight,
@@ -218,6 +219,14 @@ function BuyerDashboardContent() {
                   <PackageCheck size={15} />
                   <span>{t('allPastOrders')}</span>
                 </NavLink>
+                <NavLink
+                  to={ROUTES.BUYER_DASHBOARD_INVOICES}
+                  className="buyer-dropdown-item"
+                  onClick={() => setProfileDropdownOpen(false)}
+                >
+                  <Receipt size={15} />
+                  <span>{t('navInvoices')}</span>
+                </NavLink>
                 <div className="buyer-dropdown-divider" />
                 <button
                   type="button"
@@ -306,6 +315,16 @@ function BuyerDashboardContent() {
               </NavLink>
 
               <NavLink
+                to={ROUTES.BUYER_DASHBOARD_INVOICES}
+                className={({ isActive }) => `buyer-nav-item ${isActive ? 'active' : ''}`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Receipt size={19} />
+                <span className="buyer-nav-label">{t('navInvoices')}</span>
+                <span className="buyer-nav-badge neutral">{orders.length}</span>
+              </NavLink>
+
+              <NavLink
                 to={ROUTES.BUYER_DASHBOARD_MESSAGES}
                 className={({ isActive }) => `buyer-nav-item ${isActive ? 'active' : ''}`}
                 onClick={() => setMobileMenuOpen(false)}
@@ -380,6 +399,16 @@ function BuyerDashboardContent() {
               <Truck size={19} />
               <span className="buyer-nav-label">{t('navTrack')}</span>
               <span className="buyer-nav-dot-pulse" title="1 Active Delivery" />
+            </NavLink>
+
+            <NavLink
+              to={ROUTES.BUYER_DASHBOARD_INVOICES}
+              className={({ isActive }) => `buyer-nav-item ${isActive ? 'active' : ''}`}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <Receipt size={19} />
+              <span className="buyer-nav-label">{t('navInvoices')}</span>
+              <span className="buyer-nav-badge neutral">{orders.length}</span>
             </NavLink>
 
             <NavLink

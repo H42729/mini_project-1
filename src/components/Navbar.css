@@ -1,0 +1,222 @@
+/* src/components/Navbar.css */
+/* What this file does: Dedicated styles for PublicNavbar mobile view (keeping desktop 100% original). */
+
+/* ==========================================================================
+   1. DESKTOP VIEW (>= 992px) - 100% Original Desktop Layout
+   ========================================================================== */
+@media (min-width: 992px) {
+  /* Let BNavbar.Brand behave as a direct flex child of Container */
+  .public-navbar-topbar {
+    display: contents !important;
+  }
+
+  /* Strictly hide all mobile-only actions on desktop */
+  .public-navbar-mobile-actions {
+    display: none !important;
+  }
+
+  .public-navbar-toggler {
+    display: none !important;
+  }
+
+  .public-navbar-lang-btn {
+    display: none !important;
+  }
+
+  /* Restore desktop brand sizes */
+  .public-navbar-logo {
+    width: 44px !important;
+    height: 44px !important;
+  }
+
+  .public-navbar-title {
+    font-size: 1.25rem !important; /* fs-5 */
+    letter-spacing: -0.3px;
+  }
+
+  .public-navbar-subtitle {
+    font-size: 0.72rem !important;
+    max-width: none !important;
+  }
+}
+
+/* ==========================================================================
+   2. MOBILE VIEW (< 992px) - Single Topbar Row & Up-aligned Controls
+   ========================================================================== */
+@media (max-width: 991.98px) {
+  /* Top bar row container: keeps brand on left, controls on right in a single non-wrapping row */
+  .public-navbar-topbar {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    flex-wrap: nowrap !important;
+  }
+
+  .public-navbar-brand {
+    min-width: 0 !important;
+    flex-shrink: 1 !important;
+  }
+
+  .public-navbar-brand-text {
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .public-navbar-logo {
+    width: 40px;
+    height: 40px;
+  }
+
+  .public-navbar-title {
+    font-size: 1.12rem;
+    letter-spacing: -0.3px;
+    white-space: nowrap;
+  }
+
+  .public-navbar-subtitle {
+    font-size: 0.7rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
+  }
+
+  /* Mobile Actions wrapper (Language Switch + Hamburger Toggle) */
+  .public-navbar-mobile-actions {
+    display: flex !important;
+    align-items: center !important;
+    flex-shrink: 0 !important;
+    margin-left: auto !important;
+    gap: 6px;
+  }
+
+  /* Language toggle button in navbar */
+  .public-navbar-lang-btn {
+    font-size: 0.8rem !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    padding: 0 10px !important;
+    white-space: nowrap !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 9999px !important;
+    line-height: 1 !important;
+    touch-action: manipulation;
+  }
+
+  /* Hamburger toggle button */
+  .public-navbar-toggler {
+    height: 34px !important;
+    min-height: 34px !important;
+    padding: 3px 6px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    border-radius: 8px !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    outline: none !important;
+    touch-action: manipulation;
+  }
+
+  .public-navbar-toggler:focus,
+  .public-navbar-toggler:active {
+    box-shadow: none !important;
+    outline: none !important;
+  }
+
+  .public-navbar-toggler .navbar-toggler-icon {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  /* Collapsible links on mobile */
+  .public-navbar-collapse {
+    width: 100% !important;
+    padding-top: 0.6rem;
+    padding-bottom: 0.4rem;
+  }
+}
+
+/* ==========================================================================
+   3. MOBILE SCREEN BREAKPOINTS (<= 480px and 320px - 360px)
+   ========================================================================== */
+@media (max-width: 480px) {
+  .public-navbar-logo {
+    width: 36px;
+    height: 36px;
+  }
+  .public-navbar-title {
+    font-size: 1rem;
+  }
+  .public-navbar-subtitle {
+    font-size: 0.65rem;
+    max-width: 150px;
+  }
+}
+
+/* Specific fix for 320px - 360px small mobile screens: Keeps language button & navbar button UP and aligned */
+@media (max-width: 360px) {
+  .public-navbar {
+    padding-top: 0.35rem !important;
+    padding-bottom: 0.35rem !important;
+  }
+  
+  .public-navbar-container {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  .public-navbar-logo {
+    width: 32px !important;
+    height: 32px !important;
+    border-width: 1.5px !important;
+  }
+
+  .public-navbar-brand-text {
+    max-width: 135px !important;
+  }
+
+  .public-navbar-title {
+    font-size: 0.88rem !important;
+    letter-spacing: -0.2px !important;
+    line-height: 1.15 !important;
+  }
+
+  .public-navbar-subtitle {
+    font-size: 0.6rem !important;
+    max-width: 115px !important;
+    line-height: 1.1 !important;
+  }
+
+  .public-navbar-mobile-actions {
+    gap: 4px !important;
+  }
+
+  .public-navbar-lang-btn {
+    height: 28px !important;
+    min-height: 28px !important;
+    padding: 0 7px !important;
+    font-size: 0.72rem !important;
+    gap: 3px !important;
+  }
+
+  .public-navbar-lang-text {
+    font-size: 0.72rem !important;
+  }
+
+  .public-navbar-toggler {
+    height: 28px !important;
+    min-height: 28px !important;
+    width: 30px !important;
+    padding: 2px 3px !important;
+  }
+
+  .public-navbar-toggler .navbar-toggler-icon {
+    width: 18px !important;
+    height: 18px !important;
+  }
+}
