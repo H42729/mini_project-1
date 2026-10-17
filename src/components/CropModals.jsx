@@ -29,9 +29,10 @@ export default function CropModals({
   orderConfirmationData,
   onGoToTracking,
   onBrowseMore,
-  _lang
+  lang: propLang
 }) {
-  const { t } = useT('buyerDashboard');
+  const { t, lang: hookLang } = useT('buyerDashboard');
+  const lang = propLang || hookLang || 'en';
 
   return (
     <>
@@ -239,10 +240,10 @@ export default function CropModals({
               <button
                 type="button"
                 className="buyer-btn-primary"
-                onClick={onProceedToFarmer}
+                onClick={onConfirmOrder}
               >
-                <span>{t('modals.acceptAndProceed')}</span>
-                <ArrowRight size={16} />
+                <Check size={16} />
+                <span>{lang === 'ta' ? 'ஆர்டரை உறுதிப்படுத்துக' : 'Confirm & Accept Order'}</span>
               </button>
             </div>
           </div>
@@ -371,54 +372,39 @@ export default function CropModals({
         </div>
       )}
 
-      {/* 4. Order Confirmed Modal */}
+      {/* 4. Order Confirmed Modal: Only displays the Order Confirmed message and Track Your Order button */}
       {orderConfirmationData && (
-        <div className="buyer-modal-backdrop">
-          <div className="buyer-modal-panel success-modal">
+        <div className="buyer-modal-backdrop" onClick={() => onGoToTracking(orderConfirmationData.orderId)}>
+          <div className="buyer-modal-panel success-modal" onClick={(e) => e.stopPropagation()}>
             <div className="buyer-success-card">
               <div className="buyer-success-icon-badge">
                 <Check size={36} />
               </div>
-              <span className="buyer-success-sub-badge">{t('modals.orderConfirmedBadge')}</span>
               <h2 className="buyer-success-heading">
-                {t('modals.orderConfirmedTitle')}
+                {lang === 'ta' ? 'ஆர்டர் உறுதி செய்யப்பட்டது' : 'Order Confirmed'}
               </h2>
               <p className="buyer-success-message">
                 {t('modals.orderConfirmedMsg', { qty: orderConfirmationData.quantityKg, name: orderConfirmationData.cropName })}
               </p>
-
-              <div className="buyer-confirmed-meta-box">
-                <div className="buyer-cmeta-row">
-                  <span className="cmeta-label">{t('modals.orderId')}</span>
-                  <span className="cmeta-val font-mono">{orderConfirmationData.orderId}</span>
-                </div>
-                <div className="buyer-cmeta-row">
-                  <span className="cmeta-label">{t('modals.status')}</span>
-                  <span className="cmeta-val green">{t('modals.preparingForDispatch')}</span>
-                </div>
-                <div className="buyer-cmeta-row">
-                  <span className="cmeta-label">{t('modals.estimatedTotal')}</span>
-                  <span className="cmeta-val font-bold">
-                    ₹{orderConfirmationData.totalPrice.toLocaleString('en-IN')}
-                  </span>
-                </div>
-              </div>
 
               <div className="buyer-success-actions">
                 <button
                   type="button"
                   className="buyer-btn-primary full-width"
                   onClick={() => onGoToTracking(orderConfirmationData.orderId)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    padding: '12px 20px',
+                    fontSize: '1rem',
+                    fontWeight: '700',
+                    borderRadius: '10px'
+                  }}
                 >
-                  <Truck size={17} />
-                  <span>{t('modals.trackDeliveryLive')}</span>
-                </button>
-                <button
-                  type="button"
-                  className="buyer-btn-outline full-width"
-                  onClick={onBrowseMore}
-                >
-                  <span>{t('modals.browseMoreProduce')}</span>
+                  <Truck size={18} />
+                  <span>{lang === 'ta' ? 'உங்கள் ஆர்டரைக் கண்காணிக்கவும்' : 'Track Your Order'}</span>
                 </button>
               </div>
             </div>
