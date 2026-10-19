@@ -1,6 +1,7 @@
 // What this file does: Live order and consignment delivery tracking page with timeline and driver contact.
 
-import React from 'react';
+import React, { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   ChevronDown,
   Check,
@@ -12,9 +13,13 @@ import {
   Phone
 } from 'lucide-react';
 import './Track.css';
+import { ROUTES } from '../../routes';
 import { useBuyer } from '../../context/BuyerContext';
+import EmptyState from '../../components/EmptyState';
+import Button from '../../components/Button';
 
 export default function Track() {
+  const navigate = useNavigate();
   const {
     orders,
     selectedTrackingOrderId,
@@ -25,30 +30,100 @@ export default function Track() {
     t
   } = useBuyer();
 
+  // Dynamic status stage index (0: Confirmed, 1: Preparing, 2: Vehicle Assigned, 3: On The Way, 4: Delivered)
+  const currentStageIndex = useMemo(() => {
+    const status = trackingOrder?.status;
+    if (status === 'delivered') return 4;
+    if (status === 'in_transit') return 3;
+    if (status === 'assigned' || status === 'dispatched') return 2;
+    if (status === 'preparing') return 1;
+    return 0; // confirmed
+  }, [trackingOrder?.status]);
+
+  const trackingSteps = useMemo(
+    () => [
+      {
+        id: 'confirmed',
+        titleKey: 'track.stepConfirmed',
+        time: trackingOrder?.orderTime || '08:30 AM',
+        icon: Check
+      },
+      {
+        id: 'preparing',
+        titleKey: 'track.stepPreparing',
+        time: 'Hub Sorting',
+        icon: Check
+      },
+      {
+        id: 'assigned',
+        titleKey: 'track.stepAssigned',
+        time: trackingOrder?.driver?.vehicleNumber || 'EV Assigned',
+        icon: Check
+      },
+      {
+        id: 'in_transit',
+        titleKey: 'track.stepOnTheWay',
+        time: trackingOrder?.liveTracking?.estimatedMinutes
+          ? `${trackingOrder.liveTracking.estimatedMinutes} min ETA`
+          : 'In Transit',
+        icon: Truck
+      },
+      {
+        id: 'delivered',
+        titleKey: 'track.stepDelivered',
+        time: 'Destination Bay',
+        icon: MapPin
+      }
+    ],
+    [trackingOrder]
+  );
+
+  // If no orders exist or trackingOrder is missing, render graceful EmptyState
+  if (!trackingOrder || (orders || []).length === 0) {
+    return (
+      <div className="buyer-view-container animate-fade-in">
+        <div className="buyer-view-header">
+          <div>
+            <h1 className="buyer-view-title">{t('track.title')}</h1>
+            <p className="buyer-view-subtitle">{t('track.subtitle')}</p>
+          </div>
+        </div>
+        <EmptyState
+          icon={<Truck size={36} />}
+          title="No active deliveries to track"
+          description="When you place produce orders, real-time GPS telemetry, driver contact, and the secure handover PIN will appear here."
+          action={
+            <Button
+              type="button"
+              variant="primary"
+              onClick={() => navigate(ROUTES.BUYER_DASHBOARD_CROPS)}
+            >
+              <span>Browse Fresh Produce</span>
+            </Button>
+          }
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="buyer-view-container animate-fade-in">
       <div className="buyer-view-header">
         <div>
-          <h1 className="buyer-view-title">
-            {t('track.title')}
-          </h1>
-          <p className="buyer-view-subtitle">
-            {t('track.subtitle')}
-          </p>
+          <h1 className="buyer-view-title">{t('track.title')}</h1>
+          <p className="buyer-view-subtitle">{t('track.subtitle')}</p>
         </div>
 
         {/* Active Tracking Order Switcher */}
         <div className="buyer-active-order-picker">
-          <span className="buyer-picker-label">
-            {t('track.trackingOrder')}
-          </span>
+          <span className="buyer-picker-label">{t('track.trackingOrder')}</span>
           <div className="buyer-select-wrapper">
             <select
               className="buyer-select-input"
               value={selectedTrackingOrderId}
               onChange={(e) => setSelectedTrackingOrderId(e.target.value)}
             >
-              {orders.map((o) => (
+              {(orders || []).map((o) => (
                 <option key={o.orderId} value={o.orderId}>
                   {o.orderId} — {o.cropName} ({o.quantityKg} kg)
                 </option>
@@ -59,68 +134,40 @@ export default function Track() {
         </div>
       </div>
 
-      {/* 5-STAGE STATUS INDICATOR */}
+      {/* 5-STAGE STATUS INDICATOR (Dynamically Reactive) */}
       <div className="buyer-tracking-stepper-card">
         <div className="buyer-stepper-inner">
-          <div className="buyer-step completed">
-            <div className="buyer-step-circle">
-              <Check size={14} />
-            </div>
-            <span className="buyer-step-title">
-              {t('track.stepConfirmed')}
-            </span>
-            <span className="buyer-step-time">08:30 AM</span>
-          </div>
+          {trackingSteps.map((step, idx) => {
+            const isCompleted = idx < currentStageIndex;
+            const isActive = idx === currentStageIndex;
+            const stepClass = isCompleted ? 'completed' : isActive ? 'active' : 'pending';
+            const StepIcon = step.icon;
 
-          <div className="buyer-step-line completed" />
-
-          <div className="buyer-step completed">
-            <div className="buyer-step-circle">
-              <Check size={14} />
-            </div>
-            <span className="buyer-step-title">
-              {t('track.stepPreparing')}
-            </span>
-            <span className="buyer-step-time">08:45 AM</span>
-          </div>
-
-          <div className="buyer-step-line completed" />
-
-          <div className="buyer-step completed">
-            <div className="buyer-step-circle">
-              <Check size={14} />
-            </div>
-            <span className="buyer-step-title">
-              {t('track.stepAssigned')}
-            </span>
-            <span className="buyer-step-time">09:05 AM</span>
-          </div>
-
-          <div className="buyer-step-line active" />
-
-          <div className="buyer-step active">
-            <div className="buyer-step-circle pulse-circle">
-              <Truck size={15} />
-            </div>
-            <span className="buyer-step-title active">
-              {t('track.stepOnTheWay')}
-            </span>
-            <span className="buyer-step-time">
-              {trackingOrder.liveTracking.estimatedMinutes} min ETA
-            </span>
-          </div>
-
-          <div className="buyer-step-line pending" />
-
-          <div className="buyer-step pending">
-            <div className="buyer-step-circle">
-              <MapPin size={14} />
-            </div>
-            <span className="buyer-step-title">
-              {t('track.stepDelivered')}
-            </span>
-            <span className="buyer-step-time">Est. 09:45 AM</span>
-          </div>
+            return (
+              <React.Fragment key={step.id}>
+                <div className={`buyer-step ${stepClass}`}>
+                  <div className={`buyer-step-circle ${isActive ? 'pulse-circle' : ''}`}>
+                    {isCompleted ? <Check size={14} /> : <StepIcon size={14} />}
+                  </div>
+                  <span className={`buyer-step-title ${isActive ? 'active' : ''}`}>
+                    {t(step.titleKey)}
+                  </span>
+                  <span className="buyer-step-time">{step.time}</span>
+                </div>
+                {idx < trackingSteps.length - 1 && (
+                  <div
+                    className={`buyer-step-line ${
+                      idx < currentStageIndex
+                        ? 'completed'
+                        : idx === currentStageIndex
+                        ? 'active'
+                        : 'pending'
+                    }`}
+                  />
+                )}
+              </React.Fragment>
+            );
+          })}
         </div>
       </div>
 
@@ -141,7 +188,11 @@ export default function Track() {
               </span>
             </div>
             <div className="buyer-map-speed-pill">
-              <Zap size={14} /> {t('track.speedBattery', { speed: trackingOrder.liveTracking.speedKmh, battery: trackingOrder.liveTracking.batteryPct })}
+              <Zap size={14} />{' '}
+              {t('track.speedBattery', {
+                speed: trackingOrder?.liveTracking?.speedKmh ?? 42,
+                battery: trackingOrder?.liveTracking?.batteryPct ?? 84
+              })}
             </div>
           </div>
 
@@ -205,16 +256,16 @@ export default function Track() {
                 className="buyer-animated-route-path"
               />
 
-              {/* Waypoint 1: Dindigul Supply Hub (Origin) */}
+              {/* Waypoint 1: Supply Hub (Origin) */}
               <g transform="translate(140, 100)">
                 <circle r="18" fill="rgba(15, 74, 48, 0.15)" />
                 <circle r="10" fill="#0f4a30" />
                 <circle r="4" fill="#ffffff" />
                 <text x="0" y="-22" textAnchor="middle" className="svg-node-label font-bold">
-                  Dindigul Central Hub
+                  {trackingOrder?.hub || 'Central Supply Hub'}
                 </text>
                 <text x="0" y="-8" textAnchor="middle" className="svg-node-sub">
-                  Origin • 08:45 AM
+                  Origin • {trackingOrder?.orderTime || '08:45 AM'}
                 </text>
               </g>
 
@@ -234,13 +285,13 @@ export default function Track() {
                 </text>
               </g>
 
-              {/* Destination: Grand Palace Hotel (Madurai) */}
+              {/* Destination: Buyer Kitchen / Loading Bay */}
               <g transform="translate(660, 380)">
                 <circle r="22" fill="rgba(220, 38, 38, 0.12)" />
                 <circle r="11" fill="#dc2626" />
                 <circle r="4" fill="#ffffff" />
                 <text x="0" y="32" textAnchor="middle" className="svg-node-label font-bold">
-                  {profile.shopName || profile.name}
+                  {profile?.shopName || profile?.name || 'Buyer Delivery Bay'}
                 </text>
                 <text x="0" y="46" textAnchor="middle" className="svg-node-sub">
                   Destination • Loading Bay 2
@@ -278,7 +329,7 @@ export default function Track() {
                     fontSize="11"
                     fontWeight="600"
                   >
-                    EV In Transit • 42 km/h
+                    EV In Transit • {trackingOrder?.liveTracking?.speedKmh ?? 42} km/h
                   </text>
                 </g>
               </g>
@@ -292,9 +343,7 @@ export default function Track() {
             <button
               type="button"
               className="buyer-map-action-btn"
-              onClick={() =>
-                showToast('info', t('track.telemetryRefreshed'))
-              }
+              onClick={() => showToast('info', t('track.telemetryRefreshed'))}
             >
               <RotateCcw size={13} /> {t('track.refreshGps')}
             </button>
@@ -310,39 +359,37 @@ export default function Track() {
                 <span className="pulse-dot-inner" />
               </div>
               <div>
-                <span className="buyer-status-label">
-                  {t('track.currentStatus')}
-                </span>
-                <h4 className="buyer-status-main">{trackingOrder.liveTracking.currentStatus}</h4>
+                <span className="buyer-status-label">{t('track.currentStatus')}</span>
+                <h4 className="buyer-status-main">
+                  {trackingOrder?.liveTracking?.currentStatus || 'Order Confirmed - Scheduled for Dispatch'}
+                </h4>
               </div>
             </div>
 
             <div className="buyer-status-grid">
               <div className="buyer-status-stat">
-                <span className="stat-label">
-                  {t('track.currentLocation')}
+                <span className="stat-label">{t('track.currentLocation')}</span>
+                <span className="stat-val">
+                  {trackingOrder?.liveTracking?.currentLocation || trackingOrder?.hub || 'Collection Hub'}
                 </span>
-                <span className="stat-val">{trackingOrder.liveTracking.currentLocation}</span>
               </div>
               <div className="buyer-status-stat highlight">
-                <span className="stat-label">
-                  {t('track.estimatedArrival')}
-                </span>
+                <span className="stat-label">{t('track.estimatedArrival')}</span>
                 <span className="stat-val highlight">
-                  {trackingOrder.liveTracking.estimatedMinutes} min
+                  {trackingOrder?.liveTracking?.estimatedMinutes ?? 25} min
                 </span>
               </div>
               <div className="buyer-status-stat">
-                <span className="stat-label">
-                  {t('track.distanceRemaining')}
+                <span className="stat-label">{t('track.distanceRemaining')}</span>
+                <span className="stat-val">
+                  {trackingOrder?.liveTracking?.distanceKm ?? 12} km
                 </span>
-                <span className="stat-val">{trackingOrder.liveTracking.distanceKm} km</span>
               </div>
               <div className="buyer-status-stat">
-                <span className="stat-label">
-                  {t('track.lastUpdated')}
+                <span className="stat-label">{t('track.lastUpdated')}</span>
+                <span className="stat-val">
+                  {trackingOrder?.liveTracking?.lastUpdated || 'Just now'}
                 </span>
-                <span className="stat-val">{trackingOrder.liveTracking.lastUpdated}</span>
               </div>
             </div>
           </div>
@@ -350,9 +397,7 @@ export default function Track() {
           {/* Compact Driver Details Card */}
           <div className="buyer-driver-card">
             <div className="buyer-driver-card-header">
-              <span className="buyer-driver-heading">
-                {t('track.driverDetails')}
-              </span>
+              <span className="buyer-driver-heading">{t('track.driverDetails')}</span>
               <span className="buyer-vehicle-tag">{t('track.electricCargo')}</span>
             </div>
 
@@ -361,9 +406,11 @@ export default function Track() {
                 <User size={22} />
               </div>
               <div className="buyer-driver-info">
-                <h4 className="buyer-driver-name">{trackingOrder.driver.name}</h4>
+                <h4 className="buyer-driver-name">
+                  {trackingOrder?.driver?.name || 'Assigning Logistics Driver...'}
+                </h4>
                 <div className="buyer-driver-rating">
-                  <span>★ {trackingOrder.driver.rating}</span>
+                  <span>★ {trackingOrder?.driver?.rating ?? 4.9}</span>
                   <span className="buyer-dot">•</span>
                   <span>{t('track.deliveriesCount')}</span>
                 </div>
@@ -373,32 +420,46 @@ export default function Track() {
             <div className="buyer-driver-vehicle-specs">
               <div className="buyer-spec-row">
                 <span className="spec-name">{t('track.vehicle')}</span>
-                <span className="spec-value">{trackingOrder.driver.vehicleType}</span>
+                <span className="spec-value">
+                  {trackingOrder?.driver?.vehicleType || 'Tata Ace EV Cargo'}
+                </span>
               </div>
               <div className="buyer-spec-row">
                 <span className="spec-name">{t('track.registration')}</span>
-                <span className="spec-value font-mono">{trackingOrder.driver.vehicleNumber}</span>
+                <span className="spec-value font-mono">
+                  {trackingOrder?.driver?.vehicleNumber || 'TN 57 AB 1234'}
+                </span>
               </div>
               <div className="buyer-spec-row">
                 <span className="spec-name">{t('track.capacity')}</span>
-                <span className="spec-value">{trackingOrder.driver.capacityKg} kg</span>
+                <span className="spec-value">
+                  {trackingOrder?.driver?.capacityKg || 500} kg
+                </span>
               </div>
               <div className="buyer-spec-row pin-highlight">
                 <span className="spec-name">{t('track.deliveryPin')}</span>
-                <span className="spec-value pin-code">{trackingOrder.driver.deliveryPin}</span>
+                <span className="spec-value pin-code">
+                  {trackingOrder?.driver?.deliveryPin || '4892'}
+                </span>
               </div>
             </div>
 
             <div className="buyer-driver-actions">
-              <a
-                href={`tel:${trackingOrder.driver.phone}`}
-                className="buyer-btn-primary full-width"
-              >
-                <Phone size={15} />
-                <span>
-                  {t('track.callDriver')} ({trackingOrder.driver.phone})
-                </span>
-              </a>
+              {trackingOrder?.driver?.phone ? (
+                <a
+                  href={`tel:${trackingOrder.driver.phone}`}
+                  className="buyer-btn-primary full-width"
+                >
+                  <Phone size={15} />
+                  <span>
+                    {t('track.callDriver')} ({trackingOrder.driver.phone})
+                  </span>
+                </a>
+              ) : (
+                <div className="text-muted text-center py-2 fs-7">
+                  Driver contact will activate once truck is dispatched.
+                </div>
+              )}
             </div>
           </div>
 
@@ -407,12 +468,12 @@ export default function Track() {
             <div className="buyer-spec-row">
               <span className="spec-name">{t('track.produceGrower')}</span>
               <span className="spec-value">
-                {trackingOrder.farmer.name} ({trackingOrder.farmer.location})
+                {trackingOrder?.farmer?.name || 'Local Farmer'} ({trackingOrder?.farmer?.location || 'Tamil Nadu'})
               </span>
             </div>
             <div className="buyer-spec-row">
               <span className="spec-name">{t('track.dispatchedFrom')}</span>
-              <span className="spec-value">{trackingOrder.hub}</span>
+              <span className="spec-value">{trackingOrder?.hub || 'Central Supply Hub'}</span>
             </div>
           </div>
         </div>

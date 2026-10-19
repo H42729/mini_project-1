@@ -16,8 +16,8 @@ export default function CropCard({ crop, _lang, t, onAccept, onDecline }) {
       {/* Crop Image with grade badge */}
       <div className="buyer-crop-img-wrap">
         <img
-          src={crop.image}
-          alt={crop.name}
+          src={crop?.image || 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&auto=format&fit=crop&q=80'}
+          alt={crop?.name || 'Crop'}
           className="buyer-crop-img"
           loading="lazy"
           onError={(e) => {
@@ -25,7 +25,7 @@ export default function CropCard({ crop, _lang, t, onAccept, onDecline }) {
               'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&auto=format&fit=crop&q=80';
           }}
         />
-        {crop.grade && (
+        {crop?.grade && (
           <Badge
             grade={crop.grade}
             className={`buyer-crop-grade-tag ${crop.grade === 'Grade A' ? 'grade-a' : 'grade-b'}`}
@@ -37,14 +37,14 @@ export default function CropCard({ crop, _lang, t, onAccept, onDecline }) {
       <div className="buyer-crop-card-body">
         {/* Title & Hub Row */}
         <div className="buyer-crop-title-group">
-          <h3 className="buyer-crop-name">{crop.name}</h3>
-          <span className="buyer-crop-tamil-name">{crop.tamilName}</span>
+          <h3 className="buyer-crop-name">{crop?.name}</h3>
+          <span className="buyer-crop-tamil-name">{crop?.tamilName}</span>
         </div>
 
         {/* Price with strong visual hierarchy */}
         <div className="buyer-crop-price-box">
           <span className="buyer-price-currency">₹</span>
-          <span className="buyer-price-number">{crop.pricePerKg}</span>
+          <span className="buyer-price-number">{crop?.pricePerKg ?? 0}</span>
           <span className="buyer-price-unit">{typeof t === 'function' ? t('crops.perKg') : (t?.perKg || '/ kg')}</span>
         </div>
 
@@ -52,12 +52,12 @@ export default function CropCard({ crop, _lang, t, onAccept, onDecline }) {
         <div className="buyer-crop-meta-rows">
           <div className="buyer-meta-item">
             <span className="meta-label">{typeof t === 'function' ? t('crops.available') : (t?.available || 'Available:')}</span>
-            <span className="meta-value font-semibold">{crop.availableKg} kg</span>
+            <span className="meta-value font-semibold">{crop?.availableKg ?? 0} kg</span>
           </div>
           <div className="buyer-meta-item">
             <span className="meta-label">{typeof t === 'function' ? t('crops.hub') : (t?.hub || 'Hub:')}</span>
             <span className="meta-value hub-name">
-              <MapPin size={12} /> {crop.hubName}
+              <MapPin size={12} /> {crop?.hubName || 'Hub'}
             </span>
           </div>
         </div>

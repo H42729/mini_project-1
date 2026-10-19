@@ -1,10 +1,10 @@
 // What this file does: Commercial buyer login page with phone/email and password credentials.
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, 
-  ArrowRight,
+  ArrowRight, 
   Mail, 
   Phone, 
   Lock, 
@@ -49,6 +49,17 @@ export default function BuyerLogin({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [authError, setAuthError] = useState('');
   const [loginSuccess, setLoginSuccess] = useState(false);
+
+  // Timer references for unmount cleanup
+  const submitTimerRef = useRef(null);
+  const forgotTimerRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (submitTimerRef.current) clearTimeout(submitTimerRef.current);
+      if (forgotTimerRef.current) clearTimeout(forgotTimerRef.current);
+    };
+  }, []);
 
   // Forgot Password Modal State
   const [showForgotModal, setShowForgotModal] = useState(false);
@@ -145,7 +156,7 @@ export default function BuyerLogin({
 
     setIsSubmitting(true);
 
-    setTimeout(() => {
+    submitTimerRef.current = setTimeout(() => {
       setIsSubmitting(false);
 
       if (password.toLowerCase() === 'invalid' || password.toLowerCase() === 'error') {
@@ -169,19 +180,35 @@ export default function BuyerLogin({
         identifier: trimmedId,
         role: 'buyer',
         rememberMe,
-        name: savedProfile?.name || 'Mr. S. Rajesh',
-        fullName: savedProfile?.name || 'Mr. S. Rajesh',
-        contactPerson: savedProfile?.name || 'Mr. S. Rajesh (Procurement Head)',
-        phone: savedProfile?.phone || (isEmail ? '+91 98401 23456' : (trimmedId.startsWith('+91') ? trimmedId : `+91 ${trimmedId}`)),
+        name: savedProfile?.name || savedProfile?.fullName || 'Mr. S. Rajesh',
+        fullName: savedProfile?.fullName || savedProfile?.name || 'Mr. S. Rajesh',
+        contactPerson:
+          savedProfile?.contactPerson ||
+          savedProfile?.fullName ||
+          savedProfile?.name ||
+          'Mr. S. Rajesh (Procurement Head)',
+        phone:
+          savedProfile?.phone ||
+          (isEmail ? '+91 98401 23456' : (trimmedId.startsWith('+91') ? trimmedId : `+91 ${trimmedId}`)),
         email: savedProfile?.email || (isEmail ? trimmedId : 'procurement@grandpalace.in'),
         buyerType: savedProfile?.buyerType || 'hotel',
-        businessType: savedProfile?.businessType || (savedProfile?.buyerType ? `${savedProfile.buyerType.toUpperCase()} Commercial Kitchen` : 'Hotel & Commercial Kitchen'),
-        shopName: savedProfile?.shopName || 'Grand Palace Luxury Dining',
-        businessName: savedProfile?.shopName || 'Grand Palace Luxury Dining',
+        businessType:
+          savedProfile?.businessType ||
+          (savedProfile?.buyerType
+            ? `${savedProfile.buyerType.toUpperCase()} Commercial Kitchen`
+            : 'Hotel & Commercial Kitchen'),
+        shopName: savedProfile?.shopName || savedProfile?.businessName || 'Grand Palace Luxury Dining',
+        businessName: savedProfile?.businessName || savedProfile?.shopName || 'Grand Palace Luxury Dining',
         address: savedProfile?.address || 'Grand Palace Luxury Dining, Bypass Road, Madurai - 625016',
         gstin: savedProfile?.gstin || '33AAAAA0000A1Z5',
-        photo: savedProfile?.photo || savedProfile?.photoPreview || 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=300&auto=format&fit=crop&q=80',
-        photoPreview: savedProfile?.photoPreview || savedProfile?.photo || 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=300&auto=format&fit=crop&q=80'
+        photo:
+          savedProfile?.photo ||
+          savedProfile?.photoPreview ||
+          'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=300&auto=format&fit=crop&q=80',
+        photoPreview:
+          savedProfile?.photoPreview ||
+          savedProfile?.photo ||
+          'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=300&auto=format&fit=crop&q=80'
       };
 
       try {
@@ -213,7 +240,7 @@ export default function BuyerLogin({
       // ignore
     }
 
-    setTimeout(() => {
+    submitTimerRef.current = setTimeout(() => {
       setIsSubmitting(false);
       setLoginSuccess(true);
       const demoPayload = {
@@ -255,7 +282,7 @@ export default function BuyerLogin({
     e.preventDefault();
     if (!forgotInput.trim()) return;
     setForgotLoading(true);
-    setTimeout(() => {
+    forgotTimerRef.current = setTimeout(() => {
       setForgotLoading(false);
       setForgotSent(true);
     }, 700);

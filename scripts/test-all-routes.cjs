@@ -61,7 +61,7 @@ async function run() {
     '/buyer-dashboard/crops',
     '/buyer-dashboard/orders',
     '/buyer-dashboard/track',
-    '/buyer-dashboard/messages',
+    '/buyer-dashboard/invoices',
     '/buyer-dashboard/profile'
   ];
 

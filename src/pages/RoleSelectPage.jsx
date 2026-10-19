@@ -1,6 +1,6 @@
 // What this file does: Role selection portal for choosing between Farmer, Buyer, or Driver flows.
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Globe, Sparkles, ShieldCheck, Phone, CheckCircle2, Truck } from 'lucide-react';
 import { useT } from '../hooks/useT';
@@ -12,20 +12,46 @@ import Input from '../components/Input';
 import Modal from '../components/Modal';
 import './RoleSelectPage.css';
 
+const HELPLINE_NUMBER = '1800-180-1551';
+const HELPLINE_TEL = '18001801551';
+
 export default function RoleSelectPage({
   onBack,
-  _onSelectFarmer,
+  onSelectFarmer,
   onSelectBuyer,
-  _onSelectDriver
+  onSelectDriver
 }) {
   const navigate = useNavigate();
-  const { t, toggleLang } = useT('roleSelect');
+  const { t, lang, toggleLang } = useT('roleSelect');
 
   const [activeModal, setActiveModal] = useState(null); // 'farmer' | 'driver'
   const [farmerPhone, setFarmerPhone] = useState('');
   const [driverVehicle, setDriverVehicle] = useState('');
   const [driverPhone, setDriverPhone] = useState('');
   const [modalSuccessMsg, setModalSuccessMsg] = useState('');
+  const [formError, setFormError] = useState('');
+  const timerRef = useRef(null);
+
+  // Unmount cleanup
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, []);
+
+  const handleCloseModal = () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+    setActiveModal(null);
+    setModalSuccessMsg('');
+    setFormError('');
+    setFarmerPhone('');
+    setDriverVehicle('');
+    setDriverPhone('');
+  };
 
   const handleBack = () => {
     if (onBack) {
@@ -52,19 +78,57 @@ export default function RoleSelectPage({
 
   const handleFarmerSubmit = (e) => {
     e.preventDefault();
+    setFormError('');
+    const digits = farmerPhone.replace(/\D/g, '');
+    if (digits.length < 10) {
+      setFormError(
+        lang === 'ta'
+          ? 'சரியான 10 இலக்க மொபைல் எண்ணை உள்ளிடவும்.'
+          : 'Please enter a valid 10-digit mobile number.'
+      );
+      return;
+    }
+
     setModalSuccessMsg(t('farmerOtpSent'));
-    setTimeout(() => {
-      setModalSuccessMsg('');
-      setActiveModal(null);
+    if (onSelectFarmer) {
+      onSelectFarmer({ phone: farmerPhone });
+    }
+
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      handleCloseModal();
     }, 2000);
   };
 
   const handleDriverSubmit = (e) => {
     e.preventDefault();
+    setFormError('');
+    const digits = driverPhone.replace(/\D/g, '');
+    if (digits.length < 10) {
+      setFormError(
+        lang === 'ta'
+          ? 'சரியான 10 இலக்க மொபைல் எண்ணை உள்ளிடவும்.'
+          : 'Please enter a valid 10-digit mobile number.'
+      );
+      return;
+    }
+    if (!driverVehicle.trim()) {
+      setFormError(
+        lang === 'ta'
+          ? 'வாகன வகையை உள்ளிடவும்.'
+          : 'Please enter your vehicle type.'
+      );
+      return;
+    }
+
     setModalSuccessMsg(t('driverPartnerSent'));
-    setTimeout(() => {
-      setModalSuccessMsg('');
-      setActiveModal(null);
+    if (onSelectDriver) {
+      onSelectDriver({ vehicle: driverVehicle.trim(), phone: driverPhone });
+    }
+
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      handleCloseModal();
     }, 2000);
   };
 
@@ -72,7 +136,19 @@ export default function RoleSelectPage({
     <div className="role-select-root">
       {/* Top Header */}
       <header className="role-select-topbar">
-        <div className="role-select-brand" onClick={handleBack} role="button" tabIndex={0}>
+        <div
+          className="role-select-brand"
+          onClick={handleBack}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              handleBack();
+            }
+          }}
+          role="button"
+          tabIndex={0}
+          aria-label="Back to home"
+        >
           <img src="/logo.jpg" alt="Naam Uzhavar" className="role-select-logo-img" />
           <div className="role-select-brand-text">
             <span className="role-select-brand-name">
@@ -253,7 +329,15 @@ export default function RoleSelectPage({
         <div className="role-select-footer-note">
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
             <Phone size={15} color="#16a34a" />
-            <span>{t('helpline')} <strong>1800-180-1551</strong></span>
+            <span>
+              {t('helpline')}{' '}
+              <a
+                href={`tel:${HELPLINE_TEL}`}
+                style={{ color: '#16a34a', fontWeight: 700, textDecoration: 'none' }}
+              >
+                {HELPLINE_NUMBER}
+              </a>
+            </span>
           </span>
           <span>•</span>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
@@ -266,7 +350,7 @@ export default function RoleSelectPage({
       {/* Internal Modals for Farmer and Driver */}
       <Modal
         isOpen={!!activeModal}
-        onClose={() => setActiveModal(null)}
+        onClose={handleCloseModal}
         size="sm"
       >
         {modalSuccessMsg ? (
@@ -288,6 +372,12 @@ export default function RoleSelectPage({
             </p>
 
             <form onSubmit={handleFarmerSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              {formError && (
+                <div style={{ color: '#dc2626', fontSize: '0.85rem', textAlign: 'left', fontWeight: 500 }}>
+                  ⚠️ {formError}
+                </div>
+              )}
+
               <Input
                 label={t('farmerMobileLabel')}
                 type="tel"
@@ -303,7 +393,7 @@ export default function RoleSelectPage({
                   type="button"
                   variant="outline"
                   fullWidth
-                  onClick={() => setActiveModal(null)}
+                  onClick={handleCloseModal}
                 >
                   <span>{t('common.cancel')}</span>
                 </Button>
@@ -329,6 +419,12 @@ export default function RoleSelectPage({
             </p>
 
             <form onSubmit={handleDriverSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              {formError && (
+                <div style={{ color: '#dc2626', fontSize: '0.85rem', textAlign: 'left', fontWeight: 500 }}>
+                  ⚠️ {formError}
+                </div>
+              )}
+
               <Input
                 label={t('driverVehicleLabel')}
                 type="text"
@@ -354,7 +450,7 @@ export default function RoleSelectPage({
                   type="button"
                   variant="outline"
                   fullWidth
-                  onClick={() => setActiveModal(null)}
+                  onClick={handleCloseModal}
                 >
                   <span>{t('common.cancel')}</span>
                 </Button>

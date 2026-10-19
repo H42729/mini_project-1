@@ -12,6 +12,8 @@ import './Input.css';
  */
 const Input = forwardRef(function Input(
   {
+    as = 'input',
+    multiline = false,
     id,
     label,
     error,
@@ -22,8 +24,11 @@ const Input = forwardRef(function Input(
     rightIcon,
     endIcon,
     onRightIconClick,
+    rightIconAriaLabel = 'Toggle input action',
+    rightIconTabIndex,
     required = false,
     className = '',
+    wrapperClassName = '',
     inputClassName = '',
     type = 'text',
     disabled = false,
@@ -42,6 +47,7 @@ const Input = forwardRef(function Input(
 
   const effectiveLeftIcon = startIcon || leftIcon || icon;
   const effectiveRightIcon = endIcon || rightIcon;
+  const Component = as === 'textarea' || multiline ? 'textarea' : 'input';
 
   return (
     <Form.Group className={`app-input-group mb-3 ${fullWidth ? 'w-100' : ''} ${className}`} controlId={inputId}>
@@ -53,7 +59,7 @@ const Input = forwardRef(function Input(
       )}
 
       <div
-        className={`app-input-wrapper ${isFocused ? 'is-focused' : ''} ${error ? 'is-invalid' : ''} ${disabled ? 'is-disabled' : ''}`}
+        className={`app-input-wrapper ${isFocused ? 'is-focused' : ''} ${error ? 'is-invalid' : ''} ${disabled ? 'is-disabled' : ''} ${wrapperClassName}`}
       >
         {effectiveLeftIcon && (
           <span className="app-input-icon app-input-icon-left" aria-hidden="true">
@@ -61,21 +67,21 @@ const Input = forwardRef(function Input(
           </span>
         )}
 
-        <input
+        <Component
           ref={ref}
           id={inputId}
-          type={type}
+          type={Component === 'input' ? type : undefined}
           disabled={disabled}
           required={required}
           aria-invalid={!!error}
           aria-describedby={error ? errorId : helperText ? helperId : undefined}
           onFocus={(e) => {
             setIsFocused(true);
-            onFocus && onFocus(e);
+            onFocus?.(e);
           }}
           onBlur={(e) => {
             setIsFocused(false);
-            onBlur && onBlur(e);
+            onBlur?.(e);
           }}
           className={`app-input-control ${inputClassName}`}
           {...rest}
@@ -87,8 +93,9 @@ const Input = forwardRef(function Input(
               type="button"
               className="app-input-icon-btn"
               onClick={onRightIconClick}
-              tabIndex={-1}
-              aria-label="Toggle input action"
+              disabled={disabled}
+              tabIndex={rightIconTabIndex !== undefined ? rightIconTabIndex : (disabled ? -1 : 0)}
+              aria-label={rightIconAriaLabel}
             >
               {effectiveRightIcon}
             </button>
@@ -101,7 +108,12 @@ const Input = forwardRef(function Input(
       </div>
 
       {error && (
-        <div id={errorId} className="app-input-error-msg d-flex align-items-center gap-1 mt-1.5 small text-danger">
+        <div
+          id={errorId}
+          role="alert"
+          aria-live="polite"
+          className="app-input-error-msg d-flex align-items-center gap-1 mt-1.5 small text-danger"
+        >
           <AlertCircle size={14} className="flex-shrink-0" />
           <span>{error}</span>
         </div>
@@ -115,5 +127,7 @@ const Input = forwardRef(function Input(
     </Form.Group>
   );
 });
+
+Input.displayName = 'Input';
 
 export default Input;

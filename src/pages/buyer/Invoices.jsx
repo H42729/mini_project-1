@@ -1,6 +1,6 @@
 // What this file does: Simple, clean invoices management page for commercial buyers. Keeps only important details: Invoice #, Date, Order Ref, Produce, Quantity, Rate, Total Amount, Farmer/Hub, and Status.
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import {
   Receipt,
@@ -11,12 +11,12 @@ import {
   Clock,
   MapPin,
   Calendar,
-  FileText,
-  Sprout
+  FileText
 } from 'lucide-react';
 import './Invoices.css';
 import { useBuyer } from '../../context/BuyerContext';
 import { ROUTES } from '../../routes';
+import EmptyState from '../../components/EmptyState';
 
 // Seed historical delivered invoices for accounting records
 const ARCHIVED_INVOICES = [
@@ -62,33 +62,57 @@ export default function Invoices() {
   const [searchParams] = useSearchParams();
   const urlOrderId = searchParams.get('orderId');
 
-  const { orders, profile, t, lang } = useBuyer();
+  const { orders, profile, lang } = useBuyer();
+  const p = profile || {};
 
   const [searchQuery, setSearchQuery] = useState(urlOrderId || '');
   const [activeTab, setActiveTab] = useState('all'); // 'all' | 'paid' | 'pending'
-  const [selectedInvoice, setSelectedInvoice] = useState(null);
+  const [selectedInvoiceId, setSelectedInvoiceId] = useState(urlOrderId || null);
+  const [prevUrlOrderId, setPrevUrlOrderId] = useState(urlOrderId);
+  const printTimerRef = useRef(null);
+
+  // Synchronize state during render when URL query changes (React-recommended pattern, no cascading effect)
+  if (urlOrderId !== prevUrlOrderId) {
+    setPrevUrlOrderId(urlOrderId);
+    setSelectedInvoiceId(urlOrderId);
+  }
+
+  // Cleanup print timer on unmount
+  useEffect(() => {
+    return () => {
+      if (printTimerRef.current) {
+        clearTimeout(printTimerRef.current);
+      }
+    };
+  }, []);
 
   // Unified list of invoices from orders + archival records
   const allInvoices = useMemo(() => {
-    const liveInvoices = orders.map((order, idx) => {
-      const cleanNum = order.orderId.replace(/[^0-9]/g, '') || `${100 + idx}`;
-      const isPaid = order.status === 'delivered';
+    const safeOrders = Array.isArray(orders) ? orders : [];
+    const liveInvoices = safeOrders.map((order, idx) => {
+      const rawOrderId = String(order?.orderId || '');
+      const cleanNum = rawOrderId.replace(/[^0-9]/g, '') || `${100 + idx}`;
+      const isPaid = order?.status === 'delivered';
+      const qty = Number(order?.quantityKg) || 0;
+      const unitPrice = Number(order?.unitPrice) || 0;
+      const totalAmount = Number(order?.totalPrice) || qty * unitPrice;
+
       return {
         id: `INV-2026-${cleanNum.slice(-5).padStart(5, '0')}`,
-        orderId: order.orderId,
-        invoiceDate: order.orderTime || 'Today',
-        cropName: order.cropName,
-        tamilCropName: order.tamilCropName,
-        grade: order.grade,
-        quantityKg: order.quantityKg,
-        unitPrice: order.unitPrice,
-        totalAmount: order.totalPrice,
+        orderId: order?.orderId || `NU-2026-${cleanNum}`,
+        invoiceDate: order?.orderTime || 'Today',
+        cropName: order?.cropName || 'Farm Produce',
+        tamilCropName: order?.tamilCropName || '',
+        grade: order?.grade || 'Grade A',
+        quantityKg: qty,
+        unitPrice: unitPrice,
+        totalAmount: totalAmount,
         status: isPaid ? 'paid' : 'pending',
-        hub: order.hub,
+        hub: order?.hub || 'Regional Agri Hub',
         farmer: {
-          name: order.farmer?.name || 'Local Producer',
-          phone: order.farmer?.phone || '+91 98400 00000',
-          location: order.farmer?.location || 'Tamil Nadu'
+          name: order?.farmer?.name || 'Local Producer',
+          phone: order?.farmer?.phone || '+91 98400 00000',
+          location: order?.farmer?.location || 'Tamil Nadu'
         }
       };
     });
@@ -96,57 +120,68 @@ export default function Invoices() {
     return [...liveInvoices, ...ARCHIVED_INVOICES];
   }, [orders]);
 
-  // Automatically open preview if orderId passed via query string
-  useEffect(() => {
-    if (urlOrderId) {
-      const matched = allInvoices.find(
-        (inv) => inv.orderId === urlOrderId || inv.id === urlOrderId
-      );
-      if (matched) {
-        setSelectedInvoice(matched);
-      }
-    }
-  }, [urlOrderId, allInvoices]);
+  // Derive active selected invoice for modal preview
+  const selectedInvoice = useMemo(() => {
+    if (!selectedInvoiceId) return null;
+    return (
+      allInvoices.find(
+        (inv) => inv.orderId === selectedInvoiceId || inv.id === selectedInvoiceId
+      ) || null
+    );
+  }, [selectedInvoiceId, allInvoices]);
 
-  // Filtered invoices
+  // Aggregate stats (Total, Paid, Pending and counts computed in a single pass)
+  const stats = useMemo(() => {
+    let totalBilled = 0;
+    let paidBilled = 0;
+    let pendingBilled = 0;
+    let paidCount = 0;
+    let pendingCount = 0;
+
+    allInvoices.forEach((inv) => {
+      const amt = Number(inv.totalAmount) || 0;
+      totalBilled += amt;
+      if (inv.status === 'paid') {
+        paidBilled += amt;
+        paidCount += 1;
+      } else {
+        pendingBilled += amt;
+        pendingCount += 1;
+      }
+    });
+
+    return { totalBilled, paidBilled, pendingBilled, paidCount, pendingCount };
+  }, [allInvoices]);
+
+  // Filtered invoices with null-safe lowercasing
   const filteredInvoices = useMemo(() => {
     return allInvoices.filter((inv) => {
       if (activeTab === 'paid' && inv.status !== 'paid') return false;
       if (activeTab === 'pending' && inv.status !== 'pending') return false;
 
       if (!searchQuery.trim()) return true;
-      const q = searchQuery.toLowerCase();
+      const q = searchQuery.toLowerCase().trim();
       return (
-        inv.id.toLowerCase().includes(q) ||
-        inv.orderId.toLowerCase().includes(q) ||
-        inv.cropName.toLowerCase().includes(q) ||
+        (inv.id && inv.id.toLowerCase().includes(q)) ||
+        (inv.orderId && inv.orderId.toLowerCase().includes(q)) ||
+        (inv.cropName && inv.cropName.toLowerCase().includes(q)) ||
         (inv.tamilCropName && inv.tamilCropName.toLowerCase().includes(q)) ||
-        inv.farmer.name.toLowerCase().includes(q) ||
-        inv.hub.toLowerCase().includes(q)
+        (inv.farmer?.name && inv.farmer.name.toLowerCase().includes(q)) ||
+        (inv.hub && inv.hub.toLowerCase().includes(q))
       );
     });
   }, [allInvoices, activeTab, searchQuery]);
 
-  // Aggregate stats (Simple: Total, Paid, Pending)
-  const stats = useMemo(() => {
-    let totalBilled = 0;
-    let paidBilled = 0;
-    let pendingBilled = 0;
-
-    allInvoices.forEach((inv) => {
-      totalBilled += inv.totalAmount;
-      if (inv.status === 'paid') {
-        paidBilled += inv.totalAmount;
-      } else {
-        pendingBilled += inv.totalAmount;
-      }
-    });
-
-    return { totalBilled, paidBilled, pendingBilled };
-  }, [allInvoices]);
-
   const handlePrint = () => {
     window.print();
+  };
+
+  const handleQuickPrint = (inv) => {
+    setSelectedInvoiceId(inv.id);
+    if (printTimerRef.current) clearTimeout(printTimerRef.current);
+    printTimerRef.current = setTimeout(() => {
+      window.print();
+    }, 250);
   };
 
   return (
@@ -201,6 +236,7 @@ export default function Invoices() {
               type="button"
               onClick={() => setSearchQuery('')}
               className="simple-search-clear-btn"
+              aria-label="Clear search"
             >
               <X size={14} />
             </button>
@@ -221,8 +257,8 @@ export default function Invoices() {
             onClick={() => setActiveTab('paid')}
           >
             {lang === 'ta'
-              ? `செலுத்தப்பட்டவை (${allInvoices.filter((i) => i.status === 'paid').length})`
-              : `Paid (${allInvoices.filter((i) => i.status === 'paid').length})`}
+              ? `செலுத்தப்பட்டவை (${stats.paidCount})`
+              : `Paid (${stats.paidCount})`}
           </button>
           <button
             type="button"
@@ -230,8 +266,8 @@ export default function Invoices() {
             onClick={() => setActiveTab('pending')}
           >
             {lang === 'ta'
-              ? `நிலுவை (${allInvoices.filter((i) => i.status === 'pending').length})`
-              : `Pending (${allInvoices.filter((i) => i.status === 'pending').length})`}
+              ? `நிலுவை (${stats.pendingCount})`
+              : `Pending (${stats.pendingCount})`}
           </button>
         </div>
       </div>
@@ -239,15 +275,21 @@ export default function Invoices() {
       {/* 4. Simple Clean Invoices List */}
       <div className="simple-invoices-list">
         {filteredInvoices.length === 0 ? (
-          <div className="buyer-empty-state-card">
-            <Receipt size={32} className="text-muted mb-2" />
-            <h3 className="buyer-empty-title">
-              {lang === 'ta' ? 'பில்கள் எதுவும் கிடைக்கவில்லை' : 'No invoices found'}
-            </h3>
-            <p className="buyer-empty-desc">
-              {lang === 'ta' ? 'தேடல் சொற்களை மாற்றி முயற்சிக்கவும்.' : 'Try adjusting your search criteria.'}
-            </p>
-          </div>
+          <EmptyState
+            icon={<Receipt size={36} className="text-muted" />}
+            title={lang === 'ta' ? 'பில்கள் எதுவும் கிடைக்கவில்லை' : 'No invoices found'}
+            description={
+              searchQuery
+                ? (lang === 'ta'
+                    ? `"${searchQuery}" என்ற தேடலுக்கு முடிவுகள் எதுவும் இல்லை.`
+                    : `No results found matching "${searchQuery}".`)
+                : (lang === 'ta'
+                    ? 'தேர்ந்தெடுக்கப்பட்ட பிரிவில் பில்கள் எதுவும் இல்லை.'
+                    : 'No invoices available in this category.')
+            }
+            actionText={searchQuery ? (lang === 'ta' ? 'தேடலை அழிக்கவும்' : 'Clear search') : null}
+            onAction={searchQuery ? () => setSearchQuery('') : null}
+          />
         ) : (
           filteredInvoices.map((inv) => (
             <div
@@ -307,7 +349,7 @@ export default function Invoices() {
                   <button
                     type="button"
                     className="simple-btn-view"
-                    onClick={() => setSelectedInvoice(inv)}
+                    onClick={() => setSelectedInvoiceId(inv.id)}
                   >
                     <FileText size={14} />
                     <span>{lang === 'ta' ? 'பில் காண்க' : 'View Invoice'}</span>
@@ -315,10 +357,7 @@ export default function Invoices() {
                   <button
                     type="button"
                     className="simple-btn-print"
-                    onClick={() => {
-                      setSelectedInvoice(inv);
-                      setTimeout(() => window.print(), 250);
-                    }}
+                    onClick={() => handleQuickPrint(inv)}
                     title="Print"
                   >
                     <Printer size={14} />
@@ -336,7 +375,7 @@ export default function Invoices() {
       {selectedInvoice && (
         <div
           className="buyer-invoice-modal-overlay"
-          onClick={() => setSelectedInvoice(null)}
+          onClick={() => setSelectedInvoiceId(null)}
         >
           <div
             className="buyer-invoice-modal-content simple"
@@ -360,7 +399,7 @@ export default function Invoices() {
                 <button
                   type="button"
                   className="buyer-invoice-modal-close-btn"
-                  onClick={() => setSelectedInvoice(null)}
+                  onClick={() => setSelectedInvoiceId(null)}
                   aria-label="Close"
                 >
                   <X size={16} />
@@ -412,20 +451,25 @@ export default function Invoices() {
                   <div className="simple-party-card">
                     <span className="party-title">{lang === 'ta' ? 'வாங்குபவர்' : 'Billed To'}</span>
                     <strong className="party-name">
-                      {profile.shopName || profile.businessName || profile.fullName || 'Grand Palace Hotel'}
+                      {p.shopName || p.businessName || p.fullName || p.name || 'Commercial Buyer'}
                     </strong>
                     <span className="party-sub">
-                      {profile.contactPerson || profile.fullName} • {profile.phone}
+                      {p.contactPerson || p.fullName || p.name || 'Commercial Partner'} • {p.phone || '—'}
                     </span>
+                    {p.gstin && (
+                      <span className="party-sub font-mono">
+                        GSTIN: {p.gstin}
+                      </span>
+                    )}
                   </div>
 
                   <div className="simple-party-card">
                     <span className="party-title">{lang === 'ta' ? 'விவசாயி & மையம்' : 'Farmer & Hub'}</span>
                     <strong className="party-name">
-                      🌾 {selectedInvoice.farmer.name}
+                      🌾 {selectedInvoice.farmer?.name || 'Local Producer'}
                     </strong>
                     <span className="party-sub">
-                      {selectedInvoice.hub} • {selectedInvoice.farmer.location}
+                      {selectedInvoice.hub || 'Direct Hub'} • {selectedInvoice.farmer?.location || 'Tamil Nadu'}
                     </span>
                   </div>
                 </div>
@@ -456,7 +500,7 @@ export default function Invoices() {
                         <td className="text-right">{selectedInvoice.quantityKg} kg</td>
                         <td className="text-right">₹{selectedInvoice.unitPrice}</td>
                         <td className="text-right font-bold">
-                          ₹{selectedInvoice.totalAmount.toLocaleString('en-IN')}
+                          ₹{(Number(selectedInvoice.totalAmount) || 0).toLocaleString('en-IN')}
                         </td>
                       </tr>
                     </tbody>
@@ -466,7 +510,7 @@ export default function Invoices() {
                 {/* Grand Total Row */}
                 <div className="simple-grand-total-row">
                   <span className="gtotal-lbl">{lang === 'ta' ? 'மொத்த தொகை' : 'Total Amount'}:</span>
-                  <span className="gtotal-val">₹{selectedInvoice.totalAmount.toLocaleString('en-IN')}</span>
+                  <span className="gtotal-val">₹{(Number(selectedInvoice.totalAmount) || 0).toLocaleString('en-IN')}</span>
                 </div>
 
                 {/* Minimal Footer Note */}

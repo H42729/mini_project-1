@@ -17,6 +17,14 @@ import Button from '../../components/Button';
 import { useBuyer } from '../../context/BuyerContext';
 import CropCard from '../../components/CropCard';
 
+const CATEGORY_FILTERS = [
+  { id: 'all', labelKey: 'crops.filterAll' },
+  { id: 'vegetables', labelKey: 'crops.filterVegetables' },
+  { id: 'fruits', labelKey: 'crops.filterFruits' },
+  { id: 'grade_a', labelKey: 'crops.filterGradeA' },
+  { id: 'grade_b', labelKey: 'crops.filterGradeB' }
+];
+
 export default function Crops() {
   const {
     crops,
@@ -43,7 +51,11 @@ export default function Crops() {
         action={
           <div className="buyer-total-stock-badge">
             <Scale size={15} />
-            <span>{t('crops.totalStock', { n: crops.reduce((acc, c) => acc + c.availableKg, 0) })}</span>
+            <span>
+              {t('crops.totalStock', {
+                n: (crops || []).reduce((acc, c) => acc + (Number(c?.availableKg) || 0), 0)
+              })}
+            </span>
           </div>
         }
       />
@@ -65,41 +77,16 @@ export default function Crops() {
       <div className="buyer-filter-toolbar">
         {/* Category Filter Chips */}
         <div className="buyer-filter-chips">
-          <button
-            type="button"
-            className={`buyer-chip ${selectedCategory === 'all' ? 'active' : ''}`}
-            onClick={() => setSelectedCategory('all')}
-          >
-            {t('crops.filterAll')}
-          </button>
-          <button
-            type="button"
-            className={`buyer-chip ${selectedCategory === 'vegetables' ? 'active' : ''}`}
-            onClick={() => setSelectedCategory('vegetables')}
-          >
-            {t('crops.filterVegetables')}
-          </button>
-          <button
-            type="button"
-            className={`buyer-chip ${selectedCategory === 'fruits' ? 'active' : ''}`}
-            onClick={() => setSelectedCategory('fruits')}
-          >
-            {t('crops.filterFruits')}
-          </button>
-          <button
-            type="button"
-            className={`buyer-chip ${selectedCategory === 'grade_a' ? 'active' : ''}`}
-            onClick={() => setSelectedCategory('grade_a')}
-          >
-            {t('crops.filterGradeA')}
-          </button>
-          <button
-            type="button"
-            className={`buyer-chip ${selectedCategory === 'grade_b' ? 'active' : ''}`}
-            onClick={() => setSelectedCategory('grade_b')}
-          >
-            {t('crops.filterGradeB')}
-          </button>
+          {CATEGORY_FILTERS.map((cat) => (
+            <button
+              key={cat.id}
+              type="button"
+              className={`buyer-chip ${selectedCategory === cat.id ? 'active' : ''}`}
+              onClick={() => setSelectedCategory(cat.id)}
+            >
+              {t(cat.labelKey)}
+            </button>
+          ))}
         </div>
 
         {/* Sort By Dropdown */}
@@ -125,7 +112,7 @@ export default function Crops() {
       </div>
 
       {/* Crops Grid (Desktop 3-4, Tablet 2, Mobile 1) */}
-      {filteredCrops.length > 0 ? (
+      {filteredCrops && filteredCrops.length > 0 ? (
         <div className="buyer-crop-grid">
           {filteredCrops.map((crop) => (
             <CropCard

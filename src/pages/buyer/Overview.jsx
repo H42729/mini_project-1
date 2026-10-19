@@ -1,6 +1,6 @@
 // What this file does: Buyer dashboard overview page showing KPI metrics, recent orders, and daily featured produce.
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Sprout,
@@ -21,13 +21,38 @@ export default function Overview() {
   const {
     profile,
     crops,
-    filteredCrops,
     orders,
+    declinedCropIds,
+    setSelectedTrackingOrderId,
     t,
     lang,
     handleOpenAccept,
     handleOpenDecline
   } = useBuyer();
+
+  // Dynamically calculate active in-transit / active orders
+  const activeTransitOrders = useMemo(() => {
+    return (orders || []).filter(
+      (o) => o?.status === 'in_transit' || o?.status === 'confirmed' || o?.status === 'preparing'
+    );
+  }, [orders]);
+
+  const inTransitCount = activeTransitOrders.length;
+  const activeSpotlightOrder = activeTransitOrders[0] || (orders || [])[0];
+
+  // Overview Fresh Arrivals: Showcase fresh lots (excluding declined ones), independent of marketplace search
+  const freshArrivals = useMemo(() => {
+    return (crops || [])
+      .filter((crop) => crop && !declinedCropIds?.includes(crop.id))
+      .slice(0, 3);
+  }, [crops, declinedCropIds]);
+
+  const handleTrackSpotlightOrder = () => {
+    if (setSelectedTrackingOrderId && activeSpotlightOrder?.orderId) {
+      setSelectedTrackingOrderId(activeSpotlightOrder.orderId);
+    }
+    navigate(ROUTES.BUYER_DASHBOARD_TRACK);
+  };
 
   return (
     <div className="buyer-view-container animate-fade-in">
@@ -37,7 +62,7 @@ export default function Overview() {
           <span>
             {t('goodMorning')}{' '}
             <span className="buyer-highlight-name">
-              {profile.shopName || profile.contactPerson || profile.name}
+              {profile?.shopName || profile?.contactPerson || profile?.name || 'Buyer'}
             </span>
           </span>
         }
@@ -57,7 +82,7 @@ export default function Overview() {
           onClick={() => navigate(ROUTES.BUYER_DASHBOARD_CROPS)}
         >
           <div className="buyer-summary-number-wrap">
-            <span className="buyer-summary-number">{crops.length}</span>
+            <span className="buyer-summary-number">{(crops || []).length}</span>
             <span className="buyer-summary-trend">
               <Sprout size={14} /> {t('overview.fresh')}
             </span>
@@ -71,7 +96,7 @@ export default function Overview() {
           onClick={() => navigate(ROUTES.BUYER_DASHBOARD_ORDERS)}
         >
           <div className="buyer-summary-number-wrap">
-            <span className="buyer-summary-number">{orders.length}</span>
+            <span className="buyer-summary-number">{(orders || []).length}</span>
             <span className="buyer-summary-trend neutral">
               <Clock size={14} /> {t('overview.active')}
             </span>
@@ -82,10 +107,10 @@ export default function Overview() {
 
         <div
           className="buyer-summary-card active-transit"
-          onClick={() => navigate(ROUTES.BUYER_DASHBOARD_TRACK)}
+          onClick={handleTrackSpotlightOrder}
         >
           <div className="buyer-summary-number-wrap">
-            <span className="buyer-summary-number">1</span>
+            <span className="buyer-summary-number">{inTransitCount}</span>
             <span className="buyer-summary-trend green">
               <span className="pulse-indicator" /> {t('overview.onRoute')}
             </span>
@@ -104,25 +129,35 @@ export default function Overview() {
           <div>
             <div className="buyer-transit-badge-row">
               <span className="buyer-live-badge">{t('overview.liveTracking')}</span>
-              <span className="buyer-transit-id">Order #NU-2026-00124</span>
+              <span className="buyer-transit-id">
+                Order #{activeSpotlightOrder?.orderId || 'NU-2026-00124'}
+              </span>
             </div>
             <h3 className="buyer-transit-title">
-              {t('overview.spotlightTitle')}
+              {activeSpotlightOrder?.cropName
+                ? `${activeSpotlightOrder.quantityKg} kg ${lang === 'ta' && activeSpotlightOrder.tamilCropName ? activeSpotlightOrder.tamilCropName : activeSpotlightOrder.cropName}`
+                : t('overview.spotlightTitle')}
             </h3>
             <p className="buyer-transit-meta">
-              {t('overview.spotlightMeta')}
+              {activeSpotlightOrder?.driver?.name
+                ? `Driver: ${activeSpotlightOrder.driver.name} (${activeSpotlightOrder.driver.vehicleType || 'EV Cargo'}) • ${activeSpotlightOrder.liveTracking?.currentLocation || activeSpotlightOrder.hub || 'In Transit'}`
+                : t('overview.spotlightMeta')}
             </p>
           </div>
         </div>
         <div className="buyer-transit-spotlight-right">
           <div className="buyer-eta-pill">
             <span className="buyer-eta-sub">{t('overview.estimatedArrival')}</span>
-            <span className="buyer-eta-val">{t('overview.estimatedArrivalVal')}</span>
+            <span className="buyer-eta-val">
+              {activeSpotlightOrder?.liveTracking?.estimatedMinutes
+                ? `${activeSpotlightOrder.liveTracking.estimatedMinutes} mins`
+                : t('overview.estimatedArrivalVal')}
+            </span>
           </div>
           <button
             type="button"
             className="buyer-btn-primary"
-            onClick={() => navigate(ROUTES.BUYER_DASHBOARD_TRACK)}
+            onClick={handleTrackSpotlightOrder}
           >
             <span>{t('overview.trackLiveMap')}</span>
             <ArrowRight size={16} />
@@ -153,8 +188,8 @@ export default function Overview() {
 
         {/* 3 Featured Cards */}
         <div className="buyer-crop-grid featured-row">
-          {filteredCrops.length > 0 ? (
-            filteredCrops.slice(0, 3).map((crop) => (
+          {freshArrivals && freshArrivals.length > 0 ? (
+            freshArrivals.map((crop) => (
               <CropCard
                 key={crop.id}
                 crop={crop}
@@ -165,7 +200,11 @@ export default function Overview() {
               />
             ))
           ) : (
-            <Skeleton variant="card" count={3} height={220} />
+            <>
+              <Skeleton variant="card" height={260} />
+              <Skeleton variant="card" height={260} />
+              <Skeleton variant="card" height={260} />
+            </>
           )}
         </div>
       </div>

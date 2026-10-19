@@ -2,7 +2,8 @@
 /* Profile Page Styles */
 
 .buyer-profile-layout {
-  max-width: 800px;
+  width: 100%;
+  max-width: 100%;
 }
 
 .buyer-profile-box {
@@ -11,10 +12,12 @@
   border-radius: var(--buyer-radius-lg);
   box-shadow: var(--buyer-shadow-card);
   overflow: hidden;
+  width: 100%;
+  padding: 0;
 }
 
 .buyer-profile-top-banner {
-  padding: 28px;
+  padding: 28px 32px;
   background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
   border-bottom: 1px solid var(--buyer-border-light);
   display: flex;
@@ -141,16 +144,26 @@
 
 /* 8-Field Details Grid */
 .buyer-profile-details-grid {
-  padding: 28px;
+  padding: 28px 32px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 22px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
 }
 
 .buyer-detail-item {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
+  background-color: var(--buyer-bg-canvas);
+  padding: 16px 20px;
+  border-radius: var(--buyer-radius-md);
+  border: 1px solid var(--buyer-border-light);
+  transition: all 0.18s ease;
+}
+
+.buyer-detail-item:hover {
+  border-color: #cbd5e1;
+  background-color: #ffffff;
 }
 
 .buyer-detail-item.full-width {
@@ -215,7 +228,7 @@
 }
 
 .buyer-profile-footer-actions {
-  padding: 20px 28px;
+  padding: 20px 32px;
   background-color: var(--buyer-bg-canvas);
   border-top: 1px solid var(--buyer-border-light);
   display: flex;
@@ -225,8 +238,9 @@
   flex-wrap: wrap;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .buyer-profile-top-banner {
+    padding: 20px 16px;
     flex-direction: column;
     text-align: center;
   }
@@ -235,7 +249,18 @@
     align-items: center;
   }
 
+  .buyer-profile-details-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 20px 16px;
+  }
+
+  .buyer-detail-item {
+    padding: 14px 16px;
+  }
+
   .buyer-profile-footer-actions {
+    padding: 16px;
     flex-direction: column;
   }
 

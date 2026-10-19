@@ -1,6 +1,6 @@
 // What this file does: Buyer account profile page displaying commercial business credentials, GSTIN, and settings.
 
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Building2,
   Camera,
@@ -24,6 +24,42 @@ export default function Profile() {
     setSignOutModalOpen,
     t
   } = useBuyer();
+
+  const p = profile || {};
+  const photoSrc = p.photo || p.photoPreview;
+  const [failedPhoto, setFailedPhoto] = useState(null);
+  const [failedThumb, setFailedThumb] = useState(null);
+
+  const isPhotoValid = Boolean(photoSrc && failedPhoto !== photoSrc);
+  const isThumbValid = Boolean(photoSrc && failedThumb !== photoSrc);
+
+  const buyerCategoryLabel = useMemo(() => {
+    switch (p.buyerType) {
+      case 'hotel':
+        return t('profile.hotelCategory');
+      case 'supermarket':
+        return t('profile.supermarketCategory');
+      case 'retailer':
+        return t('profile.retailerCategory');
+      case 'mahal':
+        return t('profile.mahalCategory');
+      default:
+        return p.businessType || t('profile.commercialBuyerCategory');
+    }
+  }, [p.buyerType, p.businessType, t]);
+
+  const BuyerCategoryIcon = useMemo(() => {
+    switch (p.buyerType) {
+      case 'supermarket':
+        return ShoppingCart;
+      case 'retailer':
+        return Store;
+      case 'hotel':
+      case 'mahal':
+      default:
+        return Building2;
+    }
+  }, [p.buyerType]);
 
   return (
     <div className="buyer-view-container animate-fade-in">
@@ -50,14 +86,13 @@ export default function Profile() {
           {/* Top Profile Banner with Uploaded Photo & Verification */}
           <div className="buyer-profile-top-banner">
             <div className="buyer-profile-photo-wrapper">
-              {profile.photo || profile.photoPreview ? (
+              {isPhotoValid ? (
                 <img
-                  src={profile.photo || profile.photoPreview}
-                  alt={profile.shopName || profile.name}
+                  key={photoSrc}
+                  src={photoSrc}
+                  alt={p.shopName || p.name || 'Commercial Buyer'}
                   className="buyer-profile-photo-large"
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                  }}
+                  onError={() => setFailedPhoto(photoSrc)}
                 />
               ) : (
                 <div className="buyer-profile-photo-fallback">
@@ -79,7 +114,7 @@ export default function Profile() {
             <div className="buyer-profile-header-text">
               <div className="buyer-profile-name-row">
                 <h2 className="buyer-profile-firm-name">
-                  {profile.shopName || profile.name}
+                  {p.shopName || p.name || 'Commercial Buyer'}
                 </h2>
                 <span className="buyer-verified-badge">
                   <CheckCircle2 size={13} />
@@ -87,28 +122,15 @@ export default function Profile() {
                 </span>
               </div>
               <p className="buyer-profile-firm-sub">
-                👤 {profile.contactPerson || profile.name} •{' '}
-                {profile.businessType || t('profile.commercialBuyerCategory')}
+                👤 {p.contactPerson || p.name || 'Commercial Partner'} •{' '}
+                {buyerCategoryLabel}
               </p>
               <div className="buyer-profile-meta-tags">
                 <span className="buyer-category-pill">
-                  {profile.buyerType === 'hotel' && <Building2 size={12} />}
-                  {profile.buyerType === 'supermarket' && <ShoppingCart size={12} />}
-                  {profile.buyerType === 'retailer' && <Store size={12} />}
-                  {profile.buyerType === 'mahal' && <Building2 size={12} />}
-                  <span>
-                    {profile.buyerType === 'hotel'
-                      ? t('profile.hotelCategory')
-                      : profile.buyerType === 'supermarket'
-                      ? t('profile.supermarketCategory')
-                      : profile.buyerType === 'retailer'
-                      ? t('profile.retailerCategory')
-                      : profile.buyerType === 'mahal'
-                      ? t('profile.mahalCategory')
-                      : profile.businessType || t('profile.commercialBuyerCategory')}
-                  </span>
+                  <BuyerCategoryIcon size={12} />
+                  <span>{buyerCategoryLabel}</span>
                 </span>
-                <span className="buyer-id-pill">ID: NU-BYR-2026</span>
+                <span className="buyer-id-pill">ID: {p.id || 'NU-BYR-2026'}</span>
               </div>
             </div>
           </div>
@@ -120,7 +142,7 @@ export default function Profile() {
               <span className="detail-label">
                 {t('profile.contactPersonLabel')}
               </span>
-              <span className="detail-value">{profile.contactPerson || profile.name}</span>
+              <span className="detail-value">{p.contactPerson || p.name || '—'}</span>
               <span className="detail-subtext">
                 {t('profile.contactPersonSub')}
               </span>
@@ -131,7 +153,7 @@ export default function Profile() {
               <span className="detail-label">
                 {t('profile.mobileNumberLabel')}
               </span>
-              <span className="detail-value font-mono">{profile.phone}</span>
+              <span className="detail-value font-mono">{p.phone || '—'}</span>
               <span className="detail-status-pill green">
                 <Check size={11} /> {t('profile.verifiedMobile')}
               </span>
@@ -142,7 +164,7 @@ export default function Profile() {
               <span className="detail-label">
                 {t('profile.emailLabel')}
               </span>
-              <span className="detail-value">{profile.email}</span>
+              <span className="detail-value">{p.email || '—'}</span>
               <span className="detail-status-pill green">
                 <Check size={11} /> {t('profile.eInvoicingEnabled')}
               </span>
@@ -154,7 +176,7 @@ export default function Profile() {
                 {t('profile.shopNameLabel')}
               </span>
               <span className="detail-value font-semibold">
-                {profile.shopName || profile.name}
+                {p.shopName || p.name || '—'}
               </span>
               <span className="detail-subtext">
                 {t('profile.shopNameSub')}
@@ -167,15 +189,7 @@ export default function Profile() {
                 {t('profile.buyerCategoryLabel')}
               </span>
               <span className="detail-value">
-                {profile.buyerType === 'hotel'
-                  ? t('profile.hotelCategory')
-                  : profile.buyerType === 'supermarket'
-                  ? t('profile.supermarketCategory')
-                  : profile.buyerType === 'retailer'
-                  ? t('profile.retailerCategory')
-                  : profile.buyerType === 'mahal'
-                  ? t('profile.mahalCategory')
-                  : profile.businessType || t('profile.commercialBuyerCategory')}
+                {buyerCategoryLabel}
               </span>
               <span className="detail-subtext">
                 {t('profile.buyerCategorySub')}
@@ -187,7 +201,7 @@ export default function Profile() {
               <span className="detail-label">
                 {t('profile.gstinLabel')}
               </span>
-              <span className="detail-value font-mono">{profile.gstin}</span>
+              <span className="detail-value font-mono">{p.gstin || '—'}</span>
               <span className="detail-status-pill green">
                 <ShieldCheck size={11} />{' '}
                 {t('profile.verifiedGst')}
@@ -199,7 +213,7 @@ export default function Profile() {
               <span className="detail-label">
                 {t('profile.addressLabel')}
               </span>
-              <span className="detail-value">{profile.address}</span>
+              <span className="detail-value">{p.address || '—'}</span>
               <span className="detail-subtext">
                 {t('profile.addressSub')}
               </span>
@@ -211,11 +225,13 @@ export default function Profile() {
                 {t('profile.kycLabel')}
               </span>
               <div className="buyer-doc-preview-chip">
-                {profile.photo || profile.photoPreview ? (
+                {isThumbValid ? (
                   <img
-                    src={profile.photo || profile.photoPreview}
+                    key={photoSrc}
+                    src={photoSrc}
                     alt="Document Thumbnail"
                     className="buyer-doc-mini-thumb"
+                    onError={() => setFailedThumb(photoSrc)}
                   />
                 ) : (
                   <Building2 size={16} />
@@ -231,9 +247,9 @@ export default function Profile() {
               <span className="detail-label">
                 {t('profile.assignedHubLabel')}
               </span>
-              <span className="detail-value">{t('profile.assignedHubVal')}</span>
+              <span className="detail-value">{p.assignedHub || t('profile.assignedHubVal')}</span>
               <span className="detail-subtext">
-                {t('profile.securityPin', { pin: '4892' })}
+                {t('profile.securityPin', { pin: p.securityPin || '4892' })}
               </span>
             </div>
           </div>

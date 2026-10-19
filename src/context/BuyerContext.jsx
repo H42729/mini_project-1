@@ -188,19 +188,20 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
 
   // Filter crops
   const filteredCrops = useMemo(() => {
-    return crops
-      .filter((crop) => !declinedCropIds.includes(crop.id))
+    return (crops || [])
+      .filter((crop) => crop && !declinedCropIds?.includes(crop.id))
       .filter((crop) => {
-        if (!searchQuery.trim()) return true;
-        const q = searchQuery.toLowerCase();
+        if (!searchQuery?.trim()) return true;
+        const q = searchQuery.toLowerCase().trim();
         return (
-          crop.name.toLowerCase().includes(q) ||
-          crop.tamilName.toLowerCase().includes(q) ||
-          crop.hubName.toLowerCase().includes(q) ||
-          crop.category.toLowerCase().includes(q)
+          (crop.name || '').toLowerCase().includes(q) ||
+          (crop.tamilName || '').toLowerCase().includes(q) ||
+          (crop.hubName || '').toLowerCase().includes(q) ||
+          (crop.category || '').toLowerCase().includes(q)
         );
       })
       .filter((crop) => {
+        if (!crop) return false;
         if (selectedCategory === 'all') return true;
         if (selectedCategory === 'vegetables') return crop.category === 'vegetables';
         if (selectedCategory === 'fruits') return crop.category === 'fruits';
@@ -209,9 +210,9 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
         return true;
       })
       .sort((a, b) => {
-        if (sortBy === 'price_low') return a.pricePerKg - b.pricePerKg;
-        if (sortBy === 'price_high') return b.pricePerKg - a.pricePerKg;
-        if (sortBy === 'qty_high') return b.availableKg - a.availableKg;
+        if (sortBy === 'price_low') return (Number(a.pricePerKg) || 0) - (Number(b.pricePerKg) || 0);
+        if (sortBy === 'price_high') return (Number(b.pricePerKg) || 0) - (Number(a.pricePerKg) || 0);
+        if (sortBy === 'qty_high') return (Number(b.availableKg) || 0) - (Number(a.availableKg) || 0);
         return 0;
       });
   }, [crops, declinedCropIds, searchQuery, selectedCategory, sortBy]);

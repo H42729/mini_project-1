@@ -73,8 +73,9 @@ export default function BuyerRegister({
 
   const fileInputRef = useRef(null);
   const dropdownRef = useRef(null);
+  const regTimerRef = useRef(null);
 
-  // Close dropdown on outside click
+  // Close dropdown on outside click and cleanup registration timer
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -82,7 +83,10 @@ export default function BuyerRegister({
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      if (regTimerRef.current) clearTimeout(regTimerRef.current);
+    };
   }, []);
 
   const handleBack = () => {
@@ -143,7 +147,8 @@ export default function BuyerRegister({
         if (value.trim().length < 3) return t('errNameShort');
         return '';
       case 'phone': {
-        const clean = (value || '').replace(/\D/g, '');
+        const digits = (value || '').replace(/\D/g, '');
+        const clean = digits.startsWith('91') && digits.length === 12 ? digits.slice(2) : digits;
         if (!clean) return t('errPhoneRequired');
         if (clean.length !== 10) return t('errPhoneInvalid');
         return '';
@@ -273,12 +278,16 @@ export default function BuyerRegister({
 
     // Submit Process
     setSubmitStatus('loading');
-    setTimeout(() => {
+    regTimerRef.current = setTimeout(() => {
       setSubmitStatus('success');
+      const phoneDigits = phone.replace(/\D/g, '');
+      const cleanPhone = phoneDigits.startsWith('91') && phoneDigits.length === 12 ? phoneDigits.slice(2) : phoneDigits;
+      const formattedPhone = cleanPhone ? `+91 ${cleanPhone}` : phone;
+
       const registeredData = {
         name,
         fullName: name,
-        phone: phone.startsWith('+91') ? phone : `+91 ${phone}`,
+        phone: formattedPhone,
         email,
         buyerType,
         shopName,
@@ -294,7 +303,19 @@ export default function BuyerRegister({
         localStorage.setItem('buyer_current_profile', JSON.stringify(registeredData));
         sessionStorage.removeItem('buyer_explicit_signout');
       } catch (err) {
-        console.warn('Storage save error:', err);
+        console.warn('Storage save error (likely quota exceeded), retrying with fallback photo:', err);
+        const compactData = {
+          ...registeredData,
+          photo: 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=300&auto=format&fit=crop&q=80',
+          photoPreview: 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=300&auto=format&fit=crop&q=80'
+        };
+        try {
+          localStorage.setItem('buyer_registered_profile', JSON.stringify(compactData));
+          localStorage.setItem('buyer_current_profile', JSON.stringify(compactData));
+          sessionStorage.removeItem('buyer_explicit_signout');
+        } catch {
+          // ignore storage error
+        }
       }
 
       if (onRegisterSuccess) {

@@ -42,7 +42,7 @@ async function run() {
     { from: '/buyer/dashboard/crops', expected: '/buyer-dashboard/crops' },
     { from: '/buyer/dashboard/orders', expected: '/buyer-dashboard/orders' },
     { from: '/buyer/dashboard/track', expected: '/buyer-dashboard/track' },
-    { from: '/buyer/dashboard/messages', expected: '/buyer-dashboard/messages' },
+    { from: '/buyer/dashboard/invoices', expected: '/buyer-dashboard/invoices' },
     { from: '/buyer/dashboard/profile', expected: '/buyer-dashboard/profile' },
   ];
 
@@ -73,8 +73,7 @@ async function run() {
   // Click sign out
   await page.locator('.buyer-dropdown-item.logout').click();
   await page.waitForTimeout(200);
-  // Confirm sign out in modal
-  await page.locator('.modal-footer button.btn-danger, .modal-footer button:has-text("Sign Out")').click();
+  await page.locator('.buyer-signout-confirm-btn, .modal-footer button.btn-danger, .modal-footer button:has-text("Sign Out")').click();
   await page.waitForTimeout(500);
   console.log('After signing out, URL is:', page.url());
   if (!page.url().includes('/buyer-login')) {
