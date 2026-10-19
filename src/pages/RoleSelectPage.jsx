@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Globe, Sparkles, ShieldCheck, Phone, CheckCircle2, Truck } from 'lucide-react';
+import { ArrowLeft, Sparkles, ShieldCheck, Phone, CheckCircle2, Truck } from 'lucide-react';
 import { useT } from '../hooks/useT';
 import { ROUTES } from '../routes';
 import Card from '../components/Card';
@@ -161,17 +161,15 @@ export default function RoleSelectPage({
         </div>
 
         <div className="role-select-topbar-actions">
-          <Button
+          <button
             type="button"
-            variant="ghost"
-            size="sm"
             className="role-select-lang-btn"
             onClick={toggleLang}
-            leftIcon={<Globe size={16} />}
             aria-label="Toggle Language"
+            title="Toggle English / தமிழ்"
           >
             <span>{t('common.switchLangText')}</span>
-          </Button>
+          </button>
 
           <Button
             type="button"

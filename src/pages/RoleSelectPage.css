@@ -109,24 +109,37 @@
 .role-select-lang-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  background: #f0fdf4;
-  color: #15803d;
-  border: 1.5px solid #86efac;
-  border-radius: var(--radius-full, 999px);
-  padding: 7px 16px;
-  font-size: 0.85rem;
-  font-weight: 700;
+  justify-content: center;
+  background-color: transparent;
+  border: 1px solid #dbeafe;
+  border-radius: 9999px;
+  padding: 5px 14px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #334155;
   cursor: pointer;
-  transition: all 0.18s ease;
+  white-space: nowrap;
+  line-height: 1.2;
+  transition: all 0.2s ease;
   font-family: inherit;
-  box-shadow: 0 1px 3px rgba(22, 163, 74, 0.08);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
 }
 
 .role-select-lang-btn:hover {
-  background: #dcfce7;
-  color: #166534;
-  border-color: #4ade80;
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
+  color: #0f172a;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.role-select-lang-btn:active {
+  transform: scale(0.97);
+}
+
+.role-select-lang-btn:focus-visible {
+  outline: none;
+  border-color: #16a34a;
+  box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.15);
 }
 
 /* Main Content Area */
@@ -424,5 +437,33 @@
 
   .role-card-action-btn {
     min-height: 46px;
+  }
+
+  .role-select-lang-btn {
+    padding: 3px 10px;
+    font-size: 0.76rem;
+    height: 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .role-select-topbar {
+    padding: 10px 14px;
+  }
+
+  .role-select-topbar-actions {
+    gap: 6px;
+  }
+
+  .role-select-lang-btn {
+    padding: 2px 8px;
+    font-size: 0.72rem;
+    height: 28px;
+  }
+
+  .role-select-back-btn {
+    padding: 4px 10px;
+    font-size: 0.78rem;
+    height: 28px;
   }
 }

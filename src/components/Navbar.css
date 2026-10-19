@@ -19,10 +19,6 @@
     display: none !important;
   }
 
-  .public-navbar-lang-btn {
-    display: none !important;
-  }
-
   /* Restore desktop brand sizes */
   .public-navbar-logo {
     width: 44px !important;
@@ -38,6 +34,44 @@
     font-size: 0.72rem !important;
     max-width: none !important;
   }
+}
+
+/* ==========================================================================
+   Language switch pill button (Capsule design matching dashboard)
+   ========================================================================== */
+.public-navbar-lang-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  border: 1px solid #dbeafe;
+  border-radius: 9999px;
+  padding: 5px 14px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  white-space: nowrap;
+  line-height: 1.2;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.public-navbar-lang-btn:hover {
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
+  color: #0f172a;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.public-navbar-lang-btn:active {
+  transform: scale(0.97);
+}
+
+.public-navbar-lang-btn:focus-visible {
+  outline: none;
+  border-color: #16a34a;
+  box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.15);
 }
 
 /* ==========================================================================
@@ -93,17 +127,26 @@
 
   /* Language toggle button in navbar */
   .public-navbar-lang-btn {
-    font-size: 0.8rem !important;
-    height: 32px !important;
-    min-height: 32px !important;
-    padding: 0 10px !important;
+    font-size: 0.76rem !important;
+    height: 30px !important;
+    min-height: 30px !important;
+    padding: 2px 10px !important;
     white-space: nowrap !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
     border-radius: 9999px !important;
+    border: 1px solid #dbeafe !important;
+    background-color: transparent !important;
+    color: #334155 !important;
     line-height: 1 !important;
     touch-action: manipulation;
+  }
+
+  .public-navbar-lang-btn:hover {
+    background-color: #f8fafc !important;
+    border-color: #cbd5e1 !important;
+    color: #0f172a !important;
   }
 
   /* Hamburger toggle button */

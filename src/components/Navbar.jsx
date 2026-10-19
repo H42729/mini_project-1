@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import BNavbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
-import { Globe, LogIn } from 'lucide-react';
+import { LogIn } from 'lucide-react';
 import { useT } from '../hooks/useT';
 import { ROUTES } from '../routes';
 import './Navbar.css';
@@ -100,15 +100,15 @@ export default function PublicNavbar({
           </BNavbar.Brand>
 
           {/* Mobile Right Controls: Language switch button & Navbar button (hamburger) moved UP to the top row */}
-          <div className="public-navbar-mobile-actions d-flex d-lg-none align-items-center gap-1.5 ms-auto flex-shrink-0">
+          <div className="public-navbar-mobile-actions d-flex d-lg-none align-items-center gap-2 ms-auto flex-shrink-0">
             {showLangToggle && (
               <button
                 type="button"
-                className="btn btn-outline-success btn-sm public-navbar-lang-btn fw-semibold"
+                className="public-navbar-lang-btn"
                 onClick={toggleLang}
                 aria-label="Toggle Language"
+                title="Toggle English / தமிழ்"
               >
-                <Globe size={13} className="flex-shrink-0" />
                 <span className="public-navbar-lang-text">{t('switchLangText')}</span>
               </button>
             )}
@@ -141,17 +141,17 @@ export default function PublicNavbar({
             </Nav>
           )}
 
-          {/* Desktop-Only Actions: Original Desktop Design (Language button + Login button) */}
+          {/* Desktop-Only Actions: Language button + Login button */}
           <div className="d-none d-lg-flex align-items-center gap-2 ms-lg-auto">
             {showLangToggle && (
               <button
                 type="button"
-                className="btn btn-outline-success btn-sm d-inline-flex align-items-center justify-content-center gap-1.5 rounded-pill px-3 py-1.5 fw-semibold"
+                className="public-navbar-lang-btn"
                 onClick={toggleLang}
                 aria-label="Toggle Language"
+                title="Toggle English / தமிழ்"
               >
-                <Globe size={16} />
-                <span>{t('switchLangText')}</span>
+                <span className="public-navbar-lang-text">{t('switchLangText')}</span>
               </button>
             )}
 
