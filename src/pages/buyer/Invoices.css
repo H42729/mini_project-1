@@ -43,11 +43,11 @@
 }
 
 .simple-stat-num.text-success {
-  color: #15803d;
+  color: #0f172a;
 }
 
 .simple-stat-num.text-amber {
-  color: #b45309;
+  color: #0f172a;
 }
 
 .simple-stat-divider {
@@ -96,8 +96,8 @@
 }
 
 .simple-invoices-search-input:focus {
-  border-color: var(--buyer-primary, #15803d);
-  box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.12);
+  border-color: var(--buyer-primary, #0369a1);
+  box-shadow: 0 0 0 3px rgba(3, 105, 161, 0.15);
 }
 
 .simple-search-clear-btn {
@@ -136,8 +136,8 @@
 }
 
 .simple-inv-tab.active {
-  background-color: var(--buyer-primary, #15803d);
-  border-color: var(--buyer-primary, #15803d);
+  background-color: var(--buyer-primary, #0369a1);
+  border-color: var(--buyer-primary, #0369a1);
   color: #ffffff;
 }
 
@@ -169,8 +169,8 @@
 }
 
 .simple-invoice-item.highlighted {
-  border-color: var(--buyer-primary, #15803d);
-  background-color: #f0fdf4;
+  border-color: var(--buyer-primary, #0369a1);
+  background-color: var(--buyer-accent-subtle, #f0f9ff);
 }
 
 .simple-item-main {
@@ -239,8 +239,8 @@
 .simple-crop-grade {
   font-size: 0.72rem;
   font-weight: 700;
-  color: #15803d;
-  background-color: #dcfce7;
+  color: var(--buyer-primary, #0369a1);
+  background-color: var(--buyer-accent-subtle, #f0f9ff);
   padding: 2px 8px;
   border-radius: 6px;
 }
@@ -288,7 +288,7 @@
 .simple-total-amount {
   font-size: 1.15rem;
   font-weight: 800;
-  color: var(--buyer-primary, #15803d);
+  color: #0f172a;
 }
 
 .simple-status-tag {
@@ -302,13 +302,14 @@
 }
 
 .simple-status-tag.paid {
-  background-color: #dcfce7;
-  color: #15803d;
+  background-color: var(--buyer-accent-subtle, #f0f9ff);
+  color: var(--buyer-primary, #0369a1);
+  border: 1px solid var(--buyer-accent-border, #bae6fd);
 }
 
 .simple-status-tag.pending {
-  background-color: #fef3c7;
-  color: #b45309;
+  background-color: #f1f5f9;
+  color: #475569;
 }
 
 .simple-item-actions {
@@ -322,7 +323,7 @@
   align-items: center;
   gap: 6px;
   padding: 8px 14px;
-  background-color: var(--buyer-primary, #15803d);
+  background-color: var(--buyer-primary, #0369a1);
   color: #ffffff;
   border: none;
   border-radius: 8px;
@@ -485,7 +486,7 @@
   height: 44px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid var(--buyer-primary, #15803d);
+  border: 2px solid #16a34a;
 }
 
 .simple-sheet-title {
@@ -493,11 +494,13 @@
   font-weight: 900;
   color: #0f172a;
   margin: 0;
+  line-height: 1.15;
 }
 
 .simple-sheet-sub {
   font-size: 0.74rem;
-  color: #64748b;
+  color: #15803d;
+  font-weight: 700;
 }
 
 .simple-sheet-status {
@@ -508,13 +511,14 @@
 }
 
 .simple-sheet-status.paid {
-  background-color: #dcfce7;
-  color: #15803d;
+  background-color: var(--buyer-accent-subtle, #f0f9ff);
+  color: var(--buyer-primary, #0369a1);
+  border: 1px solid var(--buyer-accent-border, #bae6fd);
 }
 
 .simple-sheet-status.pending {
-  background-color: #fef3c7;
-  color: #b45309;
+  background-color: #f1f5f9;
+  color: #475569;
 }
 
 .simple-sheet-divider {
@@ -638,8 +642,8 @@
 .simple-grade-pill {
   font-size: 0.7rem;
   font-weight: 700;
-  color: #15803d;
-  background-color: #dcfce7;
+  color: var(--buyer-primary, #0369a1);
+  background-color: var(--buyer-accent-subtle, #f0f9ff);
   padding: 2px 6px;
   border-radius: 4px;
 }
@@ -665,13 +669,13 @@
 .gtotal-val {
   font-size: 1.35rem;
   font-weight: 900;
-  color: var(--buyer-primary, #15803d);
+  color: #0f172a;
 }
 
 .simple-sheet-footer {
   text-align: center;
   font-size: 0.74rem;
-  color: #15803d;
+  color: var(--buyer-primary, #0369a1);
   font-weight: 600;
   padding-top: 6px;
 }
@@ -723,7 +727,36 @@
 /* ==========================================================================
    6. RESPONSIVE BREAKPOINTS
    ========================================================================== */
-@media (max-width: 767.98px) {
+@media (max-width: 768px) {
+  .simple-invoices-filter-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .simple-invoices-search-box {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .simple-invoices-tabs {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .simple-inv-tab {
+    width: 100%;
+    text-align: center;
+    padding: 10px 16px;
+    font-size: 0.88rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
   .simple-invoice-item {
     flex-direction: column;
     align-items: stretch;
@@ -762,10 +795,5 @@
 
   .simple-stat-divider {
     display: none;
-  }
-
-  .simple-invoices-tabs {
-    width: 100%;
-    overflow-x: auto;
   }
 }

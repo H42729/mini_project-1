@@ -121,7 +121,6 @@ export default function Crops() {
               lang={lang}
               t={t}
               onAccept={() => handleOpenAccept(crop)}
-              onDecline={() => handleOpenDecline(crop)}
             />
           ))}
         </div>

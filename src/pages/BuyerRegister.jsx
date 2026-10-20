@@ -344,8 +344,8 @@ export default function BuyerRegister({
                 />
               </div>
               <div className="buyer-reg-brand-name-group">
-                <span className="buyer-reg-brand-title">{t('brandName')}</span>
-                <span className="buyer-reg-brand-subtitle">{t('brandSub')}</span>
+                <span className="buyer-reg-brand-title">{t('common.appName')}</span>
+                <span className="buyer-reg-brand-subtitle">{t('common.appSubtitle')}</span>
               </div>
             </div>
 
@@ -382,11 +382,11 @@ export default function BuyerRegister({
             {/* Bottom Visual Guarantee (Centered) */}
             <div className="buyer-reg-visual-footer">
               <div className="buyer-reg-visual-footer-item">
-                <CheckCircle2 size={16} color="#4ade80" />
+                <CheckCircle2 size={16} color="#38bdf8" />
                 <span>{t('footerGuarantee1')}</span>
               </div>
               <div className="buyer-reg-visual-footer-item">
-                <CheckCircle2 size={16} color="#4ade80" />
+                <CheckCircle2 size={16} color="#38bdf8" />
                 <span>{t('footerGuarantee2')}</span>
               </div>
             </div>
@@ -433,13 +433,13 @@ export default function BuyerRegister({
                 alt="Naam Uzhavar Logo"
                 className="buyer-reg-mobile-logo"
               />
-              <div>
-                <div style={{ fontWeight: 800, fontSize: 16, color: 'var(--buyer-text-main)' }}>
-                  {t('brandName')}
-                </div>
-                <div style={{ fontSize: 12, color: 'var(--buyer-text-muted)', fontWeight: 600 }}>
-                  {t('mobileBrandTitle')}
-                </div>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <span style={{ fontWeight: 800, fontSize: 17, color: '#0f172a', lineHeight: 1.2 }}>
+                  {t('common.appName')}
+                </span>
+                <span style={{ fontSize: 12, color: '#15803d', fontWeight: 700 }}>
+                  {t('common.appSubtitle')}
+                </span>
               </div>
             </div>
 
@@ -458,7 +458,7 @@ export default function BuyerRegister({
                 <div className="buyer-reg-success-icon">
                   <Check size={28} />
                 </div>
-                <h2 style={{ fontSize: 20, fontWeight: 800, color: '#15803d', marginBottom: 8 }}>
+                <h2 style={{ fontSize: 20, fontWeight: 800, color: '#0369a1', marginBottom: 8 }}>
                   {t('successTitle')}
                 </h2>
                 <p style={{ fontSize: 14.5, color: '#334155', lineHeight: 1.6, marginBottom: 16 }}>
@@ -483,10 +483,10 @@ export default function BuyerRegister({
                     <img 
                       src={photoPreview} 
                       alt="Uploaded Business Avatar" 
-                      style={{ width: 50, height: 50, borderRadius: '50%', objectFit: 'cover', border: '2px solid #15803d' }}
+                      style={{ width: 50, height: 50, borderRadius: '50%', objectFit: 'cover', border: '2px solid #0369a1' }}
                     />
                   ) : (
-                    <div style={{ width: 50, height: 50, borderRadius: '50%', background: '#dcfce7', color: '#15803d', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ width: 50, height: 50, borderRadius: '50%', background: '#e0f2fe', color: '#0369a1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <Building2 size={24} />
                     </div>
                   )}

@@ -321,8 +321,8 @@ export default function BuyerLogin({
                 />
               </div>
               <div className="buyer-brand-name-group">
-                <span className="buyer-brand-title">{t('brandName')}</span>
-                <span className="buyer-brand-subtitle">{t('brandSub')}</span>
+                <span className="buyer-brand-title">{t('common.appName')}</span>
+                <span className="buyer-brand-subtitle">{t('common.appSubtitle')}</span>
               </div>
             </div>
 
@@ -359,11 +359,11 @@ export default function BuyerLogin({
             {/* Bottom Guarantee Row (Centered) */}
             <div className="buyer-visual-footer">
               <div className="buyer-visual-footer-item">
-                <CheckCircle2 size={16} color="#4ade80" />
+                <CheckCircle2 size={16} color="#38bdf8" />
                 <span>{t('footerGuarantee1')}</span>
               </div>
               <div className="buyer-visual-footer-item">
-                <CheckCircle2 size={16} color="#4ade80" />
+                <CheckCircle2 size={16} color="#38bdf8" />
                 <span>{t('footerGuarantee2')}</span>
               </div>
             </div>
@@ -395,7 +395,7 @@ export default function BuyerLogin({
               size="sm"
               className="buyer-lang-btn" 
               onClick={toggleLang}
-              leftIcon={<Globe size={15} color="#15803d" />}
+              leftIcon={<Globe size={15} color="#0369a1" />}
               title="Switch Language / மொழியை மாற்ற"
               aria-label="Toggle language between English and Tamil"
             >
@@ -415,12 +415,12 @@ export default function BuyerLogin({
                   e.currentTarget.src = 'https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?w=100&auto=format&fit=crop&q=80';
                 }}
               />
-              <div>
-                <div style={{ fontSize: 17, fontWeight: 800, color: '#14532d', lineHeight: 1.2 }}>
-                  {t('brandName')}
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <div style={{ fontSize: 17, fontWeight: 800, color: '#0f172a', lineHeight: 1.2 }}>
+                  {t('common.appName')}
                 </div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: '#526359' }}>
-                  {t('brandSub')}
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#15803d' }}>
+                  {t('common.appSubtitle')}
                 </div>
               </div>
             </div>
@@ -537,7 +537,7 @@ export default function BuyerLogin({
                 variant="outline"
                 size="md"
                 fullWidth
-                style={{ marginTop: 10, borderColor: '#16a34a', color: '#15803d', fontWeight: 700 }}
+                style={{ marginTop: 10, borderColor: '#0369a1', color: '#0369a1', fontWeight: 700 }}
                 onClick={handleDemoSignIn}
                 disabled={isSubmitting}
               >
@@ -588,7 +588,7 @@ export default function BuyerLogin({
       >
         {forgotSent ? (
           <div>
-            <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 12, padding: '12px 14px', color: '#15803d', fontSize: 14, marginBottom: 16, display: 'flex', gap: 8, alignItems: 'center' }}>
+            <div style={{ background: '#f0f9ff', border: '1px solid #bae6fd', borderRadius: 12, padding: '12px 14px', color: '#0369a1', fontSize: 14, marginBottom: 16, display: 'flex', gap: 8, alignItems: 'center' }}>
               <CheckCircle2 size={18} />
               <span>{t('forgotSuccess')}</span>
             </div>

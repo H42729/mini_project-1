@@ -32,9 +32,14 @@ export default function Footer({ className = '' }) {
                     'https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?w=100&auto=format&fit=crop&q=80';
                 }}
               />
-              <span className="fw-bolder fs-4 text-white" style={{ letterSpacing: '-0.3px' }}>
-                {t('appName')}
-              </span>
+              <div className="d-flex flex-column">
+                <span className="fw-bolder fs-4 text-white lh-sm" style={{ letterSpacing: '-0.3px' }}>
+                  {t('appName')}
+                </span>
+                <span className="fw-bold text-success" style={{ fontSize: '0.74rem' }}>
+                  {t('appSubtitle')}
+                </span>
+              </div>
             </div>
 
             <p className="text-white-50 mb-0 small lh-base" style={{ maxWidth: 420 }}>

@@ -10,7 +10,7 @@ import Card from './Card';
  * Reusable Crop Card Component
  * Strict responsive card: 3-4 on desktop, 2 on tablet, 1 on mobile
  */
-export default function CropCard({ crop, _lang, t, onAccept, onDecline }) {
+export default function CropCard({ crop, _lang, t, onAccept }) {
   return (
     <Card className="buyer-crop-card" padding="none">
       {/* Crop Image with grade badge */}
@@ -62,7 +62,7 @@ export default function CropCard({ crop, _lang, t, onAccept, onDecline }) {
           </div>
         </div>
 
-        {/* Action Buttons: Accept (Primary) & Decline (Secondary) */}
+        {/* Action Button: Accept */}
         <div className="buyer-crop-card-actions">
           <Button
             type="button"
@@ -71,14 +71,6 @@ export default function CropCard({ crop, _lang, t, onAccept, onDecline }) {
             onClick={onAccept}
           >
             {typeof t === 'function' ? t('crops.btnAccept') : (t?.btnAccept || 'Accept')}
-          </Button>
-          <Button
-            type="button"
-            variant="secondary"
-            className="buyer-btn-decline"
-            onClick={onDecline}
-          >
-            {typeof t === 'function' ? t('crops.btnDecline') : (t?.btnDecline || 'Decline')}
           </Button>
         </div>
       </div>

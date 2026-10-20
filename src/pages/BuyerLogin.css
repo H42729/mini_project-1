@@ -8,15 +8,15 @@
 :root {
   --buyer-bg-canvas: #f8fafc;          /* Crisp luminous slate neutral */
   --buyer-bg-card: #ffffff;            /* Pure white card surface */
-  --buyer-primary: #15803d;            /* Fresh Forest Emerald */
-  --buyer-primary-hover: #166534;      /* Deep evergreen hover */
-  --buyer-primary-active: #14532d;     /* Deep spruce active */
+  --buyer-primary: #0369a1;            /* Eye-catchy Ocean Blue */
+  --buyer-primary-hover: #075985;      /* Deep sky blue hover */
+  --buyer-primary-active: #0c4a6e;     /* Deep navy blue active */
   --buyer-primary-text: #ffffff;       /* Crisp white */
-  --buyer-accent-subtle: #ecfdf5;      /* Delicate mint background */
-  --buyer-accent-text: #15803d;        /* Refined deep emerald text */
-  --buyer-accent-border: #a7f3d0;      /* Subtle mint border */
+  --buyer-accent-subtle: #f0f9ff;      /* Delicate luminous light blue background */
+  --buyer-accent-text: #0369a1;        /* Refined deep sky blue text (5.2:1 contrast) */
+  --buyer-accent-border: #bae6fd;      /* Soft light blue border */
   --buyer-border-light: #e2e8f0;       /* Clean neutral border (Slate-200) */
-  --buyer-border-focus: #15803d;       /* Focus border */
+  --buyer-border-focus: #0369a1;       /* Focus border */
   --buyer-text-main: #0f172a;          /* Deep Slate charcoal (Slate-900) */
   --buyer-text-muted: #475569;         /* Slate-600 secondary text */
   --buyer-text-dim: #94a3b8;           /* Slate-400 placeholder */
@@ -91,10 +91,10 @@
   inset: 0;
   background: linear-gradient(
     180deg,
-    rgba(8, 28, 18, 0.72) 0%,
-    rgba(5, 20, 13, 0.78) 38%,
-    rgba(3, 14, 9, 0.88) 75%,
-    rgba(2, 9, 6, 0.95) 100%
+    rgba(12, 35, 64, 0.78) 0%,
+    rgba(8, 26, 48, 0.84) 38%,
+    rgba(5, 18, 35, 0.90) 75%,
+    rgba(3, 11, 22, 0.96) 100%
   );
   z-index: 1;
 }
@@ -131,19 +131,21 @@
   width: 48px;
   height: 48px;
   background: #ffffff;
-  border-radius: 12px;
-  padding: 3px;
+  border-radius: 50%;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 2px solid #16a34a;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
   flex-shrink: 0;
+  overflow: hidden;
 }
 
 .buyer-brand-logo-img {
   width: 100%;
   height: 100%;
-  border-radius: 9px;
+  border-radius: 50%;
   object-fit: cover;
 }
 
@@ -165,8 +167,7 @@
   font-size: 11px;
   font-weight: 700;
   color: #4ade80;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
 
 /* Middle Narrative Content (Centered with High Contrast) */
@@ -186,9 +187,9 @@
   align-items: center;
   justify-content: center;
   gap: 7px;
-  background: #dcfce7;
-  color: #15803d;
-  border: 1px solid rgba(134, 239, 172, 0.8);
+  background: var(--buyer-accent-subtle);
+  color: var(--buyer-accent-text);
+  border: 1px solid var(--buyer-accent-border);
   padding: 6px 16px;
   border-radius: var(--buyer-radius-full);
   font-size: 12px;
@@ -216,7 +217,7 @@
 }
 
 .buyer-visual-headline .highlight-word {
-  color: #4ade80; /* Vibrant Fresh Emerald */
+  color: #38bdf8; /* Radiant Light Sky Blue */
 }
 
 .buyer-visual-description {
@@ -410,11 +411,13 @@
 }
 
 .buyer-mobile-logo {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--buyer-radius-md);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
   object-fit: cover;
-  border: 1.5px solid var(--buyer-border-light);
+  border: 2px solid #16a34a;
+  box-shadow: 0 2px 6px rgba(22, 163, 74, 0.15);
+  flex-shrink: 0;
 }
 
 /* Form Header Section */
@@ -489,9 +492,9 @@
 }
 
 .buyer-form-alert.alert-success {
-  background: #f0fdf4;
-  color: #15803d;
-  border: 1px solid #bbf7d0;
+  background: var(--buyer-accent-subtle);
+  color: var(--buyer-primary);
+  border: 1px solid var(--buyer-accent-border);
 }
 
 /* ==========================================================================
@@ -501,6 +504,19 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
+}
+
+.buyer-login-form .btn-primary {
+  background-color: var(--buyer-primary) !important;
+  border-color: var(--buyer-primary) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(3, 105, 161, 0.28) !important;
+}
+
+.buyer-login-form .btn-primary:hover {
+  background-color: var(--buyer-primary-hover) !important;
+  border-color: var(--buyer-primary-hover) !important;
+  box-shadow: 0 6px 18px rgba(3, 105, 161, 0.35) !important;
 }
 
 /* Remember Me & Forgot Password Row */

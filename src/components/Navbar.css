@@ -5,6 +5,7 @@
    1. DESKTOP VIEW (>= 992px) - 100% Original Desktop Layout
    ========================================================================== */
 @media (min-width: 992px) {
+
   /* Let BNavbar.Brand behave as a direct flex child of Container */
   .public-navbar-topbar {
     display: contents !important;
@@ -26,7 +27,8 @@
   }
 
   .public-navbar-title {
-    font-size: 1.25rem !important; /* fs-5 */
+    font-size: 1.25rem !important;
+    /* fs-5 */
     letter-spacing: -0.3px;
   }
 
@@ -70,14 +72,15 @@
 
 .public-navbar-lang-btn:focus-visible {
   outline: none;
-  border-color: #16a34a;
-  box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.15);
+  border-color: #15803d;
+  box-shadow: 0 0 0 2px rgba(21, 128, 61, 0.15);
 }
 
 /* ==========================================================================
    2. MOBILE VIEW (< 992px) - Single Topbar Row & Up-aligned Controls
    ========================================================================== */
 @media (max-width: 991.98px) {
+
   /* Top bar row container: keeps brand on left, controls on right in a single non-wrapping row */
   .public-navbar-topbar {
     display: flex !important;
@@ -127,10 +130,10 @@
 
   /* Language toggle button in navbar */
   .public-navbar-lang-btn {
-    font-size: 0.76rem !important;
-    height: 30px !important;
-    min-height: 30px !important;
-    padding: 2px 10px !important;
+    font-size: 0.78rem !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    padding: 4px 12px !important;
     white-space: nowrap !important;
     display: inline-flex !important;
     align-items: center !important;
@@ -151,9 +154,10 @@
 
   /* Hamburger toggle button */
   .public-navbar-toggler {
-    height: 34px !important;
-    min-height: 34px !important;
-    padding: 3px 6px !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    min-width: 38px !important;
+    padding: 4px 8px !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -192,9 +196,11 @@
     width: 36px;
     height: 36px;
   }
+
   .public-navbar-title {
     font-size: 1rem;
   }
+
   .public-navbar-subtitle {
     font-size: 0.65rem;
     max-width: 150px;
@@ -207,7 +213,7 @@
     padding-top: 0.35rem !important;
     padding-bottom: 0.35rem !important;
   }
-  
+
   .public-navbar-container {
     padding-left: 8px !important;
     padding-right: 8px !important;

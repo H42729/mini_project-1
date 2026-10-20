@@ -26,8 +26,8 @@
 }
 
 .buyer-summary-card.active-transit {
-  border-color: #bbf7d0;
-  background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%);
+  border-color: var(--buyer-accent-border);
+  background: linear-gradient(180deg, #ffffff 0%, var(--buyer-accent-subtle) 100%);
 }
 
 .buyer-summary-number-wrap {
@@ -62,16 +62,16 @@
 }
 
 .buyer-summary-trend.green {
-  color: #15803d;
-  background-color: #dcfce7;
+  color: var(--buyer-accent-text);
+  background-color: var(--buyer-accent-subtle);
 }
 
 .pulse-indicator {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background-color: #22c55e;
-  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.3);
+  background-color: var(--buyer-primary);
+  box-shadow: 0 0 0 2px rgba(3, 105, 161, 0.3);
   animation: pulseBeacon 1.4s infinite;
 }
 

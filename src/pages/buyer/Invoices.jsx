@@ -417,7 +417,7 @@ export default function Invoices() {
                     <div>
                       <h2 className="simple-sheet-title">Naam Uzhavar</h2>
                       <span className="simple-sheet-sub">
-                        {lang === 'ta' ? 'நேரடி விவசாய கொள்முதல் மையம்' : 'Direct Farm Produce Hub'}
+                        {lang === 'ta' ? 'விவசாயிகள் • வாங்குவோர் • ஓட்டுநர்கள்' : 'Farmers • Buyers • Drivers'}
                       </span>
                     </div>
                   </div>

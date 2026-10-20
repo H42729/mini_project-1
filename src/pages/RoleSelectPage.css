@@ -51,12 +51,13 @@
 }
 
 .role-select-logo-img {
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
   object-fit: cover;
-  border: 1.5px solid #16a34a;
+  border: 2px solid #16a34a;
   box-shadow: 0 2px 8px rgba(22, 163, 74, 0.18);
+  flex-shrink: 0;
 }
 
 .role-select-brand-text {
@@ -67,14 +68,16 @@
 .role-select-brand-name {
   font-size: 1.15rem;
   font-weight: 800;
-  color: #0f2e1d;
+  color: #0f172a;
   letter-spacing: -0.01em;
+  line-height: 1.15;
 }
 
 .role-select-brand-sub {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: #15803d;
   font-weight: 700;
+  line-height: 1.2;
 }
 
 .role-select-topbar-actions {
@@ -227,29 +230,29 @@
 
 /* Card Themes */
 .role-select-card.farmer-theme {
-  border-top: 5px solid #16a34a;
+  border-top: 5px solid #15803d !important;
 }
 .role-select-card.farmer-theme:hover {
-  border-color: #86efac;
-  border-top-color: #16a34a;
-  box-shadow: 0 20px 35px -4px rgba(22, 163, 74, 0.16), 0 8px 16px -4px rgba(22, 163, 74, 0.08);
+  border-color: #86efac !important;
+  border-top-color: #15803d !important;
+  box-shadow: 0 20px 35px -4px rgba(21, 128, 61, 0.16), 0 8px 16px -4px rgba(21, 128, 61, 0.08);
 }
 
 .role-select-card.buyer-theme {
-  border-top: 5px solid #eab308;
+  border-top: 5px solid #0369a1 !important;
 }
 .role-select-card.buyer-theme:hover {
-  border-color: #fde047;
-  border-top-color: #eab308;
-  box-shadow: 0 20px 35px -4px rgba(234, 179, 8, 0.18), 0 8px 16px -4px rgba(234, 179, 8, 0.08);
+  border-color: #bae6fd !important;
+  border-top-color: #0369a1 !important;
+  box-shadow: 0 20px 35px -4px rgba(3, 105, 161, 0.18), 0 8px 16px -4px rgba(3, 105, 161, 0.08);
 }
 
 .role-select-card.driver-theme {
-  border-top: 5px solid #ea580c;
+  border-top: 5px solid #ea580c !important;
 }
 .role-select-card.driver-theme:hover {
-  border-color: #fdba74;
-  border-top-color: #ea580c;
+  border-color: #fdba74 !important;
+  border-top-color: #ea580c !important;
   box-shadow: 0 20px 35px -4px rgba(234, 88, 12, 0.18), 0 8px 16px -4px rgba(234, 88, 12, 0.08);
 }
 
@@ -277,7 +280,7 @@
 }
 
 .buyer-theme .role-card-icon-bubble {
-  background-color: #fef9c3;
+  background-color: #e0f2fe;
 }
 
 .driver-theme .role-card-icon-bubble {
@@ -300,9 +303,9 @@
 }
 
 .buyer-theme .role-card-tag {
-  background-color: #fefce8 !important;
-  color: #a16207 !important;
-  border: 1px solid #fef08a !important;
+  background-color: #f0f9ff !important;
+  color: #0369a1 !important;
+  border: 1px solid #bae6fd !important;
 }
 
 .driver-theme .role-card-tag {
@@ -331,7 +334,7 @@
 }
 
 .buyer-theme .role-card-action-sub {
-  color: #b45309;
+  color: #0369a1;
 }
 
 .driver-theme .role-card-action-sub {
@@ -364,20 +367,20 @@
 }
 
 .farmer-theme .role-card-action-btn {
-  background: #16a34a;
-  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.3);
+  background: #15803d;
+  box-shadow: 0 4px 14px rgba(21, 128, 61, 0.3);
 }
 .farmer-theme .role-card-action-btn:hover {
-  background: #15803d;
+  background: #166534;
 }
 
 .buyer-theme .role-card-action-btn {
-  background: #eab308;
-  color: #0f172a;
-  box-shadow: 0 4px 14px rgba(234, 179, 8, 0.35);
+  background: #0369a1;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(3, 105, 161, 0.32);
 }
 .buyer-theme .role-card-action-btn:hover {
-  background: #ca8a04;
+  background: #075985;
   color: #ffffff;
 }
 

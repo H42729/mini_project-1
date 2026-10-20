@@ -159,13 +159,13 @@
 }
 
 .buyer-crop-grade-tag.grade-a {
-  background-color: #15803d !important;
+  background-color: var(--buyer-primary) !important;
   color: #ffffff !important;
   border: 1px solid rgba(255, 255, 255, 0.3) !important;
 }
 
 .buyer-crop-grade-tag.grade-b {
-  background-color: #d97706 !important;
+  background-color: var(--buyer-primary-hover) !important;
   color: #ffffff !important;
   border: 1px solid rgba(255, 255, 255, 0.3) !important;
 }
@@ -206,13 +206,13 @@
 .buyer-price-currency {
   font-size: 1.1rem;
   font-weight: 800;
-  color: var(--buyer-primary);
+  color: var(--buyer-text-main, #0f172a);
 }
 
 .buyer-price-number {
   font-size: 1.55rem;
   font-weight: 800;
-  color: var(--buyer-primary);
+  color: var(--buyer-text-main, #0f172a);
   letter-spacing: -0.02em;
 }
 
@@ -256,8 +256,10 @@
 }
 
 .buyer-crop-card-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  display: flex;
   margin-top: auto;
+}
+
+.buyer-crop-card-actions .buyer-btn-accept {
+  width: 100%;
 }

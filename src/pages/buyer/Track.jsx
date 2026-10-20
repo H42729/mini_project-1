@@ -205,9 +205,9 @@ export default function Track() {
             >
               <defs>
                 <linearGradient id="routeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#0f4a30" />
-                  <stop offset="50%" stopColor="#15803d" />
-                  <stop offset="100%" stopColor="#059669" />
+                  <stop offset="0%" stopColor="#0c4a6e" />
+                  <stop offset="50%" stopColor="#0369a1" />
+                  <stop offset="100%" stopColor="#38bdf8" />
                 </linearGradient>
                 <filter id="shadowFilter" x="-10%" y="-10%" width="130%" height="130%">
                   <feDropShadow dx="0" dy="4" stdDeviation="6" floodOpacity="0.18" />
@@ -258,8 +258,8 @@ export default function Track() {
 
               {/* Waypoint 1: Supply Hub (Origin) */}
               <g transform="translate(140, 100)">
-                <circle r="18" fill="rgba(15, 74, 48, 0.15)" />
-                <circle r="10" fill="#0f4a30" />
+                <circle r="18" fill="rgba(3, 105, 161, 0.15)" />
+                <circle r="10" fill="#0369a1" />
                 <circle r="4" fill="#ffffff" />
                 <text x="0" y="-22" textAnchor="middle" className="svg-node-label font-bold">
                   {trackingOrder?.hub || 'Central Supply Hub'}
@@ -311,7 +311,7 @@ export default function Track() {
                   width="48"
                   height="36"
                   rx="8"
-                  fill="#0f4a30"
+                  fill="#0369a1"
                   stroke="#ffffff"
                   strokeWidth="2.5"
                 />

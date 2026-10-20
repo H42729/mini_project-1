@@ -155,7 +155,7 @@
 }
 
 .dot.hub {
-  background-color: #0f4a30;
+  background-color: var(--buyer-primary);
 }
 
 .dot.vehicle {
@@ -236,7 +236,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background-color: #22c55e;
+  background-color: var(--buyer-primary);
   animation: pulseBeacon 1.2s infinite;
 }
 
@@ -343,7 +343,7 @@
 }
 
 .stat-val.highlight {
-  color: #15803d;
+  color: var(--buyer-primary);
 }
 
 /* Driver Card */

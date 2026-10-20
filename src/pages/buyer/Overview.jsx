@@ -196,7 +196,6 @@ export default function Overview() {
                 lang={lang}
                 t={t}
                 onAccept={() => handleOpenAccept(crop)}
-                onDecline={() => handleOpenDecline(crop)}
               />
             ))
           ) : (

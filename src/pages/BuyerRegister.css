@@ -10,15 +10,15 @@
 :root {
   --buyer-bg-canvas: #f8fafc;          /* Crisp luminous slate neutral */
   --buyer-bg-card: #ffffff;            /* Pure white card surface */
-  --buyer-primary: #0f4a30;            /* Deep Botanical Pine / Evergreen */
-  --buyer-primary-hover: #135c3c;      /* Rich hunter green hover */
-  --buyer-primary-active: #0a3321;     /* Deep spruce active */
+  --buyer-primary: #0369a1;            /* Eye-catchy Ocean Blue */
+  --buyer-primary-hover: #075985;      /* Deep sky blue hover */
+  --buyer-primary-active: #0c4a6e;     /* Deep navy blue active */
   --buyer-primary-text: #ffffff;       /* Crisp white */
-  --buyer-accent-subtle: #f0fdf4;      /* Delicate mist-green background */
-  --buyer-accent-text: #065f46;        /* Refined deep emerald text */
-  --buyer-accent-border: #d1fae5;      /* Subtle mint border */
+  --buyer-accent-subtle: #f0f9ff;      /* Delicate luminous light blue background */
+  --buyer-accent-text: #0369a1;        /* Refined deep sky blue text (5.2:1 contrast) */
+  --buyer-accent-border: #bae6fd;      /* Soft light blue border */
   --buyer-border-light: #e2e8f0;       /* Clean neutral border (Slate-200) */
-  --buyer-border-focus: #0f4a30;       /* Focus border */
+  --buyer-border-focus: #0369a1;       /* Focus border */
   --buyer-text-main: #0f172a;          /* Deep Slate charcoal (Slate-900) */
   --buyer-text-muted: #475569;         /* Slate-600 secondary text */
   --buyer-text-dim: #94a3b8;           /* Slate-400 placeholder */
@@ -57,6 +57,19 @@
   height: 100%;
   max-height: 100vh;
   overflow: hidden;
+}
+
+.buyer-reg-container .btn-primary {
+  background-color: var(--buyer-primary) !important;
+  border-color: var(--buyer-primary) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.28) !important;
+}
+
+.buyer-reg-container .btn-primary:hover {
+  background-color: var(--buyer-primary-hover) !important;
+  border-color: var(--buyer-primary-hover) !important;
+  box-shadow: 0 6px 18px rgba(2, 132, 199, 0.35) !important;
 }
 
 /* --------------------------------------------------------------------------
@@ -131,19 +144,21 @@
   width: 48px;
   height: 48px;
   background: #ffffff;
-  border-radius: 12px;
-  padding: 3px;
+  border-radius: 50%;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 2px solid #16a34a;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
   flex-shrink: 0;
+  overflow: hidden;
 }
 
 .buyer-reg-brand-logo-img {
   width: 100%;
   height: 100%;
-  border-radius: 9px;
+  border-radius: 50%;
   object-fit: cover;
 }
 
@@ -165,8 +180,7 @@
   font-size: 11px;
   font-weight: 700;
   color: #4ade80;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
 
 /* Central Visual Narrative (Centered) */
@@ -186,9 +200,9 @@
   align-items: center;
   justify-content: center;
   gap: 7px;
-  background: #dcfce7;
-  color: #15803d;
-  border: 1px solid rgba(134, 239, 172, 0.8);
+  background: var(--buyer-accent-subtle);
+  color: var(--buyer-accent-text);
+  border: 1px solid var(--buyer-accent-border);
   padding: 6px 16px;
   border-radius: var(--buyer-radius-full);
   font-size: 12px;
@@ -216,7 +230,7 @@
 }
 
 .buyer-reg-visual-headline .highlight-word {
-  color: #4ade80; /* Vibrant Fresh Emerald */
+  color: #38bdf8; /* Radiant Light Sky Blue */
 }
 
 .buyer-reg-visual-description {
@@ -408,11 +422,12 @@
 }
 
 .buyer-reg-mobile-logo {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--buyer-radius-md);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
   object-fit: cover;
-  border: 1.5px solid var(--buyer-border-light);
+  border: 2px solid #16a34a;
+  box-shadow: 0 2px 6px rgba(22, 163, 74, 0.15);
   flex-shrink: 0;
 }
 
@@ -629,13 +644,13 @@
 
 .buyer-photo-dropzone:hover {
   border-color: var(--buyer-primary);
-  background: #f0fdf4;
+  background: var(--buyer-accent-subtle);
 }
 
 .buyer-photo-dropzone.is-dragging {
   border-color: var(--buyer-primary);
-  background: #ecfdf5;
-  box-shadow: 0 0 0 3px rgba(15, 74, 48, 0.12);
+  background: var(--buyer-accent-subtle);
+  box-shadow: 0 0 0 3px rgba(3, 105, 161, 0.15);
 }
 
 .buyer-photo-dropzone.has-error {
@@ -956,8 +971,8 @@
 }
 
 .buyer-confirm-row:hover {
-  background: #f0fdf4;
-  border-color: #86efac;
+  background: var(--buyer-accent-subtle);
+  border-color: var(--buyer-accent-border);
 }
 
 .buyer-confirm-checkbox {
@@ -1076,8 +1091,8 @@
 
 /* Success Celebration State */
 .buyer-reg-success-box {
-  background: #f0fdf4;
-  border: 1.5px solid #bbf7d0;
+  background: var(--buyer-accent-subtle);
+  border: 1.5px solid var(--buyer-accent-border);
   border-radius: var(--buyer-radius-md);
   padding: 24px;
   text-align: center;
@@ -1089,13 +1104,13 @@
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: #22c55e;
+  background: var(--buyer-primary);
   color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 14px auto;
-  box-shadow: 0 4px 14px rgba(34, 197, 94, 0.3);
+  box-shadow: 0 4px 14px rgba(3, 105, 161, 0.3);
 }
 
 /* Pane Footer */

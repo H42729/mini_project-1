@@ -161,7 +161,7 @@ function BuyerDashboardContent() {
             <img src="/logo.jpg" alt="Naam Uzhavar" className="buyer-brand-logo-img" />
             <div className="buyer-brand-titles">
               <span className="buyer-brand-title">{t('brandName')}</span>
-              <span className="buyer-hub-pill">{t('hubBadge')}</span>
+              <span className="buyer-brand-subtitle">{t('common.appSubtitle')}</span>
             </div>
           </Link>
         </div>
@@ -379,10 +379,10 @@ function BuyerDashboardContent() {
                 className="d-flex align-items-center gap-2 text-decoration-none"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                <img src="/logo.jpg" alt="Naam Uzhavar" width={36} height={36} className="rounded-circle border border-success" />
+                <img src="/logo.jpg" alt="Naam Uzhavar" width={38} height={38} className="rounded-circle border border-2 border-success object-fit-cover" />
                 <div className="d-flex flex-column">
-                  <span className="fw-bold text-white small">{t('brandName')}</span>
-                  <span className="badge bg-success-subtle text-success py-0.5 px-2 rounded-pill" style={{ fontSize: '0.65rem' }}>{t('hubBadge')}</span>
+                  <span className="fw-bold text-white small lh-sm">{t('brandName')}</span>
+                  <span className="fw-bold text-success" style={{ fontSize: '0.68rem' }}>{t('common.appSubtitle')}</span>
                 </div>
               </Link>
             </Offcanvas.Title>

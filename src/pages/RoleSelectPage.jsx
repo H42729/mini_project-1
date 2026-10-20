@@ -155,7 +155,7 @@ export default function RoleSelectPage({
               {t('common.appName')}
             </span>
             <span className="role-select-brand-sub">
-              {t('portalSub')}
+              {t('common.appSubtitle')}
             </span>
           </div>
         </div>
@@ -326,12 +326,12 @@ export default function RoleSelectPage({
         {/* Footer Support Info */}
         <div className="role-select-footer-note">
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-            <Phone size={15} color="#16a34a" />
+            <Phone size={15} color="#15803d" />
             <span>
               {t('helpline')}{' '}
               <a
                 href={`tel:${HELPLINE_TEL}`}
-                style={{ color: '#16a34a', fontWeight: 700, textDecoration: 'none' }}
+                style={{ color: '#15803d', fontWeight: 700, textDecoration: 'none' }}
               >
                 {HELPLINE_NUMBER}
               </a>
@@ -339,7 +339,7 @@ export default function RoleSelectPage({
           </span>
           <span>•</span>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-            <ShieldCheck size={15} color="#16a34a" />
+            <ShieldCheck size={15} color="#15803d" />
             <span>{t('verifiedNetwork')}</span>
           </span>
         </div>
@@ -353,8 +353,8 @@ export default function RoleSelectPage({
       >
         {modalSuccessMsg ? (
           <div style={{ textAlign: 'center', padding: '24px 10px' }}>
-            <CheckCircle2 size={54} color="#16a34a" style={{ margin: '0 auto 14px auto' }} />
-            <h3 style={{ fontSize: 20, fontWeight: 800, color: '#14532d', marginBottom: 8 }}>
+            <CheckCircle2 size={54} color="#15803d" style={{ margin: '0 auto 14px auto' }} />
+            <h3 style={{ fontSize: 20, fontWeight: 800, color: '#15803d', marginBottom: 8 }}>
               {t('common.success')}
             </h3>
             <p style={{ color: '#475569', fontSize: 14 }}>{modalSuccessMsg}</p>
@@ -399,7 +399,7 @@ export default function RoleSelectPage({
                   type="submit"
                   variant="primary"
                   fullWidth
-                  style={{ background: '#16a34a', borderColor: '#16a34a' }}
+                  style={{ background: '#15803d', borderColor: '#166534' }}
                 >
                   <span>{t('farmerSubmitBtn')}</span>
                 </Button>

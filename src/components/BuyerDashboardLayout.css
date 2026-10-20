@@ -10,23 +10,23 @@
   /* Luminous neutral canvas */
   --buyer-bg-card: #ffffff;
   /* Pure white card surface */
-  --buyer-primary: #0f4a30;
-  /* Deep Botanical Pine / Evergreen */
-  --buyer-primary-hover: #135c3c;
-  /* Rich hunter green hover */
-  --buyer-primary-active: #0a3321;
-  /* Deep spruce active */
+  --buyer-primary: #0369a1;
+  /* Deep Ocean Blue (Buyer Theme) */
+  --buyer-primary-hover: #075985;
+  /* Deep sky blue hover */
+  --buyer-primary-active: #0c4a6e;
+  /* Deep azure active */
   --buyer-primary-text: #ffffff;
   /* Pure white */
-  --buyer-accent-subtle: #f0fdf4;
-  /* Delicate mist-green background */
-  --buyer-accent-text: #065f46;
-  /* Refined deep emerald text */
-  --buyer-accent-border: #d1fae5;
-  /* Subtle mint border */
+  --buyer-accent-subtle: #f0f9ff;
+  /* Delicate luminous light blue background */
+  --buyer-accent-text: #0369a1;
+  /* Refined deep sky blue text (WCAG AA 5.2:1 contrast) */
+  --buyer-accent-border: #bae6fd;
+  /* Soft light blue border */
   --buyer-border-light: #e2e8f0;
   /* Neutral border (Slate-200) */
-  --buyer-border-focus: #0f4a30;
+  --buyer-border-focus: #0369a1;
   /* Focus border */
   --buyer-text-main: #0f172a;
   /* Slate-900 main charcoal */
@@ -36,9 +36,9 @@
   /* Slate-400 hint text */
   --buyer-error-bg: #fef2f2;
   --buyer-error-text: #b91c1c;
-  --buyer-amber-bg: #fffbeb;
-  --buyer-amber-text: #b45309;
-  --buyer-amber-border: #fde68a;
+  --buyer-amber-bg: #f0f9ff;
+  --buyer-amber-text: #0369a1;
+  --buyer-amber-border: #bae6fd;
   --buyer-shadow-card: 0 4px 16px -2px rgba(15, 23, 42, 0.04), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
   --buyer-shadow-hover: 0 12px 30px -4px rgba(15, 23, 42, 0.08), 0 4px 10px -2px rgba(15, 23, 42, 0.03);
   --buyer-shadow-modal: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
@@ -61,6 +61,24 @@
   flex-direction: column;
   position: relative;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Buyer Theme Action Buttons Override */
+.buyer-dashboard-root .btn-primary,
+.buyer-dashboard-root .buyer-btn-primary,
+.buyer-dashboard-root .buyer-btn-accept {
+  background-color: var(--buyer-primary) !important;
+  border-color: var(--buyer-primary) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.28) !important;
+}
+
+.buyer-dashboard-root .btn-primary:hover,
+.buyer-dashboard-root .buyer-btn-primary:hover,
+.buyer-dashboard-root .buyer-btn-accept:hover {
+  background-color: var(--buyer-primary-hover) !important;
+  border-color: var(--buyer-primary-hover) !important;
+  box-shadow: 0 6px 18px rgba(2, 132, 199, 0.35) !important;
 }
 
 /* ==========================================================================
@@ -106,38 +124,33 @@
 }
 
 .buyer-brand-logo-img {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
   object-fit: cover;
-  border: 1.5px solid var(--buyer-border-light);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  border: 2px solid #16a34a;
+  box-shadow: 0 2px 6px rgba(22, 163, 74, 0.15);
   flex-shrink: 0;
 }
 
 .buyer-brand-titles {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
 }
 
 .buyer-brand-title {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: var(--buyer-text-main);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--buyer-text-main, #0f172a);
   letter-spacing: -0.02em;
+  line-height: 1.15;
 }
 
-.buyer-hub-pill {
-  font-size: 0.68rem;
+.buyer-brand-subtitle {
+  font-size: 0.72rem;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  background-color: var(--buyer-accent-subtle);
-  color: var(--buyer-accent-text);
-  border: 1px solid var(--buyer-accent-border);
-  padding: 2px 7px;
-  border-radius: var(--buyer-radius-full);
+  color: #15803d;
+  line-height: 1.2;
 }
 
 /* Center Search Input */
@@ -392,7 +405,7 @@
 }
 
 .buyer-notif-item.unread {
-  background-color: #f0fdf4;
+  background-color: var(--buyer-accent-subtle);
 }
 
 .buyer-notif-icon {
@@ -406,8 +419,8 @@
 }
 
 .buyer-notif-icon.green {
-  background-color: #dcfce7;
-  color: #15803d;
+  background-color: #e0f2fe;
+  color: #0369a1;
 }
 
 .buyer-notif-icon.blue {
@@ -1025,8 +1038,8 @@
 }
 
 .buyer-summary-card.active-transit {
-  border-color: #bbf7d0;
-  background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%);
+  border-color: var(--buyer-accent-border);
+  background: linear-gradient(180deg, #ffffff 0%, var(--buyer-accent-subtle) 100%);
 }
 
 .buyer-summary-number-wrap {
@@ -1062,14 +1075,14 @@
 }
 
 .buyer-summary-trend.green {
-  background-color: #dcfce7;
-  color: #15803d;
+  background-color: var(--buyer-accent-subtle);
+  color: var(--buyer-primary);
 }
 
 .pulse-indicator {
   width: 6px;
   height: 6px;
-  background-color: #15803d;
+  background-color: var(--buyer-primary);
   border-radius: 50%;
   animation: pulseBeacon 1.2s infinite;
 }
@@ -1130,8 +1143,8 @@
   font-size: 0.68rem;
   font-weight: 800;
   letter-spacing: 0.06em;
-  background-color: #dcfce7;
-  color: #15803d;
+  background-color: var(--buyer-accent-subtle);
+  color: var(--buyer-primary);
   padding: 2px 8px;
   border-radius: var(--buyer-radius-full);
 }
@@ -1461,13 +1474,13 @@
 }
 
 .buyer-crop-grade-tag.grade-a {
-  background-color: #15803d !important;
+  background-color: var(--buyer-primary) !important;
   color: #ffffff !important;
   border: 1px solid rgba(255, 255, 255, 0.3) !important;
 }
 
 .buyer-crop-grade-tag.grade-b {
-  background-color: #d97706 !important;
+  background-color: var(--buyer-primary-hover) !important;
   color: #ffffff !important;
   border: 1px solid rgba(255, 255, 255, 0.3) !important;
 }
@@ -1507,14 +1520,14 @@
 .buyer-price-currency {
   font-size: 1.15rem;
   font-weight: 700;
-  color: var(--buyer-primary);
+  color: var(--buyer-text-main);
   margin-right: 2px;
 }
 
 .buyer-price-number {
   font-size: 1.7rem;
   font-weight: 800;
-  color: var(--buyer-primary);
+  color: var(--buyer-text-main);
   letter-spacing: -0.02em;
   line-height: 1;
 }
@@ -1560,12 +1573,13 @@
   font-weight: 600;
 }
 
-/* Crop Card Actions (Section 7) */
 .buyer-crop-card-actions {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr;
-  gap: 10px;
+  display: flex;
   margin-top: auto;
+}
+
+.buyer-crop-card-actions .buyer-btn-accept {
+  width: 100%;
 }
 
 /* Accept: Deep agricultural green filled button */
@@ -1754,14 +1768,14 @@
 }
 
 .buyer-step.completed .buyer-step-circle {
-  background-color: #dcfce7;
-  color: #15803d;
+  background-color: var(--buyer-accent-subtle);
+  color: var(--buyer-primary);
 }
 
 .buyer-step.active .buyer-step-circle {
   background-color: var(--buyer-primary);
   color: #ffffff;
-  box-shadow: 0 0 0 4px rgba(15, 74, 48, 0.15);
+  box-shadow: 0 0 0 4px rgba(3, 105, 161, 0.18);
 }
 
 .pulse-circle {
@@ -1793,11 +1807,11 @@
 }
 
 .buyer-step-line.completed {
-  background-color: #15803d;
+  background-color: var(--buyer-primary);
 }
 
 .buyer-step-line.active {
-  background: linear-gradient(90deg, #15803d 0%, #0f4a30 100%);
+  background: linear-gradient(90deg, var(--buyer-primary) 0%, var(--buyer-primary-hover) 100%);
 }
 
 /* Map & Telemetry Split Layout */
@@ -1851,7 +1865,7 @@
 }
 
 .legend-item .dot.hub {
-  background-color: #0f4a30;
+  background-color: var(--buyer-primary);
 }
 
 .legend-item .dot.vehicle {
@@ -2020,8 +2034,8 @@
 }
 
 .buyer-status-stat.highlight {
-  background-color: #f0fdf4;
-  border: 1px solid #bbf7d0;
+  background-color: var(--buyer-accent-subtle);
+  border: 1px solid var(--buyer-accent-border);
 }
 
 .stat-label {
@@ -2037,7 +2051,7 @@
 }
 
 .stat-val.highlight {
-  color: #15803d;
+  color: var(--buyer-primary);
   font-size: 1.05rem;
 }
 
@@ -2066,8 +2080,8 @@
 .buyer-vehicle-tag {
   font-size: 0.7rem;
   font-weight: 700;
-  background-color: #dcfce7;
-  color: #15803d;
+  background-color: var(--buyer-accent-subtle);
+  color: var(--buyer-primary);
   padding: 2px 8px;
   border-radius: var(--buyer-radius-full);
 }
@@ -2240,18 +2254,18 @@
 }
 
 .buyer-order-status-badge.in_transit {
-  background-color: #dcfce7;
-  color: #15803d;
+  background-color: var(--buyer-accent-subtle);
+  color: var(--buyer-primary);
 }
 
 .buyer-order-status-badge.preparing {
-  background-color: #e0f2fe;
-  color: #0369a1;
+  background-color: #f1f5f9;
+  color: var(--buyer-text-muted);
 }
 
 .buyer-order-status-badge.confirmed {
-  background-color: #fef3c7;
-  color: #92400e;
+  background-color: #e0f2fe;
+  color: var(--buyer-primary);
 }
 
 .buyer-order-status-badge.delivered {
@@ -2262,7 +2276,7 @@
 .status-live-beacon {
   width: 7px;
   height: 7px;
-  background-color: #15803d;
+  background-color: var(--buyer-primary);
   border-radius: 50%;
   animation: pulseBeacon 1.2s infinite;
 }
@@ -2298,8 +2312,8 @@
 }
 
 .buyer-badge-tag.green {
-  background-color: #dcfce7;
-  color: #15803d;
+  background-color: var(--buyer-accent-subtle);
+  color: var(--buyer-primary);
 }
 
 .buyer-order-produce-hub {
@@ -2578,13 +2592,13 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background-color: #dcfce7;
-  color: #15803d;
+  background-color: var(--buyer-accent-subtle);
+  color: var(--buyer-primary);
   font-size: 0.72rem;
   font-weight: 700;
   padding: 3px 10px;
   border-radius: var(--buyer-radius-full);
-  border: 1px solid #bbf7d0;
+  border: 1px solid var(--buyer-accent-border);
 }
 
 .buyer-profile-firm-sub {
@@ -2677,8 +2691,8 @@
 }
 
 .detail-status-pill.green {
-  background-color: #dcfce7;
-  color: #15803d;
+  background-color: var(--buyer-accent-subtle);
+  color: var(--buyer-primary);
 }
 
 .buyer-doc-preview-chip {
@@ -2992,13 +3006,13 @@
 }
 
 .buyer-modal-icon-wrap.amber {
-  background-color: #fef3c7;
-  color: #b45309;
+  background-color: var(--buyer-accent-subtle);
+  color: var(--buyer-primary);
 }
 
 .buyer-modal-icon-wrap.green {
-  background-color: #dcfce7;
-  color: #15803d;
+  background-color: var(--buyer-accent-subtle);
+  color: var(--buyer-primary);
 }
 
 .buyer-modal-icon-wrap.red {
@@ -3111,8 +3125,8 @@
 .buyer-grade-badge.green {
   font-size: 0.7rem;
   font-weight: 700;
-  background-color: #dcfce7;
-  color: #15803d;
+  background-color: var(--buyer-accent-subtle);
+  color: var(--buyer-primary);
   padding: 2px 7px;
   border-radius: var(--buyer-radius-full);
 }
@@ -3141,7 +3155,7 @@
 .buyer-accept-price {
   font-size: 1.25rem;
   font-weight: 800;
-  color: var(--buyer-primary);
+  color: var(--buyer-text-main);
 }
 
 .buyer-accept-unit {
@@ -3249,8 +3263,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #f0fdf4;
-  border: 1px solid #bbf7d0;
+  background-color: var(--buyer-accent-subtle);
+  border: 1px solid var(--buyer-accent-border);
   border-radius: var(--buyer-radius-sm);
   padding: 12px 16px;
 }
@@ -3270,7 +3284,7 @@
 .buyer-calc-val {
   font-size: 1.35rem;
   font-weight: 800;
-  color: #15803d;
+  color: var(--buyer-text-main);
 }
 
 /* Farmer Details Dossier Card (Section 8) */
@@ -3346,7 +3360,7 @@
 }
 
 .buyer-call-farmer-btn:hover {
-  background-color: #dcfce7;
+  background-color: var(--buyer-accent-subtle);
 }
 
 .buyer-farmer-specs-grid {
@@ -3416,7 +3430,7 @@
 .buyer-sline-total-val {
   font-size: 1.15rem;
   font-weight: 800;
-  color: var(--buyer-primary);
+  color: var(--buyer-text-main);
 }
 
 /* Success Card (Section 9) */
@@ -3432,21 +3446,21 @@
   width: 68px;
   height: 68px;
   border-radius: 50%;
-  background-color: #dcfce7;
-  color: #15803d;
+  background-color: var(--buyer-accent-subtle);
+  color: var(--buyer-primary);
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 16px;
-  box-shadow: 0 8px 24px rgba(22, 163, 74, 0.25);
+  box-shadow: 0 8px 24px rgba(3, 105, 161, 0.25);
   animation: popIn 0.3s ease;
 }
 
 .buyer-success-sub-badge {
   font-size: 0.78rem;
   font-weight: 700;
-  color: #15803d;
-  background-color: #f0fdf4;
+  color: var(--buyer-primary);
+  background-color: var(--buyer-accent-subtle);
   padding: 4px 12px;
   border-radius: var(--buyer-radius-full);
   margin-bottom: 8px;
@@ -3494,7 +3508,7 @@
 }
 
 .cmeta-val.green {
-  color: #15803d;
+  color: var(--buyer-primary);
   font-weight: 600;
 }
 
@@ -3565,8 +3579,8 @@
 }
 
 .buyer-toast-notification.success {
-  background-color: #064e3b;
-  border: 1px solid #059669;
+  background-color: #0c4a6e;
+  border: 1px solid #0369a1;
 }
 
 .toast-close {
@@ -3628,7 +3642,7 @@
   right: calc(50% - 14px);
   width: 6px;
   height: 6px;
-  background-color: #10b981;
+  background-color: var(--buyer-primary);
   border-radius: 50%;
 }
 
@@ -3860,7 +3874,26 @@
 
   .buyer-view-header {
     width: 100%;
+    gap: 12px;
+  }
+
+  .buyer-order-tab-pills {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
     gap: 8px;
+    margin-top: 4px;
+  }
+
+  .buyer-order-tab-pills .buyer-tab-pill {
+    width: 100%;
+    text-align: center;
+    padding: 10px 16px;
+    font-size: 0.88rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
   }
 
   .buyer-view-title {
@@ -4171,25 +4204,34 @@
   }
 
   .buyer-brand-logo-img {
-    width: 32px !important;
-    height: 32px !important;
-    border-radius: 8px !important;
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 50% !important;
+    border: 2px solid #16a34a !important;
     object-fit: cover !important;
     flex-shrink: 0 !important;
   }
 
   .buyer-brand-titles {
     display: flex !important;
-    align-items: center !important;
-    gap: 6px !important;
+    flex-direction: column !important;
+    gap: 0 !important;
   }
 
   .buyer-brand-title {
-    font-size: 0.92rem !important;
-    font-weight: 700 !important;
-    color: var(--buyer-text-main) !important;
+    font-size: 0.98rem !important;
+    font-weight: 800 !important;
+    color: var(--buyer-text-main, #0f172a) !important;
     letter-spacing: -0.02em !important;
     white-space: nowrap !important;
+    line-height: 1.15 !important;
+  }
+
+  .buyer-brand-subtitle {
+    font-size: 0.65rem !important;
+    font-weight: 700 !important;
+    color: #15803d !important;
+    line-height: 1.1 !important;
   }
 
   .buyer-hub-pill {
