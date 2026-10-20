@@ -205,9 +205,9 @@ export default function Track() {
             >
               <defs>
                 <linearGradient id="routeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#0c4a6e" />
-                  <stop offset="50%" stopColor="#0369a1" />
-                  <stop offset="100%" stopColor="#38bdf8" />
+                  <stop offset="0%" stopColor="#1c3d5d" />
+                  <stop offset="50%" stopColor="#2b5c8a" />
+                  <stop offset="100%" stopColor="#c5d5e5" />
                 </linearGradient>
                 <filter id="shadowFilter" x="-10%" y="-10%" width="130%" height="130%">
                   <feDropShadow dx="0" dy="4" stdDeviation="6" floodOpacity="0.18" />
@@ -258,8 +258,8 @@ export default function Track() {
 
               {/* Waypoint 1: Supply Hub (Origin) */}
               <g transform="translate(140, 100)">
-                <circle r="18" fill="rgba(3, 105, 161, 0.15)" />
-                <circle r="10" fill="#0369a1" />
+                <circle r="18" fill="rgba(43, 92, 138, 0.15)" />
+                <circle r="10" fill="#2b5c8a" />
                 <circle r="4" fill="#ffffff" />
                 <text x="0" y="-22" textAnchor="middle" className="svg-node-label font-bold">
                   {trackingOrder?.hub || 'Central Supply Hub'}
@@ -287,8 +287,8 @@ export default function Track() {
 
               {/* Destination: Buyer Kitchen / Loading Bay */}
               <g transform="translate(660, 380)">
-                <circle r="22" fill="rgba(220, 38, 38, 0.12)" />
-                <circle r="11" fill="#dc2626" />
+                <circle r="22" fill="rgba(180, 35, 24, 0.12)" />
+                <circle r="11" fill="#b42318" />
                 <circle r="4" fill="#ffffff" />
                 <text x="0" y="32" textAnchor="middle" className="svg-node-label font-bold">
                   {profile?.shopName || profile?.name || 'Buyer Delivery Bay'}
@@ -298,26 +298,30 @@ export default function Track() {
                 </text>
               </g>
 
-              {/* Moving Delivery EV Vehicle Marker */}
+              {/* Moving Delivery EV Vehicle Marker (Clean Vector SVG, No Emojis) */}
               <g
                 transform="translate(480, 275)"
                 filter="url(#shadowFilter)"
                 className="buyer-ev-marker-group"
               >
-                <circle r="26" fill="rgba(16, 185, 129, 0.22)" className="animate-ping-slow" />
+                <circle r="26" fill="rgba(43, 92, 138, 0.18)" className="animate-ping-slow" />
                 <rect
                   x="-24"
                   y="-18"
                   width="48"
                   height="36"
                   rx="8"
-                  fill="#0369a1"
+                  fill="#2b5c8a"
                   stroke="#ffffff"
-                  strokeWidth="2.5"
+                  strokeWidth="2"
                 />
-                <text x="0" y="5" textAnchor="middle" fill="#ffffff" fontSize="16">
-                  🚚
-                </text>
+                <g transform="translate(-11, -11) scale(0.9)" stroke="#ffffff" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" />
+                  <path d="M15 18H9" />
+                  <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14" />
+                  <circle cx="17" cy="18" r="2" />
+                  <circle cx="7" cy="18" r="2" />
+                </g>
 
                 <g transform="translate(0, -32)">
                   <rect x="-56" y="-12" width="112" height="24" rx="12" fill="#0f172a" opacity="0.9" />

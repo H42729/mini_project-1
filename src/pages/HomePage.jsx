@@ -64,23 +64,6 @@ export default function HomePage({ onBuyerAuthSuccess: _onBuyerAuthSuccess }) {
                 {t('heroSubtitle')}
               </p>
 
-              <div className="hp-hero-actions">
-                <button
-                  type="button"
-                  className="hp-btn-primary"
-                  onClick={navigateToRoleSelect}
-                  aria-label="Get Started"
-                >
-                  <LogIn size={18} />
-                  <span>{t('heroCta')}</span>
-                  <ArrowRight size={18} />
-                </button>
-
-                <a href="#how-it-works" className="hp-btn-secondary">
-                  {t('howItWorksTitle')}
-                </a>
-              </div>
-
               {/* Trust Indicators */}
               <div className="hp-trust-strip">
                 <div className="hp-trust-item">

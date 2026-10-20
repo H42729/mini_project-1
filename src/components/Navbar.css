@@ -2,6 +2,27 @@
 /* What this file does: Dedicated styles for PublicNavbar mobile view (keeping desktop 100% original). */
 
 /* ==========================================================================
+   0. BULLETPROOF STICKY NAVBAR (Cross-Browser, Safari WebKit, Desktop & Mobile)
+   ========================================================================== */
+.public-navbar,
+nav.public-navbar,
+.navbar.public-navbar,
+.navbar-lang-ta,
+.navbar-lang-en,
+html[lang="ta"] .public-navbar,
+html[lang="ta"] nav.public-navbar,
+html[lang="ta"] .navbar.public-navbar {
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  z-index: 1030 !important;
+  background-color: #ffffff !important;
+}
+
+/* ==========================================================================
    1. DESKTOP VIEW (>= 992px) - 100% Original Desktop Layout
    ========================================================================== */
 @media (min-width: 992px) {
@@ -190,24 +211,101 @@
 
 /* ==========================================================================
    3. MOBILE SCREEN BREAKPOINTS (<= 480px and 320px - 360px)
+   Maintains the unified brand lockup (Logo + Title + Subtitle together) exactly
+   like Image 1, while calibrating font sizes and padding so the "English" button
+   and hamburger toggler fit completely on 320px and 375px with zero clipping.
    ========================================================================== */
 @media (max-width: 480px) {
+  .public-navbar-topbar {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    flex-wrap: nowrap !important;
+    gap: 6px !important;
+  }
+
+  .public-navbar-brand {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    margin-right: 0 !important;
+    min-width: 0 !important;
+    flex-shrink: 1 !important;
+  }
+
   .public-navbar-logo {
-    width: 36px;
-    height: 36px;
+    width: 36px !important;
+    height: 36px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .public-navbar-brand-text {
+    display: flex !important;
+    flex-direction: column !important;
+    min-width: 0 !important;
+    flex-shrink: 1 !important;
+    overflow: hidden !important;
+    justify-content: center !important;
   }
 
   .public-navbar-title {
-    font-size: 1rem;
+    font-size: 0.98rem !important;
+    letter-spacing: -0.2px !important;
+    line-height: 1.15 !important;
+    white-space: nowrap !important;
   }
 
   .public-navbar-subtitle {
-    font-size: 0.65rem;
-    max-width: 150px;
+    display: block !important;
+    font-size: 0.62rem !important;
+    font-weight: 700 !important;
+    color: #15803d !important;
+    line-height: 1.15 !important;
+    letter-spacing: -0.15px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: calc(100vw - 145px) !important;
+  }
+
+  .public-navbar-mobile-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    margin-left: auto !important;
+    flex-shrink: 0 !important;
+  }
+
+  .public-navbar-lang-btn {
+    height: 30px !important;
+    min-height: 30px !important;
+    padding: 2px 9px !important;
+    font-size: 0.74rem !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+  }
+
+  .public-navbar-toggler {
+    height: 32px !important;
+    min-height: 32px !important;
+    width: 34px !important;
+    min-width: 34px !important;
+    padding: 3px 5px !important;
+    flex-shrink: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .public-navbar-toggler .navbar-toggler-icon {
+    width: 18px !important;
+    height: 18px !important;
   }
 }
 
-/* Specific fix for 320px - 360px small mobile screens: Keeps language button & navbar button UP and aligned */
+/* Specific fix for 320px - 360px small mobile screens */
 @media (max-width: 360px) {
   .public-navbar {
     padding-top: 0.35rem !important;
@@ -215,30 +313,27 @@
   }
 
   .public-navbar-container {
-    padding-left: 8px !important;
-    padding-right: 8px !important;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+  }
+
+  .public-navbar-brand {
+    gap: 5px !important;
   }
 
   .public-navbar-logo {
     width: 32px !important;
     height: 32px !important;
-    border-width: 1.5px !important;
-  }
-
-  .public-navbar-brand-text {
-    max-width: 135px !important;
   }
 
   .public-navbar-title {
     font-size: 0.88rem !important;
-    letter-spacing: -0.2px !important;
-    line-height: 1.15 !important;
   }
 
   .public-navbar-subtitle {
-    font-size: 0.6rem !important;
-    max-width: 115px !important;
-    line-height: 1.1 !important;
+    font-size: 0.56rem !important;
+    letter-spacing: -0.2px !important;
+    max-width: calc(100vw - 125px) !important;
   }
 
   .public-navbar-mobile-actions {
@@ -248,24 +343,24 @@
   .public-navbar-lang-btn {
     height: 28px !important;
     min-height: 28px !important;
-    padding: 0 7px !important;
-    font-size: 0.72rem !important;
-    gap: 3px !important;
+    padding: 1px 7px !important;
+    font-size: 0.70rem !important;
   }
 
   .public-navbar-lang-text {
-    font-size: 0.72rem !important;
+    font-size: 0.70rem !important;
   }
 
   .public-navbar-toggler {
     height: 28px !important;
     min-height: 28px !important;
     width: 30px !important;
+    min-width: 30px !important;
     padding: 2px 3px !important;
   }
 
   .public-navbar-toggler .navbar-toggler-icon {
-    width: 18px !important;
-    height: 18px !important;
+    width: 16px !important;
+    height: 16px !important;
   }
 }

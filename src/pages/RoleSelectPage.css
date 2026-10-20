@@ -6,8 +6,8 @@
 .role-select-root {
   min-height: 100vh;
   width: 100%;
-  background: radial-gradient(100% 60% at 50% 0%, #ecfdf5 0%, #f8fafc 40%, #f1f5f9 100%);
-  color: #0f172a;
+  background-color: var(--neutral-50, #f6f6f2);
+  color: var(--neutral-900, #1f2933);
   display: flex;
   flex-direction: column;
   position: relative;
@@ -15,17 +15,9 @@
   font-family: inherit;
 }
 
-/* Subtle background glowing ambient orbs */
+/* No glowing ambient orbs (DESIGN.md Calm & Matte) */
 .role-select-root::before {
-  content: '';
-  position: absolute;
-  top: -10%;
-  left: 20%;
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(22, 163, 74, 0.08) 0%, transparent 70%);
-  pointer-events: none;
-  filter: blur(60px);
+  display: none;
 }
 
 .role-select-topbar {
@@ -33,10 +25,9 @@
   align-items: center;
   justify-content: space-between;
   padding: 14px clamp(16px, 4vw, 36px);
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(12px);
-  border-bottom: 1.5px solid #e2e8f0;
-  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03);
+  background: #ffffff;
+  border-bottom: 1px solid var(--neutral-200, #e3e3dd);
+  box-shadow: var(--shadow-card, 0 1px 2px rgba(31, 41, 51, 0.06));
   position: sticky;
   top: 0;
   z-index: 50;
@@ -225,35 +216,36 @@
 }
 
 .role-select-card:hover {
-  transform: translateY(-6px);
+  border-color: #9ca3af;
+  box-shadow: var(--shadow-hover, 0 2px 8px rgba(31, 41, 51, 0.08));
 }
 
-/* Card Themes */
+/* Card Themes (DESIGN.md Module Color Map) */
 .role-select-card.farmer-theme {
-  border-top: 5px solid #15803d !important;
+  border-top: 4px solid var(--primary-600, #2f6b3a) !important;
 }
 .role-select-card.farmer-theme:hover {
-  border-color: #86efac !important;
-  border-top-color: #15803d !important;
-  box-shadow: 0 20px 35px -4px rgba(21, 128, 61, 0.16), 0 8px 16px -4px rgba(21, 128, 61, 0.08);
+  border-color: #9ca3af !important;
+  border-top-color: var(--primary-600, #2f6b3a) !important;
+  box-shadow: var(--shadow-hover, 0 2px 8px rgba(31, 41, 51, 0.08));
 }
 
 .role-select-card.buyer-theme {
-  border-top: 5px solid #0369a1 !important;
+  border-top: 4px solid var(--buyer-primary, #2b5c8a) !important;
 }
 .role-select-card.buyer-theme:hover {
-  border-color: #bae6fd !important;
-  border-top-color: #0369a1 !important;
-  box-shadow: 0 20px 35px -4px rgba(3, 105, 161, 0.18), 0 8px 16px -4px rgba(3, 105, 161, 0.08);
+  border-color: #9ca3af !important;
+  border-top-color: var(--buyer-primary, #2b5c8a) !important;
+  box-shadow: var(--shadow-hover, 0 2px 8px rgba(31, 41, 51, 0.08));
 }
 
 .role-select-card.driver-theme {
-  border-top: 5px solid #ea580c !important;
+  border-top: 4px solid var(--driver-primary, #8f5a12) !important;
 }
 .role-select-card.driver-theme:hover {
-  border-color: #fdba74 !important;
-  border-top-color: #ea580c !important;
-  box-shadow: 0 20px 35px -4px rgba(234, 88, 12, 0.18), 0 8px 16px -4px rgba(234, 88, 12, 0.08);
+  border-color: #9ca3af !important;
+  border-top-color: var(--driver-primary, #8f5a12) !important;
+  box-shadow: var(--shadow-hover, 0 2px 8px rgba(31, 41, 51, 0.08));
 }
 
 /* Card Elements */
@@ -267,57 +259,60 @@
 .role-card-icon-bubble {
   width: 58px;
   height: 58px;
-  border-radius: 16px;
+  border-radius: var(--radius-lg, 12px);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 30px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  font-size: 28px;
+  box-shadow: var(--shadow-card, 0 1px 2px rgba(31, 41, 51, 0.06));
 }
 
 .farmer-theme .role-card-icon-bubble {
-  background-color: #dcfce7;
+  background-color: var(--primary-100, #eaf3ec);
+  color: var(--primary-600, #2f6b3a);
 }
 
 .buyer-theme .role-card-icon-bubble {
-  background-color: #e0f2fe;
+  background-color: var(--buyer-accent-subtle, #e8eff6);
+  color: var(--buyer-primary, #2b5c8a);
 }
 
 .driver-theme .role-card-icon-bubble {
-  background-color: #ffedd5;
+  background-color: var(--driver-tint, #f8f0e3);
+  color: var(--driver-primary, #8f5a12);
 }
 
 .role-card-tag {
   font-size: 0.72rem;
-  font-weight: 800;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   padding: 3px 10px;
-  border-radius: 999px;
+  border-radius: var(--radius-full, 999px);
 }
 
 .farmer-theme .role-card-tag {
-  background-color: #f0fdf4 !important;
-  color: #15803d !important;
-  border: 1px solid #bbf7d0 !important;
+  background-color: var(--primary-100, #eaf3ec) !important;
+  color: var(--primary-600, #2f6b3a) !important;
+  border: 1px solid var(--primary-200, #cfe3d2) !important;
 }
 
 .buyer-theme .role-card-tag {
-  background-color: #f0f9ff !important;
-  color: #0369a1 !important;
-  border: 1px solid #bae6fd !important;
+  background-color: var(--buyer-accent-subtle, #e8eff6) !important;
+  color: var(--buyer-accent-text, #2b5c8a) !important;
+  border: 1px solid var(--buyer-accent-border, #c5d5e5) !important;
 }
 
 .driver-theme .role-card-tag {
-  background-color: #fff7ed !important;
-  color: #c2410c !important;
-  border: 1px solid #fed7aa !important;
+  background-color: var(--driver-tint, #f8f0e3) !important;
+  color: var(--driver-primary, #8f5a12) !important;
+  border: 1px solid #ebd9a8 !important;
 }
 
 .role-card-heading {
   font-size: 1.35rem;
   font-weight: 800;
-  color: #0f172a;
+  color: var(--neutral-900, #1f2933);
   margin: 0 0 4px 0;
   line-height: 1.2;
 }
@@ -330,20 +325,20 @@
 }
 
 .farmer-theme .role-card-action-sub {
-  color: #15803d;
+  color: var(--primary-700, #265a31);
 }
 
 .buyer-theme .role-card-action-sub {
-  color: #0369a1;
+  color: var(--buyer-primary, #2b5c8a);
 }
 
 .driver-theme .role-card-action-sub {
-  color: #c2410c;
+  color: var(--driver-primary, #8f5a12);
 }
 
 .role-card-desc {
   font-size: 0.85rem;
-  color: #475569;
+  color: var(--neutral-700, #4b5563);
   line-height: 1.5;
   margin: 0 0 20px 0;
   flex: 1;
@@ -351,45 +346,50 @@
 
 .role-card-action-btn {
   width: 100%;
-  min-height: 48px;
+  min-height: 46px;
   border: none;
-  border-radius: 12px;
+  border-radius: var(--radius-md, 8px);
   color: #ffffff;
   font-size: 0.95rem;
-  font-weight: 800;
+  font-weight: 700;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  transition: all 0.18s ease;
+  transition: background-color 0.15s ease;
   font-family: inherit;
+  box-shadow: var(--shadow-card);
 }
 
 .farmer-theme .role-card-action-btn {
-  background: #15803d;
-  box-shadow: 0 4px 14px rgba(21, 128, 61, 0.3);
+  background: var(--primary-600, #2f6b3a);
 }
 .farmer-theme .role-card-action-btn:hover {
-  background: #166534;
+  background: var(--primary-700, #265a31);
+}
+.farmer-theme .role-card-action-btn:active {
+  background: var(--primary-900, #1e4a29);
 }
 
 .buyer-theme .role-card-action-btn {
-  background: #0369a1;
-  color: #ffffff;
-  box-shadow: 0 4px 14px rgba(3, 105, 161, 0.32);
+  background: var(--buyer-primary, #2b5c8a);
 }
 .buyer-theme .role-card-action-btn:hover {
-  background: #075985;
-  color: #ffffff;
+  background: var(--buyer-primary-hover, #234b71);
+}
+.buyer-theme .role-card-action-btn:active {
+  background: var(--buyer-primary-active, #1c3d5d);
 }
 
 .driver-theme .role-card-action-btn {
-  background: #ea580c;
-  box-shadow: 0 4px 14px rgba(234, 88, 12, 0.35);
+  background: var(--driver-primary, #8f5a12);
 }
 .driver-theme .role-card-action-btn:hover {
-  background: #c2410c;
+  background: var(--driver-hover, #764a0e);
+}
+.driver-theme .role-card-action-btn:active {
+  background: #5e3b0b;
 }
 
 /* Footer info note */
@@ -468,5 +468,15 @@
     padding: 4px 10px;
     font-size: 0.78rem;
     height: 28px;
+  }
+}
+
+@media (max-width: 380px) {
+  html[lang="ta"] .role-select-brand-sub {
+    font-size: 0.62rem;
+    max-width: 130px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }

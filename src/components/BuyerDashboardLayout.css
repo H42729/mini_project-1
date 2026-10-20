@@ -6,45 +6,46 @@
    ========================================================================== */
 
 :root {
-  --buyer-bg-canvas: #f8fafc;
-  /* Luminous neutral canvas */
+  --buyer-bg-canvas: #f6f6f2;
+  /* Soft warm paper neutral canvas */
   --buyer-bg-card: #ffffff;
   /* Pure white card surface */
-  --buyer-primary: #0369a1;
-  /* Deep Ocean Blue (Buyer Theme) */
-  --buyer-primary-hover: #075985;
-  /* Deep sky blue hover */
-  --buyer-primary-active: #0c4a6e;
-  /* Deep azure active */
+  --buyer-primary: #2b5c8a;
+  /* Steel Blue (Commercial Buyer Theme) */
+  --buyer-primary-hover: #234b71;
+  /* Deep steel blue hover */
+  --buyer-primary-active: #1c3d5d;
+  /* Pressed state */
   --buyer-primary-text: #ffffff;
   /* Pure white */
-  --buyer-accent-subtle: #f0f9ff;
-  /* Delicate luminous light blue background */
-  --buyer-accent-text: #0369a1;
-  /* Refined deep sky blue text (WCAG AA 5.2:1 contrast) */
-  --buyer-accent-border: #bae6fd;
-  /* Soft light blue border */
-  --buyer-border-light: #e2e8f0;
-  /* Neutral border (Slate-200) */
-  --buyer-border-focus: #0369a1;
+  --buyer-accent-subtle: #e8eff6;
+  /* Active sidebar item / info badge fill */
+  --buyer-accent-text: #2b5c8a;
+  /* High-contrast metadata text */
+  --buyer-accent-border: #c5d5e5;
+  /* Selected container outline */
+  --buyer-border-light: #e3e3dd;
+  /* Neutral border */
+  --buyer-border-focus: #2b5c8a;
   /* Focus border */
-  --buyer-text-main: #0f172a;
-  /* Slate-900 main charcoal */
-  --buyer-text-muted: #475569;
-  /* Slate-600 secondary text */
-  --buyer-text-dim: #94a3b8;
-  /* Slate-400 hint text */
-  --buyer-error-bg: #fef2f2;
-  --buyer-error-text: #b91c1c;
-  --buyer-amber-bg: #f0f9ff;
-  --buyer-amber-text: #0369a1;
-  --buyer-amber-border: #bae6fd;
-  --buyer-shadow-card: 0 4px 16px -2px rgba(15, 23, 42, 0.04), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
-  --buyer-shadow-hover: 0 12px 30px -4px rgba(15, 23, 42, 0.08), 0 4px 10px -2px rgba(15, 23, 42, 0.03);
-  --buyer-shadow-modal: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
-  --buyer-radius-sm: 8px;
-  --buyer-radius-md: 12px;
-  --buyer-radius-lg: 18px;
+  --buyer-text-main: #1f2933;
+  /* Slate charcoal main text */
+  --buyer-text-muted: #4b5563;
+  /* Secondary text */
+  --buyer-text-dim: #667085;
+  /* Hint text */
+  --buyer-error-bg: #fcebe9;
+  --buyer-error-text: #b42318;
+  --buyer-amber-bg: #faf1da;
+  --buyer-amber-text: #7a5200;
+  --buyer-amber-border: #ebd9a8;
+  --buyer-shadow-card: 0 1px 2px rgba(31, 41, 51, 0.06);
+  --buyer-shadow-hover: 0 2px 8px rgba(31, 41, 51, 0.08);
+  --buyer-shadow-modal: 0 8px 24px rgba(31, 41, 51, 0.16);
+  --buyer-radius-sm: 6px;
+  --buyer-radius-md: 8px;
+  --buyer-radius-lg: 12px;
+  --buyer-radius-xl: 16px;
   --buyer-radius-full: 9999px;
   --buyer-font: 'Plus Jakarta Sans', 'Noto Sans Tamil', 'Mukta Malar', system-ui, -apple-system, sans-serif;
 }
@@ -419,13 +420,13 @@
 }
 
 .buyer-notif-icon.green {
-  background-color: #e0f2fe;
-  color: #0369a1;
+  background-color: var(--primary-100, #eaf3ec);
+  color: var(--primary-600, #2f6b3a);
 }
 
 .buyer-notif-icon.blue {
-  background-color: #e0f2fe;
-  color: #0369a1;
+  background-color: var(--buyer-accent-subtle, #e8eff6);
+  color: var(--buyer-primary, #2b5c8a);
 }
 
 .buyer-notif-icon.gray {
@@ -3579,8 +3580,8 @@
 }
 
 .buyer-toast-notification.success {
-  background-color: #0c4a6e;
-  border: 1px solid #0369a1;
+  background-color: var(--buyer-primary-active, #1c3d5d);
+  border: 1px solid var(--buyer-primary, #2b5c8a);
 }
 
 .toast-close {

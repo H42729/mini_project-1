@@ -458,10 +458,10 @@ export default function BuyerRegister({
                 <div className="buyer-reg-success-icon">
                   <Check size={28} />
                 </div>
-                <h2 style={{ fontSize: 20, fontWeight: 800, color: '#0369a1', marginBottom: 8 }}>
+                <h2 style={{ fontSize: 20, fontWeight: 800, color: 'var(--buyer-primary, #2b5c8a)', marginBottom: 8 }}>
                   {t('successTitle')}
                 </h2>
-                <p style={{ fontSize: 14.5, color: '#334155', lineHeight: 1.6, marginBottom: 16 }}>
+                <p style={{ fontSize: 14.5, color: 'var(--buyer-text-muted, #4b5563)', lineHeight: 1.6, marginBottom: 16 }}>
                   {t('successDesc')}
                 </p>
 
@@ -471,9 +471,9 @@ export default function BuyerRegister({
                   alignItems: 'center',
                   gap: 14,
                   padding: '12px 16px',
-                  background: '#f8fafc',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: 12,
+                  background: 'var(--buyer-bg-canvas, #f6f6f2)',
+                  border: '1px solid var(--buyer-border-light, #e3e3dd)',
+                  borderRadius: 'var(--radius-md, 8px)',
                   marginBottom: 20,
                   textAlign: 'left',
                   width: '100%',
@@ -481,15 +481,15 @@ export default function BuyerRegister({
                 }}>
                   {photoPreview ? (
                     <img 
-                      src={photoPreview} 
-                      alt="Uploaded Business Avatar" 
-                      style={{ width: 50, height: 50, borderRadius: '50%', objectFit: 'cover', border: '2px solid #0369a1' }}
-                    />
-                  ) : (
-                    <div style={{ width: 50, height: 50, borderRadius: '50%', background: '#e0f2fe', color: '#0369a1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <Building2 size={24} />
-                    </div>
-                  )}
+                    src={photoPreview} 
+                    alt="Uploaded Business Avatar" 
+                    style={{ width: 50, height: 50, borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--buyer-primary, #2b5c8a)' }}
+                  />
+                ) : (
+                  <div style={{ width: 50, height: 50, borderRadius: '50%', background: 'var(--buyer-accent-subtle, #e8eff6)', color: 'var(--buyer-primary, #2b5c8a)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Building2 size={24} />
+                  </div>
+                )}
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontWeight: 700, fontSize: 15, color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       {shopName || name}

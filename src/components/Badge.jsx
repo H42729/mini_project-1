@@ -28,48 +28,39 @@ export default function Badge({
   }
 
   // Map to Bootstrap badge background or custom utility classes
-  let bg = 'secondary';
+  let bg = '';
   let customClass = '';
 
   switch (resolvedVariant) {
     case 'success':
     case 'delivered':
-      bg = 'success';
+      customClass = 'badge-status-success';
       break;
     case 'grade-a':
     case 'grade-a+':
-      bg = 'success';
-      customClass = 'text-white fw-bold';
+      customClass = 'badge-status-success fw-bold';
+      break;
+    case 'in-transit':
+    case 'info':
+      customClass = 'badge-status-info';
       break;
     case 'warning':
-    case 'in-transit':
+    case 'pending':
+    case 'in-review':
     case 'preparing':
-      bg = 'warning';
-      customClass = 'text-dark';
+    case 'gold':
+    case 'grade-b':
+      customClass = 'badge-status-pending fw-bold';
       break;
     case 'danger':
     case 'error':
     case 'cancelled':
-      bg = 'danger';
-      break;
-    case 'info':
-      bg = 'info';
-      customClass = 'text-dark';
-      break;
-    case 'gold':
-      bg = 'warning';
-      customClass = 'bg-amber text-dark';
-      break;
-    case 'grade-b':
-      bg = 'warning';
-      customClass = 'text-white fw-bold';
+      customClass = 'badge-status-error';
       break;
     case 'brand':
-      bg = 'success-subtle';
-      customClass = 'text-success border border-success-subtle';
-      break;
-    case 'grade-c':
-      bg = 'secondary';
+    case 'farmer':
+    case 'organic':
+      customClass = 'badge-status-farmer';
       break;
     default:
       bg = 'secondary';

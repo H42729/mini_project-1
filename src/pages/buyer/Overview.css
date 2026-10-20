@@ -20,14 +20,13 @@
 }
 
 .buyer-summary-card:hover {
-  transform: translateY(-2px);
-  border-color: #cbd5e1;
+  border-color: #9ca3af;
   box-shadow: var(--buyer-shadow-hover);
 }
 
 .buyer-summary-card.active-transit {
   border-color: var(--buyer-accent-border);
-  background: linear-gradient(180deg, #ffffff 0%, var(--buyer-accent-subtle) 100%);
+  background-color: var(--buyer-accent-subtle);
 }
 
 .buyer-summary-number-wrap {

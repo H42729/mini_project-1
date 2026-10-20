@@ -6,28 +6,29 @@
    ========================================================================== */
 
 :root {
-  --buyer-bg-canvas: #f8fafc;          /* Crisp luminous slate neutral */
+  --buyer-bg-canvas: #f6f6f2;          /* Soft warm paper canvas */
   --buyer-bg-card: #ffffff;            /* Pure white card surface */
-  --buyer-primary: #0369a1;            /* Eye-catchy Ocean Blue */
-  --buyer-primary-hover: #075985;      /* Deep sky blue hover */
-  --buyer-primary-active: #0c4a6e;     /* Deep navy blue active */
+  --buyer-primary: #2b5c8a;            /* Steel Blue (Commercial Buyer) */
+  --buyer-primary-hover: #234b71;      /* Hover state */
+  --buyer-primary-active: #1c3d5d;     /* Pressed state */
   --buyer-primary-text: #ffffff;       /* Crisp white */
-  --buyer-accent-subtle: #f0f9ff;      /* Delicate luminous light blue background */
-  --buyer-accent-text: #0369a1;        /* Refined deep sky blue text (5.2:1 contrast) */
-  --buyer-accent-border: #bae6fd;      /* Soft light blue border */
-  --buyer-border-light: #e2e8f0;       /* Clean neutral border (Slate-200) */
-  --buyer-border-focus: #0369a1;       /* Focus border */
-  --buyer-text-main: #0f172a;          /* Deep Slate charcoal (Slate-900) */
-  --buyer-text-muted: #475569;         /* Slate-600 secondary text */
-  --buyer-text-dim: #94a3b8;           /* Slate-400 placeholder */
-  --buyer-error-bg: #fef2f2;
-  --buyer-error-text: #b91c1c;
-  --buyer-error-border: #fecaca;
-  --buyer-shadow-card: 0 16px 36px -4px rgba(15, 23, 42, 0.08), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
-  --buyer-shadow-overlay: 0 24px 50px -12px rgba(15, 23, 42, 0.22);
-  --buyer-radius-sm: 8px;
-  --buyer-radius-md: 12px;
-  --buyer-radius-lg: 20px;
+  --buyer-accent-subtle: #e8eff6;      /* Active sidebar / info badge fill */
+  --buyer-accent-text: #2b5c8a;        /* High-contrast metadata text */
+  --buyer-accent-border: #c5d5e5;      /* Selected container outline */
+  --buyer-border-light: #e3e3dd;       /* Neutral border */
+  --buyer-border-focus: #2b5c8a;       /* Focus border */
+  --buyer-text-main: #1f2933;          /* Deep charcoal text (never pure black) */
+  --buyer-text-muted: #4b5563;         /* Secondary text */
+  --buyer-text-dim: #667085;           /* Dim text / placeholder */
+  --buyer-error-bg: #fcebe9;
+  --buyer-error-text: #b42318;
+  --buyer-error-border: #f3c6c1;
+  --buyer-shadow-card: 0 1px 2px rgba(31, 41, 51, 0.06);
+  --buyer-shadow-overlay: 0 8px 24px rgba(31, 41, 51, 0.16);
+  --buyer-radius-sm: 6px;
+  --buyer-radius-md: 8px;
+  --buyer-radius-lg: 12px;
+  --buyer-radius-xl: 16px;
   --buyer-radius-full: 9999px;
   --buyer-font: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
 }
@@ -60,7 +61,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   LEFT SIDE: CINEMATIC VISUAL PANE (Centered Editorial Storytelling)
+   LEFT SIDE: SOLID DEEP-GREEN SHOWCASE PANE (DESIGN.md Section 6.3)
    -------------------------------------------------------------------------- */
 .buyer-visual-pane {
   flex: 0 0 38%;
@@ -70,11 +71,7 @@
   height: 100vh;
   max-height: 100vh;
   position: relative;
-  background-color: #061e14;
-  background-image: url('/buyer-produce-hero.jpg');
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
+  background-color: #1e4a29;
   display: flex;
   flex-direction: column;
   padding: clamp(28px, 4vh, 44px) clamp(20px, 2.5vw, 36px);
@@ -85,18 +82,9 @@
   z-index: 10;
 }
 
-/* Deep Botanical Scrim: Ensures 100% Contrast & Text Legibility */
+/* Clean scrim - no grid mesh or multi-color gradients */
 .buyer-visual-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(12, 35, 64, 0.78) 0%,
-    rgba(8, 26, 48, 0.84) 38%,
-    rgba(5, 18, 35, 0.90) 75%,
-    rgba(3, 11, 22, 0.96) 100%
-  );
-  z-index: 1;
+  display: none;
 }
 
 .buyer-visual-inner {

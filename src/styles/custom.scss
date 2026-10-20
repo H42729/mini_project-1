@@ -4,16 +4,18 @@
 @import "bootstrap/scss/functions";
 
 // 2. Variable overrides before variables import
-$primary: #14532d;
-$success: #16a34a;
-$warning: #d97706;
-$body-color: #0f172a;
-$body-bg: #f8fafc;
-$border-color: #e2e8f0;
+$primary: #2f6b3a;
+$success: #2f6b3a;
+$info: #2b5c8a;
+$warning: #7a5200;
+$danger: #b42318;
+$body-color: #1f2933;
+$body-bg: #f6f6f2;
+$border-color: #e3e3dd;
 $font-family-sans-serif: 'Plus Jakarta Sans', 'Noto Sans Tamil', 'Mukta Malar', system-ui, sans-serif;
 $border-radius: 8px;
 $border-radius-lg: 12px;
-$border-radius-xl: 18px;
+$border-radius-xl: 16px;
 $headings-line-height: 1.35;
 $line-height-base: 1.5;
 
@@ -63,37 +65,37 @@ $line-height-base: 1.5;
 // 8. Custom Brand Utilities
 .btn-ghost {
   background: transparent;
-  color: var(--primary-800, #166534);
+  color: var(--primary-700, #265a31);
   border-color: transparent;
   &:hover, &:focus {
-    background: var(--primary-50, #f0fdf4);
-    color: var(--primary-900, #14532d);
+    background: var(--primary-50, #f3f8f4);
+    color: var(--primary-900, #1e4a29);
     border-color: transparent;
   }
 }
 
 .btn-harvest {
-  background-color: var(--harvest-600, #ea580c);
-  border-color: var(--harvest-600, #ea580c);
+  background-color: var(--driver-primary, #8f5a12);
+  border-color: var(--driver-primary, #8f5a12);
   color: #ffffff;
   &:hover, &:focus {
-    background-color: var(--harvest-700, #c2410c);
-    border-color: var(--harvest-700, #c2410c);
+    background-color: var(--driver-hover, #764a0e);
+    border-color: var(--driver-hover, #764a0e);
     color: #ffffff;
   }
 }
 
 .bg-amber {
-  background-color: #f59e0b !important;
-  color: #1e293b !important;
+  background-color: #faf1da !important;
+  color: #7a5200 !important;
 }
 
 .ui-card-interactive {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
   cursor: pointer;
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px -5px rgba(20, 83, 45, 0.12) !important;
+    border-color: #9ca3af !important;
+    box-shadow: 0 2px 8px rgba(31, 41, 51, 0.08) !important;
   }
 }
 
