@@ -21,7 +21,7 @@ export default function PublicNavbar({
   onLoginClick,
   className = '',
 }) {
-  const { t, toggleLang } = useT('common');
+  const { t, lang, toggleLang } = useT('common');
   const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = React.useState(false);
 
@@ -58,6 +58,8 @@ export default function PublicNavbar({
       expand="lg"
       sticky="top"
       className={`public-navbar bg-white bg-opacity-95 border-bottom py-2 py-lg-2.5 ${
+        lang === 'ta' ? 'navbar-lang-ta' : 'navbar-lang-en'
+      } ${
         isScrolled ? 'shadow-sm border-secondary-subtle' : 'border-light-subtle'
       } ${className}`}
       style={{
@@ -93,7 +95,7 @@ export default function PublicNavbar({
               <span className="public-navbar-title fw-bolder fs-5 text-dark lh-sm" style={{ letterSpacing: '-0.3px' }}>
                 {t('appName')}
               </span>
-              <span className="public-navbar-subtitle fw-bold text-success" style={{ fontSize: '0.72rem' }}>
+              <span className="public-navbar-subtitle fw-bold text-success">
                 {t('appSubtitle')}
               </span>
             </div>

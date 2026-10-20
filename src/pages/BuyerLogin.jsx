@@ -395,7 +395,7 @@ export default function BuyerLogin({
               size="sm"
               className="buyer-lang-btn" 
               onClick={toggleLang}
-              leftIcon={<Globe size={15} color="#0369a1" />}
+              leftIcon={<Globe size={15} color="var(--buyer-primary, #2b5c8a)" />}
               title="Switch Language / மொழியை மாற்ற"
               aria-label="Toggle language between English and Tamil"
             >
@@ -537,7 +537,7 @@ export default function BuyerLogin({
                 variant="outline"
                 size="md"
                 fullWidth
-                style={{ marginTop: 10, borderColor: '#0369a1', color: '#0369a1', fontWeight: 700 }}
+                style={{ marginTop: 10, borderColor: 'var(--buyer-primary, #2b5c8a)', color: 'var(--buyer-primary, #2b5c8a)', fontWeight: 700 }}
                 onClick={handleDemoSignIn}
                 disabled={isSubmitting}
               >
@@ -588,7 +588,7 @@ export default function BuyerLogin({
       >
         {forgotSent ? (
           <div>
-            <div style={{ background: '#f0f9ff', border: '1px solid #bae6fd', borderRadius: 12, padding: '12px 14px', color: '#0369a1', fontSize: 14, marginBottom: 16, display: 'flex', gap: 8, alignItems: 'center' }}>
+            <div style={{ background: 'var(--buyer-accent-subtle, #e8eff6)', border: '1px solid var(--buyer-accent-border, #c5d5e5)', borderRadius: 'var(--radius-md, 8px)', padding: '12px 14px', color: 'var(--buyer-accent-text, #2b5c8a)', fontSize: 14, marginBottom: 16, display: 'flex', gap: 8, alignItems: 'center' }}>
               <CheckCircle2 size={18} />
               <span>{t('forgotSuccess')}</span>
             </div>

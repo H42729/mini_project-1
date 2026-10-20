@@ -102,11 +102,11 @@
   flex-direction: column;
   height: 100%;
   overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .buyer-crop-card:hover {
-  transform: translateY(-3px);
+  border-color: #9ca3af;
   box-shadow: var(--buyer-shadow-hover);
 }
 
@@ -115,18 +115,13 @@
   height: 175px;
   width: 100%;
   overflow: hidden;
-  background-color: #f1f5f9;
+  background-color: var(--neutral-100, #eeeee9);
 }
 
 .buyer-crop-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s ease;
-}
-
-.buyer-crop-card:hover .buyer-crop-img {
-  transform: scale(1.04);
 }
 
 .buyer-crop-harvest-badge {
