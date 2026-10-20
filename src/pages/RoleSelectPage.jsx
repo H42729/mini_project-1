@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Sparkles, ShieldCheck, Phone, CheckCircle2, Truck } from 'lucide-react';
+import { ArrowLeft, Sparkles, Phone, CheckCircle2, Truck } from 'lucide-react';
 import { useT } from '../hooks/useT';
 import { ROUTES } from '../routes';
 import Card from '../components/Card';
@@ -11,9 +11,6 @@ import Button from '../components/Button';
 import Input from '../components/Input';
 import Modal from '../components/Modal';
 import './RoleSelectPage.css';
-
-const HELPLINE_NUMBER = '1800-180-1551';
-const HELPLINE_TEL = '18001801551';
 
 export default function RoleSelectPage({
   onBack,
@@ -321,27 +318,6 @@ export default function RoleSelectPage({
               <span>{t('driverBtn')}</span>
             </Button>
           </Card>
-        </div>
-
-        {/* Footer Support Info */}
-        <div className="role-select-footer-note">
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-            <Phone size={15} color="#15803d" />
-            <span>
-              {t('helpline')}{' '}
-              <a
-                href={`tel:${HELPLINE_TEL}`}
-                style={{ color: '#15803d', fontWeight: 700, textDecoration: 'none' }}
-              >
-                {HELPLINE_NUMBER}
-              </a>
-            </span>
-          </span>
-          <span>•</span>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-            <ShieldCheck size={15} color="#15803d" />
-            <span>{t('verifiedNetwork')}</span>
-          </span>
         </div>
       </main>
 

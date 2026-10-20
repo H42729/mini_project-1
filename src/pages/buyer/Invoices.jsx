@@ -24,36 +24,36 @@ const ARCHIVED_INVOICES = [
     id: 'INV-2026-00088',
     orderId: 'NU-2026-00088',
     invoiceDate: '15 Oct 2026',
-    cropName: 'Robusta Golden Bananas',
-    tamilCropName: 'ரோபஸ்டா வாழை',
+    cropName: 'Sirumalai Hill Bananas',
+    tamilCropName: 'சிறுமலை வாழை',
     grade: 'Grade A',
     quantityKg: 300,
     unitPrice: 38,
     totalAmount: 11400,
     status: 'paid',
-    hub: 'Trichy Cauvery Hub',
+    hub: 'Sirumalai, Dindigul',
     farmer: {
       name: 'N. Balakrishnan',
       phone: '+91 94438 90123',
-      location: 'Thottiyam, Tiruchirappalli'
+      location: 'Sirumalai Hills, Dindigul'
     }
   },
   {
     id: 'INV-2026-00075',
     orderId: 'NU-2026-00075',
     invoiceDate: '12 Oct 2026',
-    cropName: 'Hosur Green Capsicum',
+    cropName: 'Green Capsicum',
     tamilCropName: 'குடைமிளகாய்',
     grade: 'Grade A',
     quantityKg: 120,
     unitPrice: 52,
     totalAmount: 6240,
     status: 'paid',
-    hub: 'Hosur Agri Hub',
+    hub: 'Vedasandur, Dindigul',
     farmer: {
       name: 'V. Senthil',
       phone: '+91 97890 12345',
-      location: 'Kelamangalam, Krishnagiri'
+      location: 'Vedasandur, Dindigul'
     }
   }
 ];
@@ -108,7 +108,7 @@ export default function Invoices() {
         unitPrice: unitPrice,
         totalAmount: totalAmount,
         status: isPaid ? 'paid' : 'pending',
-        hub: order?.hub || 'Regional Agri Hub',
+        hub: order?.hub || order?.location || 'Dindigul Central',
         farmer: {
           name: order?.farmer?.name || 'Local Producer',
           phone: order?.farmer?.phone || '+91 98400 00000',
@@ -464,12 +464,12 @@ export default function Invoices() {
                   </div>
 
                   <div className="simple-party-card">
-                    <span className="party-title">{lang === 'ta' ? 'விவசாயி & மையம்' : 'Farmer & Hub'}</span>
+                    <span className="party-title">{lang === 'ta' ? 'விவசாயி & இடம்' : 'Farmer & Location'}</span>
                     <strong className="party-name">
                       🌾 {selectedInvoice.farmer?.name || 'Local Producer'}
                     </strong>
                     <span className="party-sub">
-                      {selectedInvoice.hub || 'Direct Hub'} • {selectedInvoice.farmer?.location || 'Tamil Nadu'}
+                      {selectedInvoice.hub || 'Dindigul Central'} • {selectedInvoice.farmer?.location || 'Dindigul'}
                     </span>
                   </div>
                 </div>

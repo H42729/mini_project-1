@@ -28,7 +28,7 @@ export default function CropCard({ crop, _lang, t, onAccept }) {
         {crop?.grade && (
           <Badge
             grade={crop.grade}
-            className={`buyer-crop-grade-tag ${crop.grade === 'Grade A' ? 'grade-a' : 'grade-b'}`}
+            className={`buyer-crop-grade-tag ${crop.grade === 'Grade A' ? 'grade-a' : crop.grade === 'Grade B' ? 'grade-b' : 'grade-c'}`}
           />
         )}
       </div>
@@ -48,16 +48,23 @@ export default function CropCard({ crop, _lang, t, onAccept }) {
           <span className="buyer-price-unit">{typeof t === 'function' ? t('crops.perKg') : (t?.perKg || '/ kg')}</span>
         </div>
 
-        {/* Quantity & Hub details */}
+        {/* Quantity & Location details */}
         <div className="buyer-crop-meta-rows">
           <div className="buyer-meta-item">
-            <span className="meta-label">{typeof t === 'function' ? t('crops.available') : (t?.available || 'Available:')}</span>
-            <span className="meta-value font-semibold">{crop?.availableKg ?? 0} kg</span>
+            <span className="meta-label">
+              {typeof t === 'function' ? t('crops.available') : (t?.available || 'Available:')}
+            </span>
+            <span className="meta-value font-semibold">
+              {crop?.availableKg ?? 0} kg
+            </span>
           </div>
           <div className="buyer-meta-item">
-            <span className="meta-label">{typeof t === 'function' ? t('crops.hub') : (t?.hub || 'Hub:')}</span>
-            <span className="meta-value hub-name">
-              <MapPin size={12} /> {crop?.hubName || 'Hub'}
+            <span className="meta-label">
+              {typeof t === 'function' ? (t('crops.location') || t('crops.hub')) : (t?.location || t?.hub || 'Location:')}
+            </span>
+            <span className="meta-value hub-name location-name">
+              <MapPin size={13} className="location-pin-icon" />
+              <span>{crop?.location || crop?.hubName || 'Dindigul Central'}</span>
             </span>
           </div>
         </div>

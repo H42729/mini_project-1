@@ -18,11 +18,14 @@ import { useBuyer } from '../../context/BuyerContext';
 import CropCard from '../../components/CropCard';
 
 const CATEGORY_FILTERS = [
-  { id: 'all', labelKey: 'crops.filterAll' },
-  { id: 'vegetables', labelKey: 'crops.filterVegetables' },
-  { id: 'fruits', labelKey: 'crops.filterFruits' },
-  { id: 'grade_a', labelKey: 'crops.filterGradeA' },
-  { id: 'grade_b', labelKey: 'crops.filterGradeB' }
+  { id: 'all', labelKey: 'crops.filterAll', label: 'All' },
+  { id: 'vegetables', labelKey: 'crops.filterVegetables', label: 'Vegetables' },
+  { id: 'grade_a', labelKey: 'crops.filterGradeA', label: 'Grade A' },
+  { id: 'grade_b', labelKey: 'crops.filterGradeB', label: 'Grade B' },
+  { id: 'grade_c', labelKey: 'crops.filterGradeC', label: 'Grade C' },
+  { id: 'grade_ab', labelKey: 'crops.filterGradeAB', label: 'Grade A & Grade B' },
+  { id: 'grade_ac', labelKey: 'crops.filterGradeAC', label: 'Grade A & Grade C' },
+  { id: 'grade_bc', labelKey: 'crops.filterGradeBC', label: 'Grade B & Grade C' }
 ];
 
 export default function Crops() {
@@ -84,7 +87,7 @@ export default function Crops() {
               className={`buyer-chip ${selectedCategory === cat.id ? 'active' : ''}`}
               onClick={() => setSelectedCategory(cat.id)}
             >
-              {t(cat.labelKey)}
+              {typeof t === 'function' && t(cat.labelKey) !== cat.labelKey ? t(cat.labelKey) : (cat.label || cat.id)}
             </button>
           ))}
         </div>
