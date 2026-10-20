@@ -127,7 +127,7 @@ export default function Orders() {
                     {order.grade && <span className="buyer-badge-tag">{order.grade}</span>}
                   </h3>
                   <p className="buyer-order-produce-hub">
-                    <MapPin size={13} /> {order.hub || 'Hub'} • Farmer: {order.farmer?.name || 'Local Farmer'}
+                    <MapPin size={13} /> {order.location || order.hub || 'Dindigul Central'} • Farmer: {order.farmer?.name || 'Local Farmer'}
                   </p>
                 </div>
 

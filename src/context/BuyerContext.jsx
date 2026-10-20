@@ -196,6 +196,7 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
         return (
           (crop.name || '').toLowerCase().includes(q) ||
           (crop.tamilName || '').toLowerCase().includes(q) ||
+          (crop.location || '').toLowerCase().includes(q) ||
           (crop.hubName || '').toLowerCase().includes(q) ||
           (crop.category || '').toLowerCase().includes(q)
         );
@@ -204,9 +205,12 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
         if (!crop) return false;
         if (selectedCategory === 'all') return true;
         if (selectedCategory === 'vegetables') return crop.category === 'vegetables';
-        if (selectedCategory === 'fruits') return crop.category === 'fruits';
         if (selectedCategory === 'grade_a') return crop.grade === 'Grade A';
         if (selectedCategory === 'grade_b') return crop.grade === 'Grade B';
+        if (selectedCategory === 'grade_c') return crop.grade === 'Grade C';
+        if (selectedCategory === 'grade_ab') return crop.grade === 'Grade A' || crop.grade === 'Grade B';
+        if (selectedCategory === 'grade_ac') return crop.grade === 'Grade A' || crop.grade === 'Grade C';
+        if (selectedCategory === 'grade_bc') return crop.grade === 'Grade B' || crop.grade === 'Grade C';
         return true;
       })
       .sort((a, b) => {
@@ -279,11 +283,12 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
       totalPrice: total,
       orderTime: 'Just now',
       status: 'confirmed',
-      hub: crop.hubName || 'Hub A',
+      location: crop.location || crop.hubName || 'Dindigul Central',
+      hub: crop.location || crop.hubName || 'Dindigul Central',
       farmer: {
-        name: crop.farmer?.name || 'Selvam K.',
-        phone: crop.farmer?.phone || '+91 98421 54321',
-        location: crop.farmer?.village || 'Alanganallur'
+        name: crop.farmer?.name || 'Ravi Kumar',
+        phone: crop.farmer?.phone || '+91 98421 78210',
+        location: crop.farmer?.village || 'Siluvathur, Dindigul'
       },
       driver: {
         name: 'Kumar M.',
@@ -296,13 +301,13 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
       },
       liveTracking: {
         currentStatus: 'Order Confirmed - Dispatch Queue Scheduled at Hub',
-        currentLocation: `${crop.hubName || 'Hub A'} Sorting Bay`,
+        currentLocation: `${crop.location || crop.hubName || 'Dindigul Central'} Sorting Bay`,
         estimatedMinutes: 35,
         distanceKm: crop.distanceKm || 12,
         lastUpdated: 'Just now',
         speedKmh: 0,
         batteryPct: 92,
-        origin: crop.hubName || 'Hub A',
+        origin: crop.location || crop.hubName || 'Dindigul Central',
         destination: profile.address || buyerProfile?.address || 'Madurai Unloading Bay'
       }
     };

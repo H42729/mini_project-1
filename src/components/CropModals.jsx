@@ -154,7 +154,7 @@ export default function CropModals({
                   <div className="buyer-accept-details">
                     <div className="buyer-accept-tags">
                       <span className="buyer-grade-badge green">{acceptModalCrop.grade} ✓</span>
-                      <span className="buyer-hub-loc-tag">{acceptModalCrop.hubName}</span>
+                      <span className="buyer-hub-loc-tag">{acceptModalCrop.location || acceptModalCrop.hubName || 'Dindigul Central'}</span>
                     </div>
                     <h4 className="buyer-accept-name">{acceptModalCrop.name}</h4>
                     <div className="buyer-accept-price-row">

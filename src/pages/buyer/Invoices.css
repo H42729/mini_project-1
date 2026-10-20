@@ -770,18 +770,87 @@
   }
 
   .simple-item-details {
-    justify-content: space-between;
-    width: 100%;
-    padding-top: 10px;
-    border-top: 1px dashed #e2e8f0;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+    width: 100% !important;
+    padding-top: 12px !important;
+    border-top: 1px dashed #e2e8f0 !important;
   }
 
   .simple-item-qty {
-    text-align: left;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: baseline !important;
+    width: 100% !important;
+    text-align: left !important;
+  }
+
+  .simple-qty-val {
+    font-size: 0.96rem !important;
+    font-weight: 700 !important;
+    color: #0f172a !important;
+  }
+
+  .simple-rate-val {
+    font-size: 0.82rem !important;
+    color: #64748b !important;
+    font-weight: 600 !important;
   }
 
   .simple-item-total {
-    align-items: flex-start;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+  }
+
+  .simple-total-amount {
+    font-size: 1.25rem !important;
+    font-weight: 800 !important;
+    color: #0f172a !important;
+  }
+
+  .simple-status-tag {
+    font-size: 0.74rem !important;
+    padding: 3px 10px !important;
+  }
+
+  .simple-item-actions {
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+    gap: 8px !important;
+    margin-top: 4px !important;
+  }
+
+  .simple-btn-view {
+    flex: 1 !important;
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    font-size: 0.90rem !important;
+    font-weight: 700 !important;
+    border-radius: 8px !important;
+    white-space: nowrap !important;
+  }
+
+  .simple-btn-print {
+    width: 44px !important;
+    min-width: 44px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 8px !important;
+    flex-shrink: 0 !important;
   }
 
   .simple-sheet-parties {

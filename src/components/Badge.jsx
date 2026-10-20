@@ -50,6 +50,7 @@ export default function Badge({
     case 'preparing':
     case 'gold':
     case 'grade-b':
+    case 'grade-c':
       customClass = 'badge-status-pending fw-bold';
       break;
     case 'danger':

@@ -392,27 +392,6 @@
   background: #5e3b0b;
 }
 
-/* Footer info note */
-.role-select-footer-note {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  background: #ffffff;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 999px;
-  padding: 10px 24px;
-  font-size: 0.88rem;
-  color: #475569;
-  flex-wrap: wrap;
-  justify-content: center;
-  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
-}
-
-.role-select-footer-note strong {
-  color: #15803d;
-  font-weight: 700;
-}
-
 /* ==========================================================================
    MOBILE RESPONSIVE (Cards stacked cleanly like the user screenshot)
    ========================================================================== */
