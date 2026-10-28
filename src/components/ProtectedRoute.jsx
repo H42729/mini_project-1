@@ -10,25 +10,31 @@ import { ROUTES } from '../routes';
  * - mode='guest': For guest/auth routes (login/register). Logged-in users go to ROUTES.BUYER_DASHBOARD.
  */
 export function ProtectedRoute({ mode = 'auth', children }) {
+  const hasSignedOut =
+    typeof sessionStorage !== 'undefined' &&
+    sessionStorage.getItem('buyer_explicit_signout') === 'true';
+
   let isAuthenticated = false;
-  try {
-    const raw =
-      localStorage.getItem('buyer_current_profile') ||
-      localStorage.getItem('buyer_registered_profile');
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      if (parsed && typeof parsed === 'object') {
-        isAuthenticated = true;
+  if (!hasSignedOut) {
+    try {
+      const raw =
+        localStorage.getItem('buyer_current_profile') ||
+        localStorage.getItem('buyer_registered_profile');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object') {
+          isAuthenticated = true;
+        }
       }
+    } catch {
+      isAuthenticated = false;
     }
-  } catch {
-    isAuthenticated = false;
   }
 
-  // If accessing protected buyer dashboard without credentials, auto-seed default
-  // demo buyer profile unless user explicitly clicked sign out in this session.
+  // If accessing protected buyer dashboard without credentials:
+  // - If user has explicitly signed out: redirect to login.
+  // - If first-time visitor (no prior signout): auto-seed default demo buyer profile.
   if (mode === 'auth' && !isAuthenticated) {
-    const hasSignedOut = typeof sessionStorage !== 'undefined' && sessionStorage.getItem('buyer_explicit_signout');
     if (!hasSignedOut) {
       const defaultProfile = {
         name: 'Grand Palace Hotel',

@@ -27,13 +27,17 @@ export default function Overview() {
     t,
     lang,
     handleOpenAccept,
-    handleOpenDecline
+
   } = useBuyer();
 
   // Dynamically calculate active in-transit / active orders
   const activeTransitOrders = useMemo(() => {
     return (orders || []).filter(
-      (o) => o?.status === 'in_transit' || o?.status === 'confirmed' || o?.status === 'preparing'
+      (o) => {
+        if (o?.orderStatus === 'REJECTED' || o?.orderStatus === 'PENDING_FARMER_APPROVAL') return false;
+        const s = o?.deliveryStatus || o?.status;
+        return s === 'READY_FOR_PICKUP' || s === 'PICKED_UP' || s === 'IN_TRANSIT' || s === 'in_transit' || s === 'confirmed' || s === 'preparing';
+      }
     );
   }, [orders]);
 

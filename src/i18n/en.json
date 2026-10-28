@@ -206,6 +206,10 @@
     "phonePlaceholder": "10-digit mobile number",
     "emailLabel": "Work Email Address",
     "emailPlaceholder": "name@company.com",
+    "passwordLabel": "Account Password",
+    "passwordPlaceholder": "Create a secure password (min 6 characters)",
+    "errPasswordRequired": "Please enter a password for your account.",
+    "errPasswordShort": "Password must be at least 6 characters long.",
     "buyerTypeLabel": "Commercial Buyer Category",
     "buyerTypePlaceholder": "Select your commercial establishment type",
     "hotelLabel": "Hotels & Restaurants",
@@ -530,5 +534,30 @@
       "confirmSignOutPrompt": "Are you sure you want to sign out of your commercial buyer account? You will need to sign in again to access live orders, dispatch tracking, and supplier bids.",
       "yesSignOut": "Yes, Sign Out"
     }
+  },
+  "notFound": {
+    "badge": "404 Error",
+    "title": "Page Not Found",
+    "subtitle": "Sorry, the page you are looking for doesn't exist or has been moved.",
+    "backHome": "Back to Home",
+    "chooseRole": "Select Role"
+  },
+  "comingSoon": {
+    "badge": "Under Active Development",
+    "generalTitle": "Coming Soon",
+    "farmerTitle": "Farmer Portal Coming Soon",
+    "driverTitle": "Logistics & Driver Portal Coming Soon",
+    "generalDesc": "This portal is currently under active development and will be available soon across Tamil Nadu.",
+    "farmerDesc": "Direct farmgate harvest listings, transparent APMC market pricing, and zero-commission sales are launching soon.",
+    "driverDesc": "Smart EV cargo route matching, hub pick-up dispatch, and immediate delivery settlements will be live shortly.",
+    "feature1Farmer": "Zero Middlemen Commission",
+    "feature2Farmer": "Direct Farmgate Weighment & Quality Assurance",
+    "feature3Farmer": "Direct 24-Hour Bank Payouts",
+    "feature1Driver": "Optimized EV Cargo Routing",
+    "feature2Driver": "Consignment Live GPS Tracking",
+    "feature3Driver": "Guaranteed Return-Trip Commercial Loads",
+    "backToRoles": "Back to Role Selection",
+    "exploreBuyer": "Explore Buyer Marketplace",
+    "backHome": "Back to Home"
   }
 }

@@ -9,6 +9,8 @@ import HomePage from './pages/HomePage';
 import RoleSelectPage from './pages/RoleSelectPage';
 import BuyerLogin from './pages/BuyerLogin';
 import BuyerRegister from './pages/BuyerRegister';
+import ComingSoonPage from './pages/ComingSoonPage';
+import NotFoundPage from './pages/NotFoundPage';
 import BuyerDashboardLayout from './components/BuyerDashboardLayout';
 import Skeleton from './components/Skeleton';
 
@@ -140,8 +142,11 @@ export default function App() {
           <Route path="*" element={<Navigate to={ROUTES.BUYER_DASHBOARD} replace />} />
         </Route>
 
-        {/* 5. Wildcard Fallback */}
-        <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
+        {/* 5. Placeholder Portals (Farmer & Driver Coming Soon) */}
+        <Route path={ROUTES.COMING_SOON} element={<ComingSoonPage />} />
+
+        {/* 6. 404 Catch-All Page Not Found Fallback */}
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </LanguageProvider>
   );

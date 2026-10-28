@@ -22,10 +22,7 @@ const CATEGORY_FILTERS = [
   { id: 'vegetables', labelKey: 'crops.filterVegetables', label: 'Vegetables' },
   { id: 'grade_a', labelKey: 'crops.filterGradeA', label: 'Grade A' },
   { id: 'grade_b', labelKey: 'crops.filterGradeB', label: 'Grade B' },
-  { id: 'grade_c', labelKey: 'crops.filterGradeC', label: 'Grade C' },
-  { id: 'grade_ab', labelKey: 'crops.filterGradeAB', label: 'Grade A & Grade B' },
-  { id: 'grade_ac', labelKey: 'crops.filterGradeAC', label: 'Grade A & Grade C' },
-  { id: 'grade_bc', labelKey: 'crops.filterGradeBC', label: 'Grade B & Grade C' }
+  { id: 'grade_c', labelKey: 'crops.filterGradeC', label: 'Grade C' }
 ];
 
 export default function Crops() {

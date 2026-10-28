@@ -1,15 +1,13 @@
 // What this file does: Role selection portal for choosing between Farmer, Buyer, or Driver flows.
 
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Sparkles, Phone, CheckCircle2, Truck } from 'lucide-react';
+import { ArrowLeft, Sparkles } from 'lucide-react';
 import { useT } from '../hooks/useT';
 import { ROUTES } from '../routes';
 import Card from '../components/Card';
 import Badge from '../components/Badge';
 import Button from '../components/Button';
-import Input from '../components/Input';
-import Modal from '../components/Modal';
 import './RoleSelectPage.css';
 
 export default function RoleSelectPage({
@@ -19,36 +17,7 @@ export default function RoleSelectPage({
   onSelectDriver
 }) {
   const navigate = useNavigate();
-  const { t, lang, toggleLang } = useT('roleSelect');
-
-  const [activeModal, setActiveModal] = useState(null); // 'farmer' | 'driver'
-  const [farmerPhone, setFarmerPhone] = useState('');
-  const [driverVehicle, setDriverVehicle] = useState('');
-  const [driverPhone, setDriverPhone] = useState('');
-  const [modalSuccessMsg, setModalSuccessMsg] = useState('');
-  const [formError, setFormError] = useState('');
-  const timerRef = useRef(null);
-
-  // Unmount cleanup
-  useEffect(() => {
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-    };
-  }, []);
-
-  const handleCloseModal = () => {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-    }
-    setActiveModal(null);
-    setModalSuccessMsg('');
-    setFormError('');
-    setFarmerPhone('');
-    setDriverVehicle('');
-    setDriverPhone('');
-  };
+  const { t, toggleLang } = useT('roleSelect');
 
   const handleBack = () => {
     if (onBack) {
@@ -63,70 +32,43 @@ export default function RoleSelectPage({
     if (onSelectBuyer) {
       onSelectBuyer();
     } else {
+      let hasProfile = false;
       try {
-        sessionStorage.removeItem('buyer_explicit_signout');
+        hasProfile = Boolean(localStorage.getItem('buyer_current_profile'));
       } catch {
-        // ignore storage error
+        hasProfile = false;
       }
-      navigate(ROUTES.BUYER_DASHBOARD);
+
+      if (hasProfile) {
+        try {
+          sessionStorage.removeItem('buyer_explicit_signout');
+        } catch {
+          // ignore storage error
+        }
+        navigate(ROUTES.BUYER_DASHBOARD);
+      } else {
+        navigate(ROUTES.BUYER_LOGIN);
+      }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
-  const handleFarmerSubmit = (e) => {
-    e.preventDefault();
-    setFormError('');
-    const digits = farmerPhone.replace(/\D/g, '');
-    if (digits.length < 10) {
-      setFormError(
-        lang === 'ta'
-          ? 'சரியான 10 இலக்க மொபைல் எண்ணை உள்ளிடவும்.'
-          : 'Please enter a valid 10-digit mobile number.'
-      );
-      return;
-    }
-
-    setModalSuccessMsg(t('farmerOtpSent'));
+  const handleFarmerClick = () => {
     if (onSelectFarmer) {
-      onSelectFarmer({ phone: farmerPhone });
+      onSelectFarmer();
+    } else {
+      navigate(`${ROUTES.COMING_SOON}?role=farmer`);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-
-    if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => {
-      handleCloseModal();
-    }, 2000);
   };
 
-  const handleDriverSubmit = (e) => {
-    e.preventDefault();
-    setFormError('');
-    const digits = driverPhone.replace(/\D/g, '');
-    if (digits.length < 10) {
-      setFormError(
-        lang === 'ta'
-          ? 'சரியான 10 இலக்க மொபைல் எண்ணை உள்ளிடவும்.'
-          : 'Please enter a valid 10-digit mobile number.'
-      );
-      return;
-    }
-    if (!driverVehicle.trim()) {
-      setFormError(
-        lang === 'ta'
-          ? 'வாகன வகையை உள்ளிடவும்.'
-          : 'Please enter your vehicle type.'
-      );
-      return;
-    }
-
-    setModalSuccessMsg(t('driverPartnerSent'));
+  const handleDriverClick = () => {
     if (onSelectDriver) {
-      onSelectDriver({ vehicle: driverVehicle.trim(), phone: driverPhone });
+      onSelectDriver();
+    } else {
+      navigate(`${ROUTES.COMING_SOON}?role=driver`);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-
-    if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => {
-      handleCloseModal();
-    }, 2000);
   };
 
   return (
@@ -208,7 +150,7 @@ export default function RoleSelectPage({
           {/* Card 1: Farmer */}
           <Card
             className="role-select-card farmer-theme"
-            onClick={() => setActiveModal('farmer')}
+            onClick={handleFarmerClick}
             variant="interactive"
             padding="none"
           >
@@ -236,7 +178,7 @@ export default function RoleSelectPage({
               className="role-card-action-btn"
               onClick={(e) => {
                 e.stopPropagation();
-                setActiveModal('farmer');
+                handleFarmerClick();
               }}
             >
               <span>{t('farmerBtn')}</span>
@@ -284,7 +226,7 @@ export default function RoleSelectPage({
           {/* Card 3: Driver */}
           <Card
             className="role-select-card driver-theme"
-            onClick={() => setActiveModal('driver')}
+            onClick={handleDriverClick}
             variant="interactive"
             padding="none"
           >
@@ -312,7 +254,7 @@ export default function RoleSelectPage({
               className="role-card-action-btn"
               onClick={(e) => {
                 e.stopPropagation();
-                setActiveModal('driver');
+                handleDriverClick();
               }}
             >
               <span>{t('driverBtn')}</span>
@@ -320,126 +262,6 @@ export default function RoleSelectPage({
           </Card>
         </div>
       </main>
-
-      {/* Internal Modals for Farmer and Driver */}
-      <Modal
-        isOpen={!!activeModal}
-        onClose={handleCloseModal}
-        size="sm"
-      >
-        {modalSuccessMsg ? (
-          <div style={{ textAlign: 'center', padding: '24px 10px' }}>
-            <CheckCircle2 size={54} color="#15803d" style={{ margin: '0 auto 14px auto' }} />
-            <h3 style={{ fontSize: 20, fontWeight: 800, color: '#15803d', marginBottom: 8 }}>
-              {t('common.success')}
-            </h3>
-            <p style={{ color: '#475569', fontSize: 14 }}>{modalSuccessMsg}</p>
-          </div>
-        ) : activeModal === 'farmer' ? (
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 44, marginBottom: 10 }}>🌾</div>
-            <h3 style={{ fontSize: 22, fontWeight: 800, color: '#15803d', margin: '0 0 6px 0' }}>
-              {t('farmerPortalTitle')}
-            </h3>
-            <p style={{ fontSize: 13, color: '#64748b', margin: '0 0 18px 0', lineHeight: 1.4 }}>
-              {t('farmerPortalDesc')}
-            </p>
-
-            <form onSubmit={handleFarmerSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-              {formError && (
-                <div style={{ color: '#dc2626', fontSize: '0.85rem', textAlign: 'left', fontWeight: 500 }}>
-                  ⚠️ {formError}
-                </div>
-              )}
-
-              <Input
-                label={t('farmerMobileLabel')}
-                type="tel"
-                required
-                icon={<Phone size={18} />}
-                placeholder={t('farmerMobilePlaceholder')}
-                value={farmerPhone}
-                onChange={(e) => setFarmerPhone(e.target.value)}
-              />
-
-              <div className="d-flex gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  fullWidth
-                  onClick={handleCloseModal}
-                >
-                  <span>{t('common.cancel')}</span>
-                </Button>
-                <Button
-                  type="submit"
-                  variant="primary"
-                  fullWidth
-                  style={{ background: '#15803d', borderColor: '#166534' }}
-                >
-                  <span>{t('farmerSubmitBtn')}</span>
-                </Button>
-              </div>
-            </form>
-          </div>
-        ) : (
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 44, marginBottom: 10 }}>🚚</div>
-            <h3 style={{ fontSize: 22, fontWeight: 800, color: '#c2410c', margin: '0 0 6px 0' }}>
-              {t('driverPortalTitle')}
-            </h3>
-            <p style={{ fontSize: 13, color: '#64748b', margin: '0 0 18px 0', lineHeight: 1.4 }}>
-              {t('driverPortalDesc')}
-            </p>
-
-            <form onSubmit={handleDriverSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-              {formError && (
-                <div style={{ color: '#dc2626', fontSize: '0.85rem', textAlign: 'left', fontWeight: 500 }}>
-                  ⚠️ {formError}
-                </div>
-              )}
-
-              <Input
-                label={t('driverVehicleLabel')}
-                type="text"
-                required
-                icon={<Truck size={18} />}
-                placeholder={t('driverVehiclePlaceholder')}
-                value={driverVehicle}
-                onChange={(e) => setDriverVehicle(e.target.value)}
-              />
-
-              <Input
-                label={t('driverMobileLabel')}
-                type="tel"
-                required
-                icon={<Phone size={18} />}
-                placeholder={t('driverMobilePlaceholder')}
-                value={driverPhone}
-                onChange={(e) => setDriverPhone(e.target.value)}
-              />
-
-              <div className="d-flex gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  fullWidth
-                  onClick={handleCloseModal}
-                >
-                  <span>{t('common.cancel')}</span>
-                </Button>
-                <Button
-                  type="submit"
-                  variant="harvest"
-                  fullWidth
-                >
-                  <span>{t('driverSubmitBtn')}</span>
-                </Button>
-              </div>
-            </form>
-          </div>
-        )}
-      </Modal>
     </div>
   );
 }

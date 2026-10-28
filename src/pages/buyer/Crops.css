@@ -166,9 +166,27 @@
 }
 
 .buyer-crop-grade-tag.grade-c {
-  background-color: #475569 !important;
+  background-color: #c2410c !important;
   color: #ffffff !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.35) !important;
+}
+
+.buyer-crop-grade-tag.grade-ab {
+  background: linear-gradient(135deg, #2b5c8a 0%, #1e40af 100%) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+}
+
+.buyer-crop-grade-tag.grade-ac {
+  background: linear-gradient(135deg, #2b5c8a 0%, #c2410c 100%) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+}
+
+.buyer-crop-grade-tag.grade-bc {
+  background: linear-gradient(135deg, #1e40af 0%, #c2410c 100%) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
 }
 
 .buyer-crop-card-body {
