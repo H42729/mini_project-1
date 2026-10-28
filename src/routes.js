@@ -16,4 +16,6 @@ export const ROUTES = {
   BUYER_DASHBOARD_INVOICES: '/buyer-dashboard/invoices',
   BUYER_DASHBOARD_MESSAGES: '/buyer-dashboard/messages',
   BUYER_DASHBOARD_PROFILE: '/buyer-dashboard/profile',
+  COMING_SOON: '/coming-soon',
+  NOT_FOUND: '/404',
 };

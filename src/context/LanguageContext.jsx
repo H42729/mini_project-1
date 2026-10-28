@@ -1,7 +1,7 @@
-// What this file does: Global React context providing bilingual language state ('en' | 'ta') and toggle handler.
+// What this file does: Global React context providing bilingual language state ('en' | 'ta') with localStorage persistence.
 
 /* oxlint-disable react/only-export-components */
-import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 
 /**
  * LanguageContext
@@ -16,33 +16,75 @@ export const LanguageContext = createContext({
 
 const STORAGE_KEY = 'naam_uzhavar_lang';
 
-export function LanguageProvider({ children, initialLang = 'en' }) {
-  const [lang, setLang] = useState(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
+function getStoredLanguage(defaultLang = 'en') {
+  try {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const saved =
+        localStorage.getItem(STORAGE_KEY) ||
+        localStorage.getItem('language') ||
+        localStorage.getItem('lang');
       if (saved === 'ta' || saved === 'en') {
         return saved;
       }
-    } catch {
-      // Ignore localStorage access issues
     }
-    return initialLang;
-  });
+  } catch {
+    // Ignore localStorage access issues
+  }
+  return defaultLang;
+}
 
+function persistLanguage(newLang) {
+  try {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      localStorage.setItem(STORAGE_KEY, newLang);
+      localStorage.setItem('language', newLang);
+      localStorage.setItem('lang', newLang);
+    }
+  } catch {
+    // Ignore localStorage write issues
+  }
+  if (typeof document !== 'undefined') {
+    document.documentElement.lang = newLang;
+  }
+}
+
+export function LanguageProvider({ children, initialLang = 'en' }) {
+  const [lang, setLangState] = useState(() => getStoredLanguage(initialLang));
+
+  // Sync state to localStorage & document element
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, lang);
-    } catch {
-      // Ignore localStorage access issues
-    }
-    if (typeof document !== 'undefined') {
-      document.documentElement.lang = lang;
-    }
+    persistLanguage(lang);
   }, [lang]);
 
-  const toggleLang = () => {
-    setLang((prev) => (prev === 'ta' ? 'en' : 'ta'));
-  };
+  // Synchronize changes across multiple open tabs
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (
+        (e.key === STORAGE_KEY || e.key === 'language' || e.key === 'lang') &&
+        (e.newValue === 'ta' || e.newValue === 'en')
+      ) {
+        setLangState(e.newValue);
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  const setLang = useCallback((nextLang) => {
+    if (nextLang === 'ta' || nextLang === 'en') {
+      persistLanguage(nextLang);
+      setLangState(nextLang);
+    }
+  }, []);
+
+  const toggleLang = useCallback(() => {
+    setLangState((prev) => {
+      const next = prev === 'ta' ? 'en' : 'ta';
+      persistLanguage(next);
+      return next;
+    });
+  }, []);
 
   const value = useMemo(
     () => ({
@@ -50,7 +92,7 @@ export function LanguageProvider({ children, initialLang = 'en' }) {
       setLang,
       toggleLang,
     }),
-    [lang]
+    [lang, setLang, toggleLang]
   );
 
   return (

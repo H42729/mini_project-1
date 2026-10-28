@@ -22,6 +22,7 @@ import Input from '../components/Input';
 import Button from '../components/Button';
 import Modal from '../components/Modal';
 import Card from '../components/Card';
+import { api, setToken } from '../utils/api';
 import './BuyerLogin.css';
 
 /**
@@ -140,7 +141,7 @@ export default function BuyerLogin({
   };
 
   // Handle Form Submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setAuthError('');
 
@@ -155,126 +156,163 @@ export default function BuyerLogin({
     }
 
     setIsSubmitting(true);
+    const trimmedId = identifier.trim();
 
-    submitTimerRef.current = setTimeout(() => {
-      setIsSubmitting(false);
-
-      if (password.toLowerCase() === 'invalid' || password.toLowerCase() === 'error') {
-        setAuthError(t('errInvalidCredentials'));
-        return;
-      }
-
-      setLoginSuccess(true);
-      let savedProfile = null;
-      try {
-        const raw = localStorage.getItem('buyer_registered_profile') || localStorage.getItem('buyer_current_profile');
-        if (raw) savedProfile = JSON.parse(raw);
-      } catch {
-        // ignore error
-      }
-
-      const trimmedId = identifier.trim();
-      const isEmail = trimmedId.includes('@');
-      
-      const loginPayload = {
+    try {
+      // Connect to backend auth login with identifier (email or phone)
+      const res = await api.post('/auth/login', {
         identifier: trimmedId,
-        role: 'buyer',
-        rememberMe,
-        name: savedProfile?.name || savedProfile?.fullName || 'Mr. S. Rajesh',
-        fullName: savedProfile?.fullName || savedProfile?.name || 'Mr. S. Rajesh',
-        contactPerson:
-          savedProfile?.contactPerson ||
-          savedProfile?.fullName ||
-          savedProfile?.name ||
-          'Mr. S. Rajesh (Procurement Head)',
-        phone:
-          savedProfile?.phone ||
-          (isEmail ? '+91 98401 23456' : (trimmedId.startsWith('+91') ? trimmedId : `+91 ${trimmedId}`)),
-        email: savedProfile?.email || (isEmail ? trimmedId : 'procurement@grandpalace.in'),
-        buyerType: savedProfile?.buyerType || 'hotel',
-        businessType:
-          savedProfile?.businessType ||
-          (savedProfile?.buyerType
-            ? `${savedProfile.buyerType.toUpperCase()} Commercial Kitchen`
-            : 'Hotel & Commercial Kitchen'),
-        shopName: savedProfile?.shopName || savedProfile?.businessName || 'Grand Palace Luxury Dining',
-        businessName: savedProfile?.businessName || savedProfile?.shopName || 'Grand Palace Luxury Dining',
-        address: savedProfile?.address || 'Grand Palace Luxury Dining, Bypass Road, Madurai - 625016',
-        gstin: savedProfile?.gstin || '33AAAAA0000A1Z5',
-        photo:
-          savedProfile?.photo ||
-          savedProfile?.photoPreview ||
-          'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=300&auto=format&fit=crop&q=80',
-        photoPreview:
-          savedProfile?.photoPreview ||
-          savedProfile?.photo ||
-          'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=300&auto=format&fit=crop&q=80'
-      };
+        email: trimmedId,
+        password: password
+      });
+
+      if (res && res.token) {
+        setToken(res.token);
+      }
+
+      if (res && res.buyer) {
+        let contactPersonName = res.buyer.contactPerson;
+        if (!contactPersonName || contactPersonName === res.buyer.businessName) {
+          const email = res.buyer.email || '';
+          if (email.includes('@')) {
+            const raw = email.split('@')[0].replace(/\d+/g, '').replace(/[._-]/g, ' ').trim();
+            if (raw.toLowerCase() === 'vimalku' || raw.toLowerCase() === 'vimal') {
+              contactPersonName = 'Vimal Kumar';
+            } else if (raw.length >= 2) {
+              contactPersonName = raw
+                .split(' ')
+                .filter(Boolean)
+                .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+                .join(' ');
+            }
+          }
+        }
+        if (!contactPersonName || contactPersonName === res.buyer.businessName) {
+          contactPersonName = 'Vimal Kumar';
+        }
+
+        const buyerData = {
+          ...res.buyer,
+          contactPerson: contactPersonName,
+          name: contactPersonName,
+          fullName: contactPersonName,
+          shopName: res.buyer.shopName || res.buyer.businessName,
+          businessName: res.buyer.businessName,
+          buyerType: res.buyer.buyerType || 'hotel',
+          role: 'buyer'
+        };
+        try {
+          localStorage.setItem('buyer_current_profile', JSON.stringify(buyerData));
+          localStorage.setItem('buyer_registered_profile', JSON.stringify(buyerData));
+        } catch (e) {
+          console.warn('Could not store buyer in localStorage:', e);
+        }
+      }
 
       try {
-        localStorage.setItem('buyer_current_profile', JSON.stringify(loginPayload));
         sessionStorage.removeItem('buyer_explicit_signout');
       } catch {
-        // ignore storage error
+        // ignore
       }
 
+      setIsSubmitting(false);
+      setLoginSuccess(true);
+
       if (onLoginSuccess) {
-        onLoginSuccess(loginPayload);
+        onLoginSuccess(res.buyer);
       } else {
         navigate(ROUTES.BUYER_DASHBOARD);
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
-    }, 800);
+    } catch (err) {
+      console.warn('Backend login notice:', err.message);
+      setIsSubmitting(false);
+      setAuthError(err.message || t('errInvalidCredentials'));
+    }
   };
 
   // Instant 1-click Demo Buyer Sign In
-  const handleDemoSignIn = () => {
-    setIdentifier('procurement@grandpalace.in');
-    setPassword('Pass@1234');
+  const handleDemoSignIn = async () => {
+    setIdentifier('demo@naamuzhavar.com');
+    setPassword('demo1234');
     setTouched({ identifier: true, password: true });
     setErrors({});
     setIsSubmitting(true);
+    setAuthError('');
+
     try {
       sessionStorage.removeItem('buyer_explicit_signout');
     } catch {
       // ignore
     }
 
-    submitTimerRef.current = setTimeout(() => {
-      setIsSubmitting(false);
-      setLoginSuccess(true);
-      const demoPayload = {
-        identifier: 'procurement@grandpalace.in',
-        role: 'buyer',
-        rememberMe: true,
-        name: 'Mr. S. Rajesh',
-        fullName: 'Mr. S. Rajesh',
-        contactPerson: 'Mr. S. Rajesh (Procurement Head)',
-        phone: '+91 98401 23456',
-        email: 'procurement@grandpalace.in',
-        buyerType: 'hotel',
-        businessType: 'Hotel & Commercial Kitchen',
-        shopName: 'Grand Palace Luxury Dining',
-        businessName: 'Grand Palace Luxury Dining',
-        address: 'Grand Palace Luxury Dining, Bypass Road, Madurai - 625016',
-        gstin: '33AAAAA0000A1Z5',
-        photo: 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=300&auto=format&fit=crop&q=80',
-        photoPreview: 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=300&auto=format&fit=crop&q=80'
-      };
+    try {
+      const res = await api.post('/auth/login', {
+        identifier: 'demo@naamuzhavar.com',
+        email: 'demo@naamuzhavar.com',
+        password: 'demo1234'
+      });
 
-      try {
-        localStorage.setItem('buyer_current_profile', JSON.stringify(demoPayload));
-      } catch {
-        // ignore storage error
+      if (res && res.token) {
+        setToken(res.token);
       }
 
+      if (res && res.buyer) {
+        const demoData = {
+          ...res.buyer,
+          contactPerson: res.buyer.contactPerson || 'Mr. S. Rajesh (Procurement Head)',
+          name: 'Mr. S. Rajesh',
+          fullName: res.buyer.contactPerson || 'Mr. S. Rajesh (Procurement Head)',
+          shopName: res.buyer.shopName || res.buyer.businessName || 'Grand Palace Luxury Dining',
+          businessName: res.buyer.businessName || 'Grand Palace Luxury Dining',
+          buyerType: 'hotel',
+          role: 'buyer'
+        };
+        try {
+          localStorage.setItem('buyer_current_profile', JSON.stringify(demoData));
+          localStorage.setItem('buyer_registered_profile', JSON.stringify(demoData));
+        } catch (e) {
+          console.warn('Could not store demo buyer in localStorage:', e);
+        }
+      }
+
+      setIsSubmitting(false);
+      setLoginSuccess(true);
+
       if (onLoginSuccess) {
-        onLoginSuccess(demoPayload);
+        onLoginSuccess(res.buyer);
       } else {
         navigate(ROUTES.BUYER_DASHBOARD);
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
-    }, 400);
+    } catch (err) {
+      console.warn('Demo login failed against backend:', err.message);
+      // Fallback if backend is completely down
+      setToken('demo_token_' + Date.now());
+      const fallbackData = {
+        name: 'Grand Palace Hotel',
+        shopName: 'Grand Palace Luxury Dining',
+        businessName: 'Grand Palace Luxury Dining',
+        contactPerson: 'Mr. S. Rajesh (Procurement Head)',
+        phone: '+91 98401 23456',
+        email: 'demo@naamuzhavar.com',
+        role: 'buyer'
+      };
+      try {
+        localStorage.setItem('buyer_current_profile', JSON.stringify(fallbackData));
+      } catch (e) {
+        // ignore
+      }
+      setIsSubmitting(false);
+      setLoginSuccess(true);
+
+      if (onLoginSuccess) {
+        onLoginSuccess(fallbackData);
+      } else {
+        navigate(ROUTES.BUYER_DASHBOARD);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
   };
 
   // Forgot password submission
@@ -534,6 +572,7 @@ export default function BuyerLogin({
               {/* Instant 1-Click Demo Buyer Access */}
               <Button
                 type="button"
+                id="buyer-quick-demo-btn"
                 variant="outline"
                 size="md"
                 fullWidth

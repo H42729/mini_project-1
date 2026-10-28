@@ -274,6 +274,7 @@ export default function Profile() {
             </button>
             <button
               type="button"
+              id="buyer-profile-signout-btn"
               className="buyer-btn-danger"
               onClick={() => setSignOutModalOpen(true)}
             >

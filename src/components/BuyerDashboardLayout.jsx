@@ -89,8 +89,27 @@ function BuyerDashboardContent() {
 
   const activeDeliveriesCount = useMemo(() => {
     const safeOrders = Array.isArray(orders) ? orders : [];
-    return safeOrders.filter((o) => o.status === 'in-transit' || o.status === 'confirmed').length;
+    return safeOrders.filter((o) => {
+      if (o.orderStatus === 'REJECTED' || o.orderStatus === 'PENDING_FARMER_APPROVAL') return false;
+      const s = o.deliveryStatus || o.status;
+      return s === 'READY_FOR_PICKUP' || s === 'PICKED_UP' || s === 'IN_TRANSIT' || s === 'in_transit' || s === 'in-transit';
+    }).length;
   }, [orders]);
+
+  const buyerCategoryLabel = useMemo(() => {
+    switch (p.buyerType) {
+      case 'hotel':
+        return t('profile.hotelCategory') || 'Hotel & Commercial Kitchen';
+      case 'supermarket':
+        return t('profile.supermarketCategory') || 'Supermarket & Hypermarket';
+      case 'retailer':
+        return t('profile.retailerCategory') || 'Local Produce Retailer';
+      case 'mahal':
+        return t('profile.mahalCategory') || 'Function Hall & Mahal';
+      default:
+        return p.businessType || 'Commercial Establishment';
+    }
+  }, [p.buyerType, p.businessType, t]);
 
   // Auto-scroll viewport to top on route change
   useEffect(() => {
@@ -205,7 +224,7 @@ function BuyerDashboardContent() {
               </div>
               <div className="buyer-profile-info-text">
                 <span className="buyer-profile-full-name">
-                  {p.fullName || p.contactPerson || p.name || 'Commercial Buyer'}
+                  {p.contactPerson || p.fullName || p.name || 'Commercial Buyer'}
                 </span>
                 <span className="buyer-role-subtext">
                   {p.shopName || p.businessName || 'Business Unit'}
@@ -222,7 +241,7 @@ function BuyerDashboardContent() {
                       <img
                         key={avatarSrc}
                         src={avatarSrc}
-                        alt={p.fullName || p.name || 'Commercial Buyer'}
+                        alt={p.shopName || p.name || 'Commercial Buyer'}
                         className="buyer-profile-dropdown-img"
                         onError={() => setFailedDropdownAvatar(avatarSrc)}
                       />
@@ -231,9 +250,9 @@ function BuyerDashboardContent() {
                     )}
                   </div>
                   <div className="buyer-profile-header-info">
-                    <h4 className="buyer-card-title">{p.fullName || p.name || 'Commercial Buyer'}</h4>
-                    <p className="buyer-card-sub">🏢 {p.shopName || p.businessName || 'Business Unit'}</p>
+                    <h4 className="buyer-card-title">{p.shopName || p.businessName || 'Commercial Buyer'}</h4>
                     <p className="buyer-card-sub">👤 {p.contactPerson || p.fullName || p.name || 'Commercial Partner'}</p>
+                    <p className="buyer-card-sub">🏢 {buyerCategoryLabel}</p>
                     <p className="buyer-card-sub font-mono">📞 {p.phone || '—'}</p>
                     <p className="buyer-card-sub">✉️ {p.email || '—'}</p>
                     {p.gstin && <span className="buyer-gstin-tag">GSTIN: {p.gstin}</span>}
@@ -278,6 +297,7 @@ function BuyerDashboardContent() {
                 <div className="buyer-dropdown-divider" />
                 <button
                   type="button"
+                  id="buyer-header-signout-btn"
                   className="buyer-dropdown-item logout"
                   onClick={() => {
                     setProfileDropdownOpen(false);
@@ -452,6 +472,22 @@ function BuyerDashboardContent() {
                 <Building2 size={19} />
                 <span className="buyer-nav-label">{t('navProfile')}</span>
               </NavLink>
+
+              <div style={{ margin: '10px 0 6px', borderTop: '1px solid var(--buyer-border-light)' }} />
+
+              <button
+                type="button"
+                id="buyer-drawer-signout-btn"
+                className="buyer-nav-item buyer-drawer-signout-btn"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setSignOutModalOpen(true);
+                }}
+                style={{ color: '#dc2626' }}
+              >
+                <LogOut size={19} />
+                <span className="buyer-nav-label">{t('signOut')}</span>
+              </button>
             </div>
           </Offcanvas.Body>
         </Offcanvas>
@@ -533,6 +569,7 @@ function BuyerDashboardContent() {
           <div className="buyer-signout-btn-row">
             <Button
               type="button"
+              id="buyer-cancel-signout-btn"
               variant="secondary"
               onClick={() => setSignOutModalOpen(false)}
               className="buyer-signout-cancel-btn"
@@ -541,6 +578,7 @@ function BuyerDashboardContent() {
             </Button>
             <Button
               type="button"
+              id="buyer-confirm-signout-btn"
               variant="danger"
               leftIcon={<LogOut size={16} />}
               onClick={handleSignOut}

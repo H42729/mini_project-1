@@ -9,6 +9,9 @@ import {
   Camera,
   User,
   Mail,
+  Lock,
+  Eye,
+  EyeOff,
   Building2,
   ShoppingCart,
   Store,
@@ -30,6 +33,7 @@ import Button from '../components/Button';
 import Input from '../components/Input';
 import Badge from '../components/Badge';
 import Card from '../components/Card';
+import { api, setToken } from '../utils/api';
 import './BuyerRegister.css';
 
 /**
@@ -55,6 +59,9 @@ export default function BuyerRegister({
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [registerError, setRegisterError] = useState('');
   const [buyerType, setBuyerType] = useState('');
   const [shopName, setShopName] = useState('');
   const [address, setAddress] = useState('');
@@ -157,6 +164,10 @@ export default function BuyerRegister({
         if (!value || !value.trim()) return t('errEmailRequired');
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())) return t('errEmailInvalid');
         return '';
+      case 'password':
+        if (!value || !value.trim()) return t('errPasswordRequired') || 'Please enter a password for your account.';
+        if (value.trim().length < 6) return t('errPasswordShort') || 'Password must be at least 6 characters long.';
+        return '';
       case 'buyerType':
         return !value ? t('errBuyerTypeRequired') : '';
       case 'shopName':
@@ -234,7 +245,7 @@ export default function BuyerRegister({
   };
 
   // Handle Complete Form Submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Mark all fields as touched
@@ -243,6 +254,7 @@ export default function BuyerRegister({
       name: true,
       phone: true,
       email: true,
+      password: true,
       buyerType: true,
       shopName: true,
       address: true,
@@ -257,6 +269,7 @@ export default function BuyerRegister({
       name: validateField('name', name),
       phone: validateField('phone', phone),
       email: validateField('email', email),
+      password: validateField('password', password),
       buyerType: validateField('buyerType', buyerType),
       shopName: validateField('shopName', shopName),
       address: validateField('address', address),
@@ -269,7 +282,7 @@ export default function BuyerRegister({
     // Check if any error exists
     const hasError = Object.values(newErrors).some(err => Boolean(err));
     if (hasError) {
-      const firstErrorEl = document.querySelector('.buyer-field-error, .has-error, .ui-input-field--error');
+      const firstErrorEl = document.querySelector('.buyer-field-error, .has-error, .ui-input-field--error, .app-input-error-msg');
       if (firstErrorEl) {
         firstErrorEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
@@ -278,50 +291,85 @@ export default function BuyerRegister({
 
     // Submit Process
     setSubmitStatus('loading');
-    regTimerRef.current = setTimeout(() => {
-      setSubmitStatus('success');
-      const phoneDigits = phone.replace(/\D/g, '');
-      const cleanPhone = phoneDigits.startsWith('91') && phoneDigits.length === 12 ? phoneDigits.slice(2) : phoneDigits;
-      const formattedPhone = cleanPhone ? `+91 ${cleanPhone}` : phone;
+    setRegisterError('');
+    const phoneDigits = phone.replace(/\D/g, '');
+    const cleanPhone = phoneDigits.startsWith('91') && phoneDigits.length === 12 ? phoneDigits.slice(2) : phoneDigits;
+    const formattedPhone = cleanPhone ? `+91 ${cleanPhone}` : phone;
 
-      const registeredData = {
-        name,
-        fullName: name,
+    const resolvedName = (name || '').trim();
+    const resolvedShop = (shopName || resolvedName).trim();
+
+    const registeredData = {
+      name: resolvedName,
+      fullName: resolvedName,
+      contactPerson: resolvedName,
+      phone: formattedPhone,
+      email: email.trim(),
+      buyerType: buyerType || 'hotel',
+      shopName: resolvedShop,
+      businessName: resolvedShop,
+      address,
+      gstin,
+      photo: photoPreview || 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=300&auto=format&fit=crop&q=80',
+      photoPreview: photoPreview || 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=300&auto=format&fit=crop&q=80',
+      role: 'buyer'
+    };
+
+    try {
+      const res = await api.post('/auth/register', {
+        businessName: resolvedShop,
+        shopName: resolvedShop,
+        contactPerson: resolvedName,
+        name: resolvedName,
+        fullName: resolvedName,
+        buyerType: buyerType || 'hotel',
+        email: email.trim(),
+        password: password.trim(),
         phone: formattedPhone,
-        email,
-        buyerType,
-        shopName,
-        businessName: shopName,
-        address,
-        gstin,
-        photo: photoPreview || 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=300&auto=format&fit=crop&q=80',
-        photoPreview: photoPreview || 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=300&auto=format&fit=crop&q=80'
-      };
+        gstin: gstin || '',
+        address: address || 'Tamil Nadu',
+        avatar: photoPreview || undefined
+      });
+
+      if (res && res.token) {
+        setToken(res.token);
+      }
+
+      if (res && res.buyer) {
+        registeredData.id = res.buyer.id;
+        registeredData._id = res.buyer.id;
+        registeredData.businessName = res.buyer.businessName;
+        registeredData.shopName = res.buyer.shopName || res.buyer.businessName;
+        registeredData.contactPerson = res.buyer.contactPerson || resolvedName;
+        registeredData.name = res.buyer.name || resolvedName;
+        registeredData.fullName = res.buyer.fullName || resolvedName;
+        registeredData.buyerType = res.buyer.buyerType || registeredData.buyerType;
+      }
 
       try {
-        localStorage.setItem('buyer_registered_profile', JSON.stringify(registeredData));
         localStorage.setItem('buyer_current_profile', JSON.stringify(registeredData));
-        sessionStorage.removeItem('buyer_explicit_signout');
-      } catch (err) {
-        console.warn('Storage save error (likely quota exceeded), retrying with fallback photo:', err);
-        const compactData = {
-          ...registeredData,
-          photo: 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=300&auto=format&fit=crop&q=80',
-          photoPreview: 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=300&auto=format&fit=crop&q=80'
-        };
-        try {
-          localStorage.setItem('buyer_registered_profile', JSON.stringify(compactData));
-          localStorage.setItem('buyer_current_profile', JSON.stringify(compactData));
-          sessionStorage.removeItem('buyer_explicit_signout');
-        } catch {
-          // ignore storage error
-        }
+        localStorage.setItem('buyer_registered_profile', JSON.stringify(registeredData));
+      } catch (storageErr) {
+        console.warn('LocalStorage save notice:', storageErr);
       }
+    } catch (err) {
+      console.error('Backend register error:', err.message);
+      setSubmitStatus('idle');
+      setRegisterError(err.message || 'Registration failed. Please try again.');
+      return;
+    }
 
-      if (onRegisterSuccess) {
-        onRegisterSuccess(registeredData);
-      }
-    }, 900);
+    try {
+      sessionStorage.removeItem('buyer_explicit_signout');
+    } catch {
+      // ignore
+    }
+
+    setSubmitStatus('success');
+
+    if (onRegisterSuccess) {
+      onRegisterSuccess(registeredData);
+    }
   };
 
   return (
@@ -815,6 +863,35 @@ export default function BuyerRegister({
                       )}
                     </div>
                   </div>
+
+                  {/* 5. ACCOUNT PASSWORD */}
+                  <div style={{ marginTop: 14 }}>
+                    <Input
+                      id="buyer-password-input"
+                      type={showPassword ? 'text' : 'password'}
+                      label={t('passwordLabel')}
+                      placeholder={t('passwordPlaceholder')}
+                      value={password}
+                      autoComplete="new-password"
+                      required
+                      icon={<Lock size={18} />}
+                      rightIcon={showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      onRightIconClick={() => setShowPassword(prev => !prev)}
+                      rightIconAriaLabel={showPassword ? 'Hide password' : 'Show password'}
+                      error={touched.password ? errors.password : ''}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                        if (registerError) setRegisterError('');
+                        if (touched.password) {
+                          setErrors(prev => ({ ...prev, password: validateField('password', e.target.value) }));
+                        }
+                      }}
+                      onBlur={() => {
+                        setTouched(prev => ({ ...prev, password: true }));
+                        setErrors(prev => ({ ...prev, password: validateField('password', password) }));
+                      }}
+                    />
+                  </div>
                 </div>
 
                 {/* --------------------------------------------------------
@@ -954,6 +1031,30 @@ export default function BuyerRegister({
                     </div>
                   )}
                 </div>
+
+                {/* Server Error Alert Banner */}
+                {registerError && (
+                  <div
+                    className="buyer-reg-error-banner"
+                    role="alert"
+                    style={{
+                      marginBottom: 16,
+                      padding: '12px 16px',
+                      borderRadius: '8px',
+                      backgroundColor: '#fef2f2',
+                      border: '1px solid #fecaca',
+                      color: '#b91c1c',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '10px',
+                      fontSize: '13px',
+                      fontWeight: 500
+                    }}
+                  >
+                    <AlertCircle size={18} style={{ flexShrink: 0 }} />
+                    <span>{registerError}</span>
+                  </div>
+                )}
 
                 {/* Primary CTA Submit Button */}
                 <Button
