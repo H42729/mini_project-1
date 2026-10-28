@@ -320,6 +320,9 @@
       "totalStock": "{n} kg Total Stock",
       "filterAll": "All",
       "filterVegetables": "Vegetables",
+      "filterTomato": "Tomato",
+      "filterOnion": "Onion",
+      "filterPotato": "Potato",
       "filterGradeA": "Grade A",
       "filterGradeB": "Grade B",
       "filterGradeC": "Grade C",
@@ -559,5 +562,27 @@
     "backToRoles": "Back to Role Selection",
     "exploreBuyer": "Explore Buyer Marketplace",
     "backHome": "Back to Home"
+  },
+  "loadingScreen": {
+    "title": "Fetching Farm Produce Data",
+    "subtitle": "Connecting to Tamil Nadu regional hubs (Dindigul • Madurai • Theni)...",
+    "badge": "Live Hub Telemetry",
+    "step1": "Connected to regional agricultural hubs",
+    "step2": "Fetching live crop listings & verified harvest stock",
+    "step3": "Synchronizing order status & EV cargo telemetry",
+    "delayNotice": "Taking a little longer than usual? Loading live farm consignments directly from regional servers. Please wait a moment...",
+    "stillLoadingNotice": "Network response is delayed. You can refresh or continue using cached offline farm data.",
+    "retryBtn": "Refresh Data",
+    "offlineBtn": "Continue Offline"
+  },
+  "splash": {
+    "welcome": "Welcome to Naam Uzhavar",
+    "welcomeTa": "Welcome to Naam Uzhavar",
+    "subtitle": "Connecting Farmers, Buyers & Drivers Directly",
+    "tagline": "Direct Digital Agricultural Marketplace • Tamil Nadu",
+    "step1": "Starting Naam Uzhavar platform...",
+    "step2": "Connecting regional hubs & verified farmers...",
+    "step3": "Welcome to Naam Uzhavar • நாம் உழவர்",
+    "skip": "Enter App ➔"
   }
 }

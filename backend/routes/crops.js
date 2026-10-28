@@ -11,9 +11,18 @@ router.get('/', async (req, res, next) => {
     const { search, category, grade } = req.query;
     const filter = {};
 
-    // Filter by produce category
+    // Filter by produce category or specific vegetable type
     if (category && category !== 'all') {
-      filter.category = category;
+      const lowerCat = String(category).toLowerCase();
+      if (['tomato', 'onion', 'potato'].includes(lowerCat)) {
+        const catRegex = new RegExp(lowerCat, 'i');
+        filter.$or = [
+          { name: catRegex },
+          { nameTa: catRegex }
+        ];
+      } else {
+        filter.category = category;
+      }
     }
 
     // Filter by quality grade

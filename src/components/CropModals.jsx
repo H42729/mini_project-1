@@ -272,7 +272,8 @@ export default function CropModals({
                     height: '84px',
                     objectFit: 'cover',
                     borderRadius: '10px',
-                    border: '1px solid #cbd5e1'
+                    border: '1px solid #cbd5e1',
+                    flexShrink: 0
                   }}
                   onError={(e) => {
                     e.currentTarget.onerror = null;
@@ -467,7 +468,7 @@ export default function CropModals({
                       />
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
                       <div>
                         <label
                           htmlFor="workflow-delivery-date"
@@ -551,6 +552,7 @@ export default function CropModals({
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
+                      flexWrap: 'wrap',
                       marginTop: '6px',
                       paddingTop: '14px',
                       borderTop: '1px solid #e2e8f0',
@@ -707,7 +709,7 @@ export default function CropModals({
                       Since the Farmer Dashboard has not been developed yet, simulate the grower's response below to test the full lifecycle. These are simulated actions, not real farmer decisions.
                     </p>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '4px' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px', marginTop: '4px' }}>
                       <button
                         type="button"
                         onClick={() => handleSimulateFarmerApproval(activeWorkflowOrder.orderId)}

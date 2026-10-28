@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../routes';
 import { useT } from '../hooks/useT';
 import { INITIAL_CROPS, INITIAL_ORDERS, INITIAL_MESSAGES } from '../data/mockData';
-import { api, getToken, removeToken } from '../utils/api';
+import { api, getToken, setToken, removeToken } from '../utils/api';
 
 const BuyerContext = createContext(null);
 
@@ -132,40 +132,8 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
     }
   }, [buyerProfile]);
 
-  // Fetch latest authenticated profile from backend if token exists
-  useEffect(() => {
-    async function syncBackendProfile() {
-      try {
-        if (!getToken()) return;
-        const res = await api.get('/profile');
-        if (res && res.buyer) {
-          const b = res.buyer;
-          setProfile((prev) => {
-            const updated = {
-              ...prev,
-              ...b,
-              contactPerson: b.contactPerson || prev.contactPerson,
-              name: b.contactPerson || prev.name,
-              fullName: b.contactPerson || prev.fullName,
-              shopName: b.shopName || b.businessName || prev.shopName,
-              businessName: b.businessName || prev.businessName,
-              photo: b.avatar || b.photo || prev.photo,
-              photoPreview: b.avatar || b.photoPreview || prev.photoPreview
-            };
-            try {
-              localStorage.setItem('buyer_current_profile', JSON.stringify(updated));
-            } catch {
-              // ignore
-            }
-            return updated;
-          });
-        }
-      } catch {
-        // offline or unauthenticated fallback
-      }
-    }
-    syncBackendProfile();
-  }, []);
+  // Data loading state for asynchronous fetching and delay handling
+  const [isDataLoading, setIsDataLoading] = useState(false);
 
   // Toast notification state
   const [toastMessage, setToastMessage] = useState(null);
@@ -192,14 +160,72 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
   };
 
   const handleSaveProfile = async (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
+
+    const resolvedBusiness = (
+      editFormData.shopName ||
+      editFormData.businessName ||
+      profile.businessName ||
+      profile.shopName ||
+      'Commercial Buyer'
+    ).trim();
+    const resolvedContact = (
+      editFormData.contactPerson ||
+      editFormData.name ||
+      editFormData.fullName ||
+      profile.contactPerson ||
+      'Procurement Partner'
+    ).trim();
+    const resolvedEmail = (
+      editFormData.email ||
+      profile.email ||
+      'demo@naamuzhavar.com'
+    ).trim();
+    const resolvedPhone = (
+      editFormData.phone ||
+      profile.phone ||
+      '+91 98401 23456'
+    ).trim();
+    const resolvedAddress = (
+      editFormData.address ||
+      profile.address ||
+      'Madurai Commercial Hub'
+    ).trim();
+    const resolvedGstin = (
+      editFormData.gstin !== undefined ? editFormData.gstin : profile.gstin || ''
+    ).trim();
+    const resolvedType = (
+      editFormData.buyerType ||
+      profile.buyerType ||
+      'hotel'
+    ).trim();
+    const resolvedAvatar =
+      editFormData.photo ||
+      editFormData.photoPreview ||
+      profile.photo ||
+      profile.photoPreview ||
+      profile.avatar;
+
+    const payload = {
+      businessName: resolvedBusiness,
+      shopName: resolvedBusiness,
+      contactPerson: resolvedContact,
+      name: resolvedContact,
+      fullName: resolvedContact,
+      buyerType: resolvedType,
+      phone: resolvedPhone,
+      email: resolvedEmail,
+      address: resolvedAddress,
+      gstin: resolvedGstin,
+      avatar: resolvedAvatar,
+      photo: resolvedAvatar
+    };
+
+    // 1. Instantly update local state & localStorage for snappy UI
     const updated = {
+      ...profile,
       ...editFormData,
-      name: editFormData.contactPerson || editFormData.name,
-      fullName: editFormData.contactPerson || editFormData.fullName,
-      contactPerson: editFormData.contactPerson || editFormData.name,
-      shopName: editFormData.shopName || editFormData.businessName,
-      businessName: editFormData.shopName || editFormData.businessName
+      ...payload
     };
     setProfile(updated);
     try {
@@ -209,38 +235,48 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
       // ignore storage error
     }
 
-    if (getToken()) {
-      try {
-        await api.put('/profile', {
-          businessName: updated.businessName,
-          shopName: updated.shopName,
-          contactPerson: updated.contactPerson,
-          name: updated.name,
-          fullName: updated.fullName,
-          buyerType: updated.buyerType,
-          phone: updated.phone,
-          email: updated.email,
-          address: updated.address,
-          gstin: updated.gstin,
-          avatar: updated.photo || updated.photoPreview
-        });
-      } catch {
-        // ignore background sync error
+    // 2. Persist changes to MongoDB backend via PUT /api/profile
+    try {
+      const res = await api.put('/profile', payload);
+      if (res && res.token) {
+        setToken(res.token);
       }
+      if (res && res.buyer) {
+        const confirmed = {
+          ...updated,
+          ...res.buyer,
+          name: res.buyer.contactPerson || res.buyer.name || updated.name,
+          contactPerson: res.buyer.contactPerson || updated.contactPerson,
+          shopName: res.buyer.shopName || res.buyer.businessName || updated.shopName,
+          businessName: res.buyer.businessName || updated.businessName,
+          photo: res.buyer.avatar || res.buyer.photo || updated.photo,
+          photoPreview: res.buyer.avatar || res.buyer.photo || updated.photoPreview
+        };
+        setProfile(confirmed);
+        try {
+          localStorage.setItem('buyer_current_profile', JSON.stringify(confirmed));
+          localStorage.setItem('buyer_registered_profile', JSON.stringify(confirmed));
+        } catch {
+          // ignore
+        }
+      }
+      showToast(
+        'success',
+        t('modals.profileUpdatedToast') || 'Profile details updated and stored in database successfully!'
+      );
+    } catch (err) {
+      console.warn('Backend update notice:', err);
+      showToast('info', 'Profile updated locally. (' + (err.message || 'Offline') + ')');
     }
 
     setEditProfileOpen(false);
-    showToast(
-      'success',
-      t('modals.profileUpdatedToast')
-    );
   };
 
   const handlePhotoUpload = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = (uploadEvent) => {
+    reader.onload = async (uploadEvent) => {
       const newPhoto = uploadEvent.target.result;
       const updated = { ...profile, photo: newPhoto, photoPreview: newPhoto };
       setProfile(updated);
@@ -251,9 +287,25 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
       } catch {
         // ignore storage error
       }
+
+      // Automatically store uploaded photo to MongoDB database
+      try {
+        const res = await api.put('/profile', {
+          avatar: newPhoto,
+          photo: newPhoto,
+          email: profile.email,
+          businessName: profile.businessName || profile.shopName
+        });
+        if (res && res.token) {
+          setToken(res.token);
+        }
+      } catch (err) {
+        console.warn('Could not sync photo to database:', err);
+      }
+
       showToast(
         'success',
-        t('modals.profilePhotoToast')
+        t('modals.profilePhotoToast') || 'Profile photo updated and saved to database!'
       );
     };
     reader.readAsDataURL(file);
@@ -289,6 +341,121 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
   const [messages, setMessages] = useState(INITIAL_MESSAGES);
   const [replyText, setReplyText] = useState('');
 
+  // Synchronize remote backend data (profile, crops, orders) with loading state
+  const refreshData = async (showLoader = true) => {
+    if (showLoader) setIsDataLoading(true);
+    try {
+      if (!getToken()) return;
+
+      const [profileRes, cropsRes, ordersRes] = await Promise.allSettled([
+        api.get('/profile'),
+        api.get('/crops'),
+        api.get('/orders')
+      ]);
+
+      if (profileRes.status === 'fulfilled' && profileRes.value?.buyer) {
+        const b = profileRes.value.buyer;
+        setProfile((prev) => {
+          const updated = {
+            ...prev,
+            ...b,
+            contactPerson: b.contactPerson || prev.contactPerson,
+            name: b.contactPerson || prev.name,
+            fullName: b.contactPerson || prev.fullName,
+            shopName: b.shopName || b.businessName || prev.shopName,
+            businessName: b.businessName || prev.businessName,
+            photo: b.avatar || b.photo || prev.photo,
+            photoPreview: b.avatar || b.photoPreview || prev.photoPreview
+          };
+          try {
+            localStorage.setItem('buyer_current_profile', JSON.stringify(updated));
+          } catch {
+            // ignore
+          }
+          return updated;
+        });
+      }
+
+      if (cropsRes.status === 'fulfilled' && Array.isArray(cropsRes.value?.crops) && cropsRes.value.crops.length > 0) {
+        setCrops(
+          cropsRes.value.crops.map((c) => ({
+            id: c._id || c.id,
+            name: c.name,
+            tamilName: c.nameTa || '',
+            category: c.category || 'vegetables',
+            grade: c.grade || 'Grade A',
+            pricePerKg: c.pricePerKg,
+            availableKg: c.quantityKg,
+            farmer: {
+              name: c.farmerName || 'Local Producer',
+              phone: '+91 98421 78210',
+              village: c.hub || 'Siluvathur, Dindigul'
+            },
+            farmerName: c.farmerName || 'Local Producer',
+            location: c.hub || 'Dindigul Central',
+            hubName: c.hub || 'Dindigul Central',
+            distanceKm: c.distanceKm || 14,
+            image: c.image
+          }))
+        );
+      }
+
+      if (ordersRes.status === 'fulfilled' && Array.isArray(ordersRes.value?.orders) && ordersRes.value.orders.length > 0) {
+        setOrders(
+          ordersRes.value.orders.map((o) => ({
+            ...o,
+            orderId: o.orderId,
+            cropName: o.cropDetails?.name || o.crop?.name || 'Produce',
+            tamilCropName: o.cropDetails?.nameTa || o.crop?.nameTa || '',
+            grade: o.cropDetails?.grade || o.crop?.grade || 'Grade A',
+            image: o.cropDetails?.image || o.crop?.image,
+            unitPrice: o.cropDetails?.pricePerKg || Math.round(o.totalPrice / (o.quantityKg || 1)),
+            farmer: {
+              name: o.cropDetails?.farmerName || 'Farmer Partner',
+              phone: '+91 98421 78210',
+              location: o.cropDetails?.hub || 'Dindigul'
+            },
+            driver: o.driver || {
+              name: 'Kumar M.',
+              vehicleType: 'Tata Ace EV Cargo',
+              vehicleNumber: 'TN 57 AB 1234',
+              phone: '+91 94432 11098',
+              deliveryPin: '4892'
+            },
+            liveTracking: {
+              currentStatus: o.deliveryStatus === 'DELIVERED' ? 'Consignment Delivered' : 'Ready for EV Driver Pickup',
+              currentLocation: `${o.cropDetails?.hub || 'Dindigul'} Hub`,
+              estimatedMinutes: 30,
+              distanceKm: 18,
+              speedKmh: 0,
+              lastUpdated: 'Just now'
+            }
+          }))
+        );
+      }
+    } catch {
+      // offline fallback
+    } finally {
+      if (showLoader) setIsDataLoading(false);
+    }
+  };
+
+  // Helper to simulate a network delay for live judging / demonstration
+  const simulateDataDelay = (delayMs = 3500) => {
+    setIsDataLoading(true);
+    setTimeout(() => {
+      setIsDataLoading(false);
+      showToast('success', lang === 'ta' ? 'விவசாய தரவுகள் புதுப்பிக்கப்பட்டன' : 'Farm produce data synchronized!');
+    }, delayMs);
+  };
+
+  // Fetch latest authenticated data on initial mount
+  useEffect(() => {
+    refreshData(false);
+  }, []);
+
+
+
 
   // Filter crops
   const filteredCrops = useMemo(() => {
@@ -309,6 +476,18 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
         if (!crop) return false;
         if (selectedCategory === 'all') return true;
         if (selectedCategory === 'vegetables') return (crop.category || '').toLowerCase() === 'vegetables';
+        if (selectedCategory === 'tomato') {
+          const name = ((crop.name || '') + ' ' + (crop.tamilName || '') + ' ' + (crop.id || '')).toLowerCase();
+          return name.includes('tomato') || name.includes('தக்காளி');
+        }
+        if (selectedCategory === 'onion') {
+          const name = ((crop.name || '') + ' ' + (crop.tamilName || '') + ' ' + (crop.id || '')).toLowerCase();
+          return name.includes('onion') || name.includes('shallot') || name.includes('vengayam') || name.includes('வெங்காயம்') || name.includes('bellary');
+        }
+        if (selectedCategory === 'potato') {
+          const name = ((crop.name || '') + ' ' + (crop.tamilName || '') + ' ' + (crop.id || '')).toLowerCase();
+          return name.includes('potato') || name.includes('urulai') || name.includes('உருளை');
+        }
         const g = (crop.grade || '').trim().toLowerCase();
         if (selectedCategory === 'grade_a') return g === 'grade a';
         if (selectedCategory === 'grade_b') return g === 'grade b';
@@ -871,6 +1050,11 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
     orderConfirmationData,
     setOrderConfirmationData,
     handleGoToTracking,
+    // Data Loading & Delay Simulation
+    isDataLoading,
+    setIsDataLoading,
+    refreshData,
+    simulateDataDelay,
     // Lang & Translations
     lang,
     toggleLang,

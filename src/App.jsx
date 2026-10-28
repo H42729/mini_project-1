@@ -12,7 +12,7 @@ import BuyerRegister from './pages/BuyerRegister';
 import ComingSoonPage from './pages/ComingSoonPage';
 import NotFoundPage from './pages/NotFoundPage';
 import BuyerDashboardLayout from './components/BuyerDashboardLayout';
-import Skeleton from './components/Skeleton';
+import LoadingPage from './components/LoadingPage';
 
 // Lazy-loaded buyer dashboard sub-pages directly without barrel files for optimal code splitting
 const Overview = lazy(() => import('./pages/buyer/Overview.jsx'));
@@ -28,7 +28,7 @@ const Profile = lazy(() => import('./pages/buyer/Profile.jsx'));
 function DashboardPageFallback() {
   return (
     <div className="buyer-view-container animate-fade-in" style={{ padding: '8px 0' }}>
-      <Skeleton variant="card" height={320} />
+      <LoadingPage fullScreen={false} />
     </div>
   );
 }
