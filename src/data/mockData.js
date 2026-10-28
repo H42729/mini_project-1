@@ -6,6 +6,58 @@
 
 export const INITIAL_CROPS = [
   {
+    id: 'crop-potato-a-23',
+    name: 'Kodaikanal Golden Hill Potatoes',
+    tamilName: 'கொடைக்கானல் உருளைக்கிழங்கு (கிரேடு A)',
+    category: 'vegetables',
+    grade: 'Grade A',
+    gradeDesc: 'Smooth skin, unblemished, crisp high-altitude sweet harvest',
+    pricePerKg: 36,
+    availableKg: 620,
+    minOrderKg: 40,
+    location: 'Kodaikanal',
+    hubName: 'Kodaikanal',
+    hubCode: 'DGL-LOC-03',
+    distanceKm: 45,
+    harvestTime: 'Today, 04:45 AM',
+    image: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=600&auto=format&fit=crop&q=80',
+    farmer: {
+      name: 'K. Selvam',
+      farmerId: 'FMR-TN-5529',
+      village: 'Poombarai, Kodaikanal, Dindigul',
+      phone: '+91 98428 33412',
+      rating: 4.95,
+      totalHarvests: 215
+    },
+    popular: true
+  },
+  {
+    id: 'crop-potato-c-24',
+    name: 'Batlagundu Commercial Gravy Potatoes',
+    tamilName: 'உருளைக்கிழங்கு (கிரேடு C)',
+    category: 'vegetables',
+    grade: 'Grade C',
+    gradeDesc: 'High-starch commercial utility grade, ideal for bulk hotel curries & samosa fillings',
+    pricePerKg: 22,
+    availableKg: 850,
+    minOrderKg: 60,
+    location: 'Batlagundu',
+    hubName: 'Batlagundu',
+    hubCode: 'DGL-LOC-07',
+    distanceKm: 32,
+    harvestTime: 'Today, 06:10 AM',
+    image: 'https://images.unsplash.com/photo-1590165482129-1b8b27698780?w=600&auto=format&fit=crop&q=80',
+    farmer: {
+      name: 'T. Meenakshi',
+      farmerId: 'FMR-TN-7734',
+      village: 'Batlagundu, Dindigul',
+      phone: '+91 98422 45678',
+      rating: 4.92,
+      totalHarvests: 98
+    },
+    popular: false
+  },
+  {
     id: 'crop-tomato-01',
     name: 'Country Tomato',
     tamilName: 'நாட்டு தக்காளி',
@@ -32,12 +84,12 @@ export const INITIAL_CROPS = [
     popular: true
   },
   {
-    id: 'crop-tomato-ab-16',
+    id: 'crop-tomato-b-16',
     name: 'Oddanchatram Fresh Salad Tomatoes',
-    tamilName: 'நாட்டு தக்காளி',
+    tamilName: 'நாட்டு தக்காளி (கிரேடு B)',
     category: 'vegetables',
-    grade: 'Grade A',
-    gradeDesc: 'Firm, uniform size, certified fresh table harvest',
+    grade: 'Grade B',
+    gradeDesc: 'Medium size, rich red color, ideal for restaurants & daily culinary use',
     pricePerKg: 27,
     availableKg: 650,
     minOrderKg: 50,
@@ -384,7 +436,7 @@ export const INITIAL_CROPS = [
     hubCode: 'DGL-LOC-04',
     distanceKm: 38,
     harvestTime: 'Yesterday, 05:00 PM',
-    image: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=600&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1508313880080-c4bef0730395?w=600&auto=format&fit=crop&q=80',
     farmer: {
       name: 'M. Ramasamy',
       farmerId: 'FMR-TN-1940',
@@ -410,7 +462,7 @@ export const INITIAL_CROPS = [
     hubCode: 'DGL-LOC-02',
     distanceKm: 28,
     harvestTime: 'Yesterday, 06:00 PM',
-    image: 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=600&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1580201092675-a0a6a6cafbb1?w=600&auto=format&fit=crop&q=80',
     farmer: {
       name: 'V. Ramanathan',
       farmerId: 'FMR-TN-3882',

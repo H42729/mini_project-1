@@ -16,7 +16,8 @@ import {
   Info,
   Menu,
   LogOut,
-  Edit3
+  Edit3,
+  RefreshCw
 } from 'lucide-react';
 import './BuyerDashboardLayout.css';
 import Offcanvas from 'react-bootstrap/Offcanvas';
@@ -26,6 +27,7 @@ import Modal from './Modal';
 import { BuyerProvider, useBuyer } from '../context/BuyerContext';
 import CropModals from './CropModals';
 import EditProfileModal from './EditProfileModal';
+import LoadingPage from './LoadingPage';
 
 /**
  * BuyerDashboardLayout Component
@@ -297,6 +299,19 @@ function BuyerDashboardContent() {
                 <div className="buyer-dropdown-divider" />
                 <button
                   type="button"
+                  className="buyer-dropdown-item"
+                  onClick={() => {
+                    setProfileDropdownOpen(false);
+                    buyer.simulateDataDelay(3500);
+                  }}
+                  title="Simulate delay while fetching live data to demonstrate Loading Page"
+                >
+                  <RefreshCw size={15} />
+                  <span>{buyer.lang === 'ta' ? 'தரவு ஏற்றுதலை சோதிக்கவும் (Demo)' : 'Test Delay Loading Page'}</span>
+                </button>
+                <div className="buyer-dropdown-divider" />
+                <button
+                  type="button"
                   id="buyer-header-signout-btn"
                   className="buyer-dropdown-item logout"
                   onClick={() => {
@@ -494,7 +509,17 @@ function BuyerDashboardContent() {
 
         {/* MAIN DASHBOARD CONTENT VIEWPORT: Renders matched child route via <Outlet /> */}
         <main className="buyer-main-viewport" ref={mainViewportRef}>
-          <Outlet context={buyer} />
+          {buyer.isDataLoading ? (
+            <div className="buyer-view-container animate-fade-in" style={{ padding: '8px 0' }}>
+              <LoadingPage
+                fullScreen={false}
+                onRetry={() => buyer.refreshData(true)}
+                onContinueOffline={() => buyer.setIsDataLoading(false)}
+              />
+            </div>
+          ) : (
+            <Outlet context={buyer} />
+          )}
         </main>
       </div>
 

@@ -4200,10 +4200,12 @@
   }
 
   /* Edit Profile Modal on Mobile */
-  .buyer-modal-panel.profile-modal {
+  .buyer-modal-panel,
+  .buyer-modal-panel.profile-modal,
+  .buyer-modal-panel.workflow-modal {
     max-width: calc(100vw - 28px);
     margin: 14px;
-    max-height: 90vh;
+    max-height: calc(100dvh - 24px);
     display: flex;
     flex-direction: column;
   }
@@ -4676,4 +4678,32 @@
     border-radius: var(--buyer-radius-full) !important;
     white-space: nowrap !important;
   }
+}
+
+
+/* Inline Grade badge in Crop Card metadata */
+.buyer-grade-badge-inline {
+  display: inline-block;
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 1px 7px;
+  border-radius: 4px;
+}
+
+.buyer-grade-badge-inline.grade-a {
+  background-color: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.buyer-grade-badge-inline.grade-b {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+.buyer-grade-badge-inline.grade-c {
+  background-color: #ffedd5;
+  color: #c2410c;
+  border: 1px solid #fed7aa;
 }

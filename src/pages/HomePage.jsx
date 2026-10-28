@@ -1,6 +1,6 @@
 // What this file does: Public landing page showcasing platform value proposition, roles, features, and call-to-actions.
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import {
@@ -22,6 +22,7 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import SectionHeader from '../components/SectionHeader';
 import Button from '../components/Button';
+import AppSplashLoader from '../components/AppSplashLoader';
 import './HomePage.css';
 
 export default function HomePage({ onBuyerAuthSuccess: _onBuyerAuthSuccess }) {
@@ -40,8 +41,19 @@ export default function HomePage({ onBuyerAuthSuccess: _onBuyerAuthSuccess }) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // Intro Splash Loader: App logo comes first on entering the app, next the Home Page opens
+  const [showSplash, setShowSplash] = useState(true);
+
   return (
     <div className="website-root">
+      {/* 0. APP LOGO INTRO SPLASH: Displays first when entering the app */}
+      {showSplash && (
+        <AppSplashLoader
+          duration={1800}
+          onFinish={() => setShowSplash(false)}
+        />
+      )}
+
       {/* 1. NAVBAR */}
       <Navbar onLoginClick={navigateToRoleSelect} />
 

@@ -20,6 +20,9 @@ import CropCard from '../../components/CropCard';
 const CATEGORY_FILTERS = [
   { id: 'all', labelKey: 'crops.filterAll', label: 'All' },
   { id: 'vegetables', labelKey: 'crops.filterVegetables', label: 'Vegetables' },
+  { id: 'tomato', labelKey: 'crops.filterTomato', label: 'Tomato' },
+  { id: 'onion', labelKey: 'crops.filterOnion', label: 'Onion' },
+  { id: 'potato', labelKey: 'crops.filterPotato', label: 'Potato' },
   { id: 'grade_a', labelKey: 'crops.filterGradeA', label: 'Grade A' },
   { id: 'grade_b', labelKey: 'crops.filterGradeB', label: 'Grade B' },
   { id: 'grade_c', labelKey: 'crops.filterGradeC', label: 'Grade C' }

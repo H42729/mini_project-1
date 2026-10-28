@@ -14,6 +14,30 @@ const Message = require('./models/Message');
 
 const SEED_CROPS = [
   {
+    name: 'Kodaikanal Golden Hill Potatoes',
+    nameTa: 'கொடைக்கானல் உருளைக்கிழங்கு (கிரேடு A)',
+    category: 'vegetables',
+    grade: 'Grade A',
+    pricePerKg: 36,
+    quantityKg: 620,
+    farmerName: 'K. Selvam (Poombarai)',
+    hub: 'Kodaikanal',
+    distanceKm: 45,
+    image: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=600&auto=format&fit=crop&q=80'
+  },
+  {
+    name: 'Batlagundu Commercial Gravy Potatoes',
+    nameTa: 'உருளைக்கிழங்கு (கிரேடு C)',
+    category: 'vegetables',
+    grade: 'Grade C',
+    pricePerKg: 22,
+    quantityKg: 850,
+    farmerName: 'T. Meenakshi (Batlagundu)',
+    hub: 'Batlagundu',
+    distanceKm: 32,
+    image: 'https://images.unsplash.com/photo-1590165482129-1b8b27698780?w=600&auto=format&fit=crop&q=80'
+  },
+  {
     name: 'Country Tomato',
     nameTa: 'நாட்டு தக்காளி',
     category: 'vegetables',
@@ -27,9 +51,9 @@ const SEED_CROPS = [
   },
   {
     name: 'Oddanchatram Fresh Salad Tomatoes',
-    nameTa: 'நாட்டு தக்காளி',
+    nameTa: 'நாட்டு தக்காளி (கிரேடு B)',
     category: 'vegetables',
-    grade: 'Grade A',
+    grade: 'Grade B',
     pricePerKg: 27,
     quantityKg: 650,
     farmerName: 'P. Murugesan (Oddanchatram)',
@@ -191,7 +215,7 @@ const SEED_CROPS = [
     farmerName: 'M. Ramasamy (Ayakudi)',
     hub: 'Palani',
     distanceKm: 38,
-    image: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=600&auto=format&fit=crop&q=80'
+    image: 'https://images.unsplash.com/photo-1508313880080-c4bef0730395?w=600&auto=format&fit=crop&q=80'
   },
   {
     name: 'Commercial Bellary Onions',
@@ -203,7 +227,7 @@ const SEED_CROPS = [
     farmerName: 'V. Ramanathan (Oddanchatram)',
     hub: 'Oddanchatram',
     distanceKm: 28,
-    image: 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=600&auto=format&fit=crop&q=80'
+    image: 'https://images.unsplash.com/photo-1580201092675-a0a6a6cafbb1?w=600&auto=format&fit=crop&q=80'
   },
   {
     name: 'Oddanchatram Fresh Cabbage',
