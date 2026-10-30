@@ -88,7 +88,7 @@ export default function RoleSelectPage({
           tabIndex={0}
           aria-label="Back to home"
         >
-          <img src="/logo.jpg" alt="Naam Uzhavar" className="role-select-logo-img" />
+          <img src="/logo.png" alt="Naam Uzhavar" className="role-select-logo-img" />
           <div className="role-select-brand-text">
             <span className="role-select-brand-name">
               {t('common.appName')}
@@ -119,7 +119,7 @@ export default function RoleSelectPage({
             leftIcon={<ArrowLeft size={16} />}
             aria-label="Back to Home"
           >
-            <span>{t('common.navHome')}</span>
+            <span className="role-back-home-text">{t('common.navHome')}</span>
           </Button>
         </div>
       </header>

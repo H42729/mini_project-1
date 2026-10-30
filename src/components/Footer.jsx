@@ -22,7 +22,7 @@ export default function Footer({ className = '' }) {
           <Col xs={12} lg={5} className="pe-lg-5">
             <div className="d-flex align-items-center gap-2.5 mb-3">
               <img
-                src="/logo.jpg"
+                src="/logo.png"
                 alt="Logo"
                 width={42}
                 height={42}

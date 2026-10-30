@@ -336,6 +336,23 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
   const [orders, setOrders] = useState(INITIAL_ORDERS);
   const [activeOrderFilter, setActiveOrderFilter] = useState('active');
   const [selectedTrackingOrderId, setSelectedTrackingOrderId] = useState('NU-2026-00124');
+  const [activeDashboardOrderId, setActiveDashboardOrderId] = useState(null);
+
+  const activeDashboardOrder = useMemo(() => {
+    if (!orders || orders.length === 0) return null;
+    if (activeDashboardOrderId) {
+      const match = orders.find((o) => o.orderId === activeDashboardOrderId);
+      if (match) return match;
+    }
+    const pendingOrActive = orders.find(
+      (o) =>
+        o.orderStatus === 'PENDING_FARMER_APPROVAL' ||
+        o.deliveryStatus === 'READY_FOR_PICKUP' ||
+        o.deliveryStatus === 'PICKED_UP' ||
+        o.deliveryStatus === 'IN_TRANSIT'
+    );
+    return pendingOrActive || orders[0] || null;
+  }, [orders, activeDashboardOrderId]);
 
   // Messages State
   const [messages, setMessages] = useState(INITIAL_MESSAGES);
@@ -654,17 +671,37 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
     );
 
     setOrders((prev) => [newOrder, ...prev]);
+    setActiveDashboardOrderId(newOrder.orderId);
+    setSelectedTrackingOrderId(newOrder.orderId);
     setActiveWorkflowOrder(newOrder);
-    setWorkflowStep('PENDING_APPROVAL');
+
+    // Close confirmation modal and smoothly navigate to Buyer Dashboard
+    setWorkflowModalOpen(false);
+    setWorkflowCrop(null);
+    setWorkflowStep('CONFIRMATION');
     setIsSubmittingOrder(false);
-    showToast('success', `Order ${newOrder.orderId} submitted! Awaiting farmer confirmation.`);
+
+    navigate(ROUTES.BUYER_DASHBOARD);
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    showToast(
+      'success',
+      lang === 'ta'
+        ? `ஆர்டர் #${newOrder.orderId} பதிவு செய்யப்பட்டது! விவசாயி ஒப்புதலுக்காக அனுப்பப்பட்டது.`
+        : `Order #${newOrder.orderId} placed! Sent to farmer for approval.`
+    );
   };
 
   // Step 3: Demo Farmer Approval & Rejection Simulation
   const handleSimulateFarmerApproval = async (orderId) => {
+    const targetId = orderId || activeDashboardOrder?.orderId || activeWorkflowOrder?.orderId;
+    if (!targetId) return;
+
     if (getToken()) {
       try {
-        await api.patch(`/orders/${orderId}/simulate-farmer`, { action: 'APPROVE' });
+        await api.patch(`/orders/${targetId}/simulate-farmer`, { action: 'APPROVE' });
       } catch (err) {
         console.warn('Backend simulate-farmer approval warning:', err);
       }
@@ -672,14 +709,15 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
 
     setOrders((prev) =>
       prev.map((o) =>
-        o.orderId === orderId
+        o.orderId === targetId
           ? {
               ...o,
               orderStatus: 'CONFIRMED',
               status: 'CONFIRMED',
+              deliveryStatus: o.deliveryStatus === 'NOT_ASSIGNED' ? 'READY_FOR_PICKUP' : o.deliveryStatus,
               liveTracking: {
                 ...o.liveTracking,
-                currentStatus: 'Farmer Approved — Ready for Delivery Arrangement'
+                currentStatus: 'Farmer Approved — Driver notified and heading to farm for pickup'
               }
             }
           : o
@@ -687,21 +725,27 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
     );
 
     setActiveWorkflowOrder((prev) =>
-      prev && prev.orderId === orderId
+      prev && prev.orderId === targetId
         ? {
             ...prev,
             orderStatus: 'CONFIRMED',
             status: 'CONFIRMED',
+            deliveryStatus: prev.deliveryStatus === 'NOT_ASSIGNED' ? 'READY_FOR_PICKUP' : prev.deliveryStatus,
             liveTracking: {
               ...prev.liveTracking,
-              currentStatus: 'Farmer Approved — Ready for Delivery Arrangement'
+              currentStatus: 'Farmer Approved — Driver notified and heading to farm for pickup'
             }
           }
         : prev
     );
 
     setWorkflowStep('CONFIRMED');
-    showToast('success', 'Farmer approval simulated successfully! Order confirmed.');
+    showToast(
+      'success',
+      lang === 'ta'
+        ? `விவசாயி ஆர்டர் #${targetId}-க்கு ஒப்புதல் அளித்தார்! ஓட்டுநர் பயிர்களை எடுக்க புறப்பட்டார்.`
+        : `Farmer approved Order #${targetId}! Driver notified for pickup.`
+    );
   };
 
   const handleSimulateFarmerRejection = async (orderId) => {
@@ -995,6 +1039,9 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
     setActiveOrderFilter,
     selectedTrackingOrderId,
     setSelectedTrackingOrderId,
+    activeDashboardOrderId,
+    setActiveDashboardOrderId,
+    activeDashboardOrder,
     trackingOrder,
     messages,
     setMessages,

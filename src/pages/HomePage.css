@@ -609,3 +609,96 @@
     transform: none !important;
   }
 }
+
+
+/* ==========================================================================
+   SMOOTH ENTRANCE CHOREOGRAPHY (Website Opening Cascade)
+   ========================================================================== */
+.website-root.hp-revealed .public-navbar {
+  animation: hpNavCascade 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.website-root.hp-revealed .hp-badge-pill {
+  animation: hpElementFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both;
+}
+
+.website-root.hp-revealed .hp-hero-title {
+  animation: hpElementFadeUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.18s both;
+}
+
+.website-root.hp-revealed .hp-hero-subtitle {
+  animation: hpElementFadeUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.28s both;
+}
+
+.website-root.hp-revealed .hp-trust-strip {
+  animation: hpElementFadeUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.38s both;
+}
+
+.website-root.hp-revealed .hp-hero-actions {
+  animation: hpElementFadeUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.48s both;
+}
+
+.website-root.hp-revealed .hp-hero-image-card {
+  animation: hpHeroImgScaleIn 0.95s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+}
+
+.website-root.hp-revealed .hp-floating-card {
+  animation: hpFloatingCardLevitate 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.42s both;
+}
+
+@keyframes hpNavCascade {
+  from {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hpElementFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hpHeroImgScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes hpFloatingCardLevitate {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .website-root.hp-revealed .public-navbar,
+  .website-root.hp-revealed .hp-badge-pill,
+  .website-root.hp-revealed .hp-hero-title,
+  .website-root.hp-revealed .hp-hero-subtitle,
+  .website-root.hp-revealed .hp-trust-strip,
+  .website-root.hp-revealed .hp-hero-actions,
+  .website-root.hp-revealed .hp-hero-image-card,
+  .website-root.hp-revealed .hp-floating-card {
+    animation: none !important;
+  }
+}

@@ -386,7 +386,7 @@ export default function BuyerRegister({
             <div className="buyer-reg-brand-lockup">
               <div className="buyer-reg-brand-logo-card">
                 <img
-                  src="/logo.jpg"
+                  src="/logo.png"
                   alt="Naam Uzhavar Official Crest"
                   className="buyer-reg-brand-logo-img"
                 />
@@ -456,7 +456,7 @@ export default function BuyerRegister({
               leftIcon={<ArrowLeft size={16} />}
               aria-label={t('backLink')}
             >
-              <span>{t('backLink')}</span>
+              <span className="back-link-text">{t('backLink')}</span>
             </Button>
 
             <Button
@@ -477,7 +477,7 @@ export default function BuyerRegister({
             {/* Mobile-only Top Brand Header */}
             <div className="buyer-reg-mobile-header">
               <img
-                src="/logo.jpg"
+                src="/logo.png"
                 alt="Naam Uzhavar Logo"
                 className="buyer-reg-mobile-logo"
               />

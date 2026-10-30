@@ -1,9 +1,10 @@
 /* ==========================================================================
-   Naam Uzhavar - App Intro Splash & Logo Loading Screen
+   Naam Uzhavar - Premium Brand Intro Splash & Kinetic Motion System
    Aesthetic: Deep Botanical Pine, Earth Ochre & Pure Warm Neutral
-   Optimized for: 100% Mobile, Tablet, and Desktop Responsiveness
+   Optimized for: 60/120fps Fluid Motion, Orbital Rings, Mobile & Desktop
    ========================================================================== */
 
+/* 1. Full-Screen Backdrop & Silky Dissolution */
 .nu-splash-overlay {
   position: fixed;
   top: 0;
@@ -12,48 +13,62 @@
   bottom: 0;
   inset: 0;
   z-index: 99999;
-  width: 100%;
   width: 100vw;
-  height: 100%;
   height: 100vh;
-  height: 100dvh; /* Dynamic viewport height for iOS Safari & Android Chrome */
+  height: 100dvh; /* Dynamic viewport height for mobile browsers */
   min-height: -webkit-fill-available;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
-  background: radial-gradient(circle at center, #ffffff 0%, #f6f6f2 60%, #eaf3ec 100%);
+  background: radial-gradient(circle at center, #ffffff 0%, #fbfbfa 45%, #f1f7f2 100%);
   font-family: var(--buyer-font, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
-  color: #1f2933;
+  color: #0f172a;
   overflow: hidden;
   user-select: none;
   -webkit-user-select: none;
   touch-action: none;
   overscroll-behavior: none;
   -webkit-tap-highlight-color: transparent;
-  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: opacity, transform;
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+              filter 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform, filter;
 }
 
+/* Optical Exit Dissolution */
 .nu-splash-overlay.is-exiting {
   opacity: 0;
-  transform: scale(1.03);
+  transform: scale(1.06) translateZ(0);
+  filter: blur(10px);
+  -webkit-filter: blur(10px);
   pointer-events: none;
 }
 
-/* 1. Ambient Background Glows */
+/* 2. Soft Ambient Respiration Auras in Background */
 .nu-splash-ambient-aura {
   position: absolute;
-  width: min(500px, 85vw);
-  height: min(500px, 85vw);
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(47, 107, 58, 0.14) 0%, rgba(43, 92, 138, 0.06) 50%, transparent 70%);
-  animation: nuAmbientPulse 3.6s ease-in-out infinite;
   pointer-events: none;
   transform: translateZ(0);
+  will-change: transform, opacity;
 }
 
-/* 2. Central Content Card */
+.nu-splash-ambient-aura.primary-aura {
+  width: min(580px, 94vw);
+  height: min(580px, 94vw);
+  background: radial-gradient(circle, rgba(34, 197, 94, 0.16) 0%, rgba(47, 107, 58, 0.08) 45%, transparent 72%);
+  animation: nuAmbientBreathe 5.2s ease-in-out infinite alternate;
+}
+
+.nu-splash-ambient-aura.secondary-aura {
+  width: min(460px, 78vw);
+  height: min(460px, 78vw);
+  background: radial-gradient(circle, rgba(217, 119, 6, 0.11) 0%, rgba(37, 99, 235, 0.05) 55%, transparent 75%);
+  animation: nuAmbientBreathe 4.4s ease-in-out infinite alternate-reverse;
+}
+
+/* 3. Central Stage Container */
 .nu-splash-container {
   position: relative;
   display: flex;
@@ -61,86 +76,212 @@
   align-items: center;
   text-align: center;
   padding: 24px 16px;
-  max-width: 440px;
+  max-width: 500px;
   width: 100%;
-  max-height: 100%;
   box-sizing: border-box;
   z-index: 2;
-  animation: nuContentEnter 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   transform: translateZ(0);
 }
 
-/* 3. Hero Logo Container with Spinning Orbit */
+/* ==========================================================================
+   4. Emblem Stage & Surrounding Orbital Animations
+   ========================================================================== */
 .nu-splash-logo-box {
   position: relative;
-  width: 120px;
-  height: 120px;
-  margin-bottom: 22px;
+  width: 248px;
+  height: 248px;
+  margin-bottom: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  animation: nuStageSpringReveal 0.85s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-.nu-splash-logo-aura {
+/* 4a. Ambient Solar Aura Behind Logo */
+.nu-splash-aura-glow {
   position: absolute;
-  inset: -12px;
+  width: 236px;
+  height: 236px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(47, 107, 58, 0.25) 0%, rgba(38, 90, 49, 0.1) 50%, transparent 75%);
-  animation: nuAuraGlow 2.4s ease-in-out infinite alternate;
+  background: radial-gradient(circle, rgba(34, 197, 94, 0.28) 0%, rgba(217, 119, 6, 0.14) 48%, transparent 72%);
+  animation: nuAuraBreathe 3.2s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 1;
 }
 
-.nu-splash-orbit-ring {
+/* 4b. Concentric Expanding Energy Ripples (Pulse Waves) */
+.nu-splash-ripple-wave {
   position: absolute;
-  inset: -6px;
+  width: 170px;
+  height: 170px;
   border-radius: 50%;
-  border: 2px dashed rgba(47, 107, 58, 0.35);
-  animation: nuOrbitRotate 10s linear infinite;
+  border: 1.8px solid rgba(34, 197, 94, 0.48);
+  pointer-events: none;
+  z-index: 2;
+  animation: nuRippleExpand 3.4s cubic-bezier(0.2, 0.8, 0.35, 1) infinite;
 }
 
+.nu-splash-ripple-wave.nu-ripple-1 {
+  animation-delay: 0s;
+}
+
+.nu-splash-ripple-wave.nu-ripple-2 {
+  animation-delay: 1.15s;
+}
+
+.nu-splash-ripple-wave.nu-ripple-3 {
+  animation-delay: 2.3s;
+}
+
+/* 4c. Outer Clockwise Orbit Ring with Glowing Beads */
+.nu-splash-orbit-outer {
+  position: absolute;
+  width: 244px;
+  height: 244px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(47, 107, 58, 0.22);
+  box-shadow: 0 0 16px rgba(34, 197, 94, 0.08);
+  animation: nuOrbitClockwise 13s linear infinite;
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* 4d. Middle Counter-Clockwise Dashed Gyro Ring */
+.nu-splash-orbit-mid {
+  position: absolute;
+  width: 206px;
+  height: 206px;
+  border-radius: 50%;
+  border: 1.8px dashed rgba(47, 107, 58, 0.45);
+  animation: nuOrbitCounterClockwise 8.5s linear infinite;
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* 4e. Inner Cardinal Compass Ring */
+.nu-splash-cardinal-ring {
+  position: absolute;
+  width: 182px;
+  height: 182px;
+  border-radius: 50%;
+  border: 1px dotted rgba(47, 107, 58, 0.32);
+  animation: nuCardinalPulse 2.8s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* 4f. Luminous Orbit Beads (Celestial Light Sparks) */
+.nu-splash-orbit-bead {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Primary Emerald Beacon */
+.nu-splash-orbit-bead.bead-primary {
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 11px;
+  height: 11px;
+  background: radial-gradient(circle, #ffffff 15%, #22c55e 72%, #15803d 100%);
+  box-shadow: 0 0 12px #22c55e, 0 0 3px #ffffff;
+}
+
+/* Secondary Amber/Gold Beacon (180deg opposite) */
+.nu-splash-orbit-bead.bead-amber {
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 9px;
+  height: 9px;
+  background: radial-gradient(circle, #ffffff 15%, #f59e0b 72%, #b45309 100%);
+  box-shadow: 0 0 10px #f59e0b, 0 0 2px #ffffff;
+}
+
+/* Inner Counter-Rotating Emerald Pearl */
+.nu-splash-orbit-bead.bead-emerald {
+  top: 50%;
+  right: -5px;
+  transform: translateY(-50%);
+  width: 9px;
+  height: 9px;
+  background: radial-gradient(circle, #ffffff 20%, #10b981 70%, #047857 100%);
+  box-shadow: 0 0 10px #10b981, 0 0 2px #ffffff;
+}
+
+/* Cardinal 4-Point Miniature Energy Nodes */
+.nu-cardinal-dot {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: #2f6b3a;
+  box-shadow: 0 0 4px rgba(47, 107, 58, 0.5);
+  pointer-events: none;
+}
+
+.nu-cardinal-dot.dot-north {
+  top: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.nu-cardinal-dot.dot-south {
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.nu-cardinal-dot.dot-east {
+  top: 50%;
+  right: -2px;
+  transform: translateY(-50%);
+}
+
+.nu-cardinal-dot.dot-west {
+  top: 50%;
+  left: -2px;
+  transform: translateY(-50%);
+}
+
+/* 4g. High-Definition Central Logo Circle */
 .nu-splash-logo-circle {
-  width: 108px;
-  height: 108px;
+  width: 168px;
+  height: 168px;
   border-radius: 50%;
-  padding: 4px;
   background: #ffffff;
-  border: 3px solid #2f6b3a;
-  box-shadow: 0 8px 28px rgba(47, 107, 58, 0.2), 0 2px 6px rgba(0, 0, 0, 0.06);
+  border: 3.5px solid #2f6b3a;
+  box-shadow:
+    0 18px 42px -6px rgba(22, 101, 52, 0.35),
+    0 4px 16px rgba(0, 0, 0, 0.06),
+    inset 0 0 0 2px #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   overflow: hidden;
-  animation: nuLogoPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  z-index: 4;
+  animation: nuLogoFloat 3.4s ease-in-out infinite;
 }
 
+/* Logo Image: High clarity, unobstructed, full color */
 .nu-splash-logo-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
   display: block;
+  position: relative;
+  z-index: 1;
+  image-rendering: -webkit-optimize-contrast;
+  filter: contrast(1.02) saturate(1.04);
 }
 
-.nu-splash-leaf-badge {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #2f6b3a 0%, #1e4a29 100%);
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid #ffffff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
-  animation: nuBadgeBounce 2.2s ease-in-out infinite;
-  z-index: 3;
-}
-
-/* 4. Brand Typography */
+/* ==========================================================================
+   5. Sculpted Editorial Brand Typography
+   ========================================================================== */
 .nu-splash-badge {
   display: inline-flex;
   align-items: center;
@@ -149,156 +290,129 @@
   background-color: #eaf3ec;
   border: 1px solid #cfe3d2;
   color: #1e4a29;
-  padding: 4px 14px;
+  padding: 6px 16px;
   border-radius: 9999px;
   font-size: 0.8rem;
   font-weight: 700;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
   margin-bottom: 12px;
   max-width: 95%;
   text-align: center;
   line-height: 1.35;
   box-sizing: border-box;
+  box-shadow: 0 2px 6px rgba(47, 107, 58, 0.06);
+  animation: nuElementFadeUp 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.16s both;
+}
+
+.nu-splash-sparkle {
+  color: #16a34a;
+  animation: nuSparklePulse 2s ease-in-out infinite;
 }
 
 .nu-splash-title {
-  font-size: clamp(1.65rem, 5.2vw, 2.35rem);
-  font-weight: 800;
-  color: #1f2933;
+  font-size: clamp(1.85rem, 5.5vw, 2.45rem);
+  font-weight: 850;
+  color: #0f172a;
   margin: 0 0 4px 0;
-  letter-spacing: -0.02em;
-  line-height: 1.18;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
   word-break: break-word;
   overflow-wrap: break-word;
+  animation: nuElementFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.26s both;
 }
 
 .nu-splash-tamil-title {
-  font-size: clamp(1.08rem, 3.8vw, 1.25rem);
+  font-size: clamp(1.15rem, 4vw, 1.35rem);
   font-weight: 700;
   color: #2f6b3a;
-  margin: 0 0 8px 0;
-  letter-spacing: 0.01em;
+  margin: 0 0 10px 0;
+  letter-spacing: 0.015em;
   line-height: 1.35;
   word-break: break-word;
+  animation: nuElementFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.36s both;
 }
 
 .nu-splash-subtitle {
-  font-size: clamp(0.84rem, 2.8vw, 0.95rem);
-  color: #4b5563;
-  margin: 0 0 20px 0;
+  font-size: clamp(0.88rem, 2.9vw, 1rem);
+  color: #475569;
+  margin: 0;
   font-weight: 500;
-  line-height: 1.45;
-  max-width: 360px;
+  line-height: 1.5;
+  max-width: 380px;
   word-break: break-word;
   overflow-wrap: break-word;
   padding: 0 8px;
+  animation: nuElementFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.46s both;
 }
 
-/* 5. Progress Indicator & Status */
-.nu-splash-progress-wrapper {
-  width: 100%;
-  max-width: 260px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-}
-
-.nu-splash-track {
-  width: 100%;
-  height: 5px;
-  background-color: #e3e3dd;
-  border-radius: 9999px;
-  overflow: hidden;
-  position: relative;
-}
-
-.nu-splash-fill {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  background: linear-gradient(90deg, #2f6b3a 0%, #2b5c8a 100%);
-  border-radius: 9999px;
-  transition: width 0.1s linear;
-}
-
-.nu-splash-status-text {
-  font-size: clamp(0.76rem, 2.4vw, 0.82rem);
-  color: #667085;
-  font-weight: 500;
-  min-height: 22px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  gap: 6px;
-  max-width: 100%;
-  line-height: 1.35;
-  word-break: break-word;
-}
-
-.nu-live-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background-color: #16a34a;
-  box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7);
-  animation: nuDotPulse 1.8s infinite;
-  flex-shrink: 0;
-  display: inline-block;
-}
-
-/* 6. Keyframe Animations */
-@keyframes nuContentEnter {
-  from {
-    opacity: 0;
-    transform: translateY(12px) scale(0.97);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes nuLogoPop {
+/* ==========================================================================
+   6. Keyframe Animations & Kinetics
+   ========================================================================== */
+@keyframes nuStageSpringReveal {
   0% {
-    transform: scale(0.7);
+    transform: scale(0.72) translateY(20px);
     opacity: 0;
   }
   60% {
-    transform: scale(1.05);
+    transform: scale(1.03) translateY(-3px);
     opacity: 1;
   }
   100% {
-    transform: scale(1);
+    transform: scale(1) translateY(0);
     opacity: 1;
   }
 }
 
-@keyframes nuAuraGlow {
+@keyframes nuElementFadeUp {
   0% {
-    transform: scale(0.95);
-    opacity: 0.45;
+    opacity: 0;
+    transform: translateY(14px);
   }
   100% {
-    transform: scale(1.15);
-    opacity: 0.85;
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-@keyframes nuAmbientPulse {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 0.6;
+@keyframes nuAuraBreathe {
+  0% {
+    transform: scale(0.92);
+    opacity: 0.5;
   }
-  50% {
+  100% {
     transform: scale(1.15);
     opacity: 0.95;
   }
 }
 
-@keyframes nuOrbitRotate {
+@keyframes nuAmbientBreathe {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(1.15);
+    opacity: 0.95;
+  }
+}
+
+@keyframes nuRippleExpand {
+  0% {
+    transform: scale(0.98);
+    opacity: 0.75;
+    border-color: rgba(34, 197, 94, 0.55);
+  }
+  70% {
+    border-color: rgba(34, 197, 94, 0.25);
+  }
+  100% {
+    transform: scale(1.58);
+    opacity: 0;
+    border-color: rgba(34, 197, 94, 0);
+  }
+}
+
+@keyframes nuOrbitClockwise {
   0% {
     transform: rotate(0deg);
   }
@@ -307,32 +421,46 @@
   }
 }
 
-@keyframes nuBadgeBounce {
-  0%, 100% {
-    transform: scale(1);
+@keyframes nuOrbitCounterClockwise {
+  0% {
+    transform: rotate(0deg);
   }
-  50% {
-    transform: scale(1.12);
+  100% {
+    transform: rotate(-360deg);
   }
 }
 
-@keyframes nuDotPulse {
+@keyframes nuCardinalPulse {
   0% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7);
-  }
-  70% {
-    transform: scale(1);
-    box-shadow: 0 0 0 5px rgba(22, 163, 74, 0);
+    transform: scale(0.96) rotate(0deg);
+    opacity: 0.6;
   }
   100% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(22, 163, 74, 0);
+    transform: scale(1.04) rotate(4deg);
+    opacity: 1;
+  }
+}
+
+@keyframes nuLogoFloat {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-4px) scale(1.015);
+  }
+}
+
+@keyframes nuSparklePulse {
+  0%, 100% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(15deg) scale(1.15);
   }
 }
 
 /* ==========================================================================
-   7. Mobile & Small Screen Adaptations
+   7. Mobile & Responsive Layout Adaptations
    ========================================================================== */
 
 /* Standard Smart Phones (<= 576px) */
@@ -346,72 +474,118 @@
   }
 
   .nu-splash-logo-box {
-    width: 102px;
-    height: 102px;
-    margin-bottom: 18px;
+    width: 206px;
+    height: 206px;
+    margin-bottom: 20px;
+  }
+
+  .nu-splash-aura-glow {
+    width: 196px;
+    height: 196px;
+  }
+
+  .nu-splash-orbit-outer {
+    width: 202px;
+    height: 202px;
+  }
+
+  .nu-splash-orbit-mid {
+    width: 172px;
+    height: 172px;
+  }
+
+  .nu-splash-cardinal-ring {
+    width: 152px;
+    height: 152px;
+  }
+
+  .nu-splash-ripple-wave {
+    width: 138px;
+    height: 138px;
   }
 
   .nu-splash-logo-circle {
-    width: 90px;
-    height: 90px;
+    width: 138px;
+    height: 138px;
+    border-width: 3px;
   }
 
-  .nu-splash-leaf-badge {
-    width: 30px;
-    height: 30px;
+  .nu-splash-badge {
+    font-size: 0.76rem;
+    padding: 5px 14px;
+    margin-bottom: 10px;
   }
 
-  .nu-splash-progress-wrapper {
-    max-width: 230px;
+  .nu-splash-title {
+    font-size: 1.8rem;
+  }
+
+  .nu-splash-tamil-title {
+    font-size: 1.15rem;
+  }
+
+  .nu-splash-subtitle {
+    font-size: 0.88rem;
   }
 }
 
 /* Compact Smartphones (<= 380px: iPhone SE, Galaxy A03, Fold cover) */
 @media (max-width: 380px) {
   .nu-splash-logo-box {
-    width: 88px;
-    height: 88px;
-    margin-bottom: 14px;
+    width: 174px;
+    height: 174px;
+    margin-bottom: 16px;
+  }
+
+  .nu-splash-aura-glow {
+    width: 166px;
+    height: 166px;
+  }
+
+  .nu-splash-orbit-outer {
+    width: 170px;
+    height: 170px;
+  }
+
+  .nu-splash-orbit-mid {
+    width: 144px;
+    height: 144px;
+  }
+
+  .nu-splash-cardinal-ring {
+    width: 128px;
+    height: 128px;
+  }
+
+  .nu-splash-ripple-wave {
+    width: 116px;
+    height: 116px;
   }
 
   .nu-splash-logo-circle {
-    width: 78px;
-    height: 78px;
-  }
-
-  .nu-splash-leaf-badge {
-    width: 26px;
-    height: 26px;
-  }
-
-  .nu-splash-leaf-badge svg {
-    width: 14px;
-    height: 14px;
+    width: 116px;
+    height: 116px;
+    border-width: 2.5px;
   }
 
   .nu-splash-badge {
-    font-size: 0.74rem;
-    padding: 3px 10px;
-    margin-bottom: 10px;
+    font-size: 0.72rem;
+    padding: 4px 10px;
+    margin-bottom: 8px;
   }
 
   .nu-splash-title {
-    font-size: 1.5rem;
+    font-size: 1.55rem;
   }
 
   .nu-splash-tamil-title {
-    font-size: 1.02rem;
+    font-size: 1.05rem;
     margin-bottom: 6px;
   }
 
   .nu-splash-subtitle {
     font-size: 0.8rem;
-    margin-bottom: 16px;
     padding: 0 4px;
-  }
-
-  .nu-splash-progress-wrapper {
-    max-width: 200px;
   }
 }
 
@@ -426,28 +600,43 @@
   }
 
   .nu-splash-logo-box {
-    width: 66px;
-    height: 66px;
+    width: 130px;
+    height: 130px;
     margin-bottom: 8px;
   }
 
+  .nu-splash-aura-glow {
+    width: 124px;
+    height: 124px;
+  }
+
+  .nu-splash-orbit-outer {
+    width: 126px;
+    height: 126px;
+  }
+
+  .nu-splash-orbit-mid {
+    width: 106px;
+    height: 106px;
+  }
+
+  .nu-splash-cardinal-ring {
+    width: 96px;
+    height: 96px;
+  }
+
+  .nu-splash-ripple-wave {
+    width: 86px;
+    height: 86px;
+  }
+
   .nu-splash-logo-circle {
-    width: 58px;
-    height: 58px;
-  }
-
-  .nu-splash-leaf-badge {
-    width: 22px;
-    height: 22px;
-  }
-
-  .nu-splash-leaf-badge svg {
-    width: 12px;
-    height: 12px;
+    width: 86px;
+    height: 86px;
   }
 
   .nu-splash-badge {
-    padding: 2px 8px;
+    padding: 3px 10px;
     font-size: 0.7rem;
     margin-bottom: 6px;
   }
@@ -463,28 +652,29 @@
   }
 
   .nu-splash-subtitle {
-    display: none; /* Hide subtitle in tight landscape to maintain clean single-view layout without vertical scroll */
-  }
-
-  .nu-splash-progress-wrapper {
-    max-width: 220px;
-    gap: 6px;
+    display: none;
   }
 }
 
 /* Reduced Motion Preference for Accessibility */
 @media (prefers-reduced-motion: reduce) {
   .nu-splash-ambient-aura,
-  .nu-splash-logo-aura,
-  .nu-splash-orbit-ring,
-  .nu-splash-leaf-badge,
-  .nu-live-dot {
+  .nu-splash-aura-glow,
+  .nu-splash-ripple-wave,
+  .nu-splash-orbit-outer,
+  .nu-splash-orbit-mid,
+  .nu-splash-cardinal-ring,
+  .nu-splash-logo-circle,
+  .nu-splash-sparkle {
     animation: none !important;
   }
 
   .nu-splash-overlay,
   .nu-splash-container,
-  .nu-splash-logo-circle {
+  .nu-splash-logo-box,
+  .nu-splash-title,
+  .nu-splash-tamil-title,
+  .nu-splash-subtitle {
     transition: none !important;
     animation: none !important;
   }

@@ -4,7 +4,6 @@ import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Sprout,
-  Truck,
   Clock,
   ArrowRight,
   Calendar
@@ -15,6 +14,7 @@ import SectionHeader from '../../components/SectionHeader';
 import Skeleton from '../../components/Skeleton';
 import { useBuyer } from '../../context/BuyerContext';
 import CropCard from '../../components/CropCard';
+import FarmerApprovalStatusBar from '../../components/FarmerApprovalStatusBar';
 
 export default function Overview() {
   const navigate = useNavigate();
@@ -26,8 +26,7 @@ export default function Overview() {
     setSelectedTrackingOrderId,
     t,
     lang,
-    handleOpenAccept,
-
+    handleOpenAccept
   } = useBuyer();
 
   // Dynamically calculate active in-transit / active orders
@@ -79,6 +78,9 @@ export default function Overview() {
         }
       />
 
+      {/* Primary Feature: Farmer Approval Status Bar & Assigned Driver Pickup Info */}
+      <FarmerApprovalStatusBar />
+
       {/* Summary Row (ONLY 3 clean cards - NO excessive charts!) */}
       <div className="buyer-summary-row">
         <div
@@ -121,51 +123,6 @@ export default function Overview() {
           </div>
           <span className="buyer-summary-label">{t('overview.statTransit')}</span>
           <span className="buyer-summary-hint">{t('overview.transitHint')}</span>
-        </div>
-      </div>
-
-      {/* Active Delivery Spotlight Quick Banner */}
-      <div className="buyer-transit-spotlight-card">
-        <div className="buyer-transit-spotlight-left">
-          <div className="buyer-transit-icon-box">
-            <Truck size={24} className="buyer-transit-icon animate-bounce-subtle" />
-          </div>
-          <div>
-            <div className="buyer-transit-badge-row">
-              <span className="buyer-live-badge">{t('overview.liveTracking')}</span>
-              <span className="buyer-transit-id">
-                Order #{activeSpotlightOrder?.orderId || 'NU-2026-00124'}
-              </span>
-            </div>
-            <h3 className="buyer-transit-title">
-              {activeSpotlightOrder?.cropName
-                ? `${activeSpotlightOrder.quantityKg} kg ${lang === 'ta' && activeSpotlightOrder.tamilCropName ? activeSpotlightOrder.tamilCropName : activeSpotlightOrder.cropName}`
-                : t('overview.spotlightTitle')}
-            </h3>
-            <p className="buyer-transit-meta">
-              {activeSpotlightOrder?.driver?.name
-                ? `Driver: ${activeSpotlightOrder.driver.name} (${activeSpotlightOrder.driver.vehicleType || 'EV Cargo'}) • ${activeSpotlightOrder.liveTracking?.currentLocation || activeSpotlightOrder.hub || 'In Transit'}`
-                : t('overview.spotlightMeta')}
-            </p>
-          </div>
-        </div>
-        <div className="buyer-transit-spotlight-right">
-          <div className="buyer-eta-pill">
-            <span className="buyer-eta-sub">{t('overview.estimatedArrival')}</span>
-            <span className="buyer-eta-val">
-              {activeSpotlightOrder?.liveTracking?.estimatedMinutes
-                ? `${activeSpotlightOrder.liveTracking.estimatedMinutes} mins`
-                : t('overview.estimatedArrivalVal')}
-            </span>
-          </div>
-          <button
-            type="button"
-            className="buyer-btn-primary"
-            onClick={handleTrackSpotlightOrder}
-          >
-            <span>{t('overview.trackLiveMap')}</span>
-            <ArrowRight size={16} />
-          </button>
         </div>
       </div>
 
