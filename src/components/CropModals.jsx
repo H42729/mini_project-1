@@ -1,6 +1,6 @@
 // What this file does: Crop action modals including Decline modal and the integrated Order Confirmation & Demo Approval workflow.
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   AlertCircle,
   CheckCircle2,
@@ -62,7 +62,7 @@ export default function CropModals({
   const [preferredDeliveryDate, setPreferredDeliveryDate] = useState('');
   const [orderNotes, setOrderNotes] = useState('');
   const [validationError, setValidationError] = useState('');
-  const todayDateStr = useMemo(() => new Date().toISOString().split('T')[0], []);
+  const todayDateStr = new Date().toISOString().split('T')[0];
 
   // Synchronize initial form defaults when workflow opens with a crop
   useEffect(() => {
@@ -340,7 +340,7 @@ export default function CropModals({
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                       <label htmlFor="workflow-qty-input" style={{ fontWeight: '700', fontSize: '0.88rem', color: '#0f172a' }}>
-                        Consignment Quantity (kg) *
+                        {lang === 'ta' ? 'தேவையான அளவு (கிலோ) *' : 'Consignment Quantity (kg) *'}
                       </label>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                         <input
@@ -366,7 +366,7 @@ export default function CropModals({
                             outline: 'none'
                           }}
                         />
-                        <span style={{ fontWeight: '600', color: '#64748b' }}>kg</span>
+                        <span style={{ fontWeight: '600', color: '#64748b' }}>{lang === 'ta' ? 'கிலோ' : 'kg'}</span>
                       </div>
                     </div>
 
@@ -405,7 +405,7 @@ export default function CropModals({
                             cursor: 'pointer'
                           }}
                         >
-                          {p === maxStock ? `Max (${p} kg)` : `${p} kg`}
+                          {p === maxStock ? `${lang === 'ta' ? 'அதிகபட்சம்' : 'Max'} (${p} kg)` : `${p} kg`}
                         </button>
                       ))}
                     </div>
@@ -425,10 +425,10 @@ export default function CropModals({
                     >
                       <div>
                         <span style={{ fontSize: '0.8rem', color: '#166534', fontWeight: '600', display: 'block' }}>
-                          Calculated Total Price
+                          {lang === 'ta' ? 'மொத்த தொகை கணக்கீடு' : 'Calculated Total Price'}
                         </span>
                         <span style={{ fontSize: '0.74rem', color: '#15803d' }}>
-                          {orderQuantity} kg × ₹{unitPrice}/kg (Zero middleman markup)
+                          {orderQuantity} kg × ₹{unitPrice}/kg ({lang === 'ta' ? 'இடைத்தரகர் கமிஷன் இல்லை' : 'Zero middleman markup'})
                         </span>
                       </div>
                       <span style={{ fontSize: '1.35rem', fontWeight: '900', color: '#15803d' }}>
@@ -444,7 +444,7 @@ export default function CropModals({
                         htmlFor="workflow-delivery-address"
                         style={{ display: 'block', fontWeight: '700', fontSize: '0.84rem', color: '#0f172a', marginBottom: '6px' }}
                       >
-                        Delivery Address *
+                        {lang === 'ta' ? 'டெலிவரி முகவரி *' : 'Delivery Address *'}
                       </label>
                       <textarea
                         id="workflow-delivery-address"
@@ -454,7 +454,7 @@ export default function CropModals({
                           setDeliveryAddress(e.target.value);
                           if (validationError) setValidationError('');
                         }}
-                        placeholder="Enter full commercial kitchen or hotel receiving address..."
+                        placeholder={lang === 'ta' ? 'உங்கள் சமையலறை அல்லது வணிக முகவரியை உள்ளிடவும்...' : 'Enter full commercial kitchen or hotel receiving address...'}
                         style={{
                           width: '100%',
                           padding: '10px 12px',
@@ -475,7 +475,7 @@ export default function CropModals({
                           style={{ display: 'block', fontWeight: '700', fontSize: '0.84rem', color: '#0f172a', marginBottom: '6px' }}
                         >
                           <Calendar size={13} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '4px' }} />
-                          Preferred Delivery Date *
+                          {lang === 'ta' ? 'விருப்பமான டெலிவரி தேதி *' : 'Preferred Delivery Date *'}
                         </label>
                         <input
                           id="workflow-delivery-date"
@@ -504,14 +504,14 @@ export default function CropModals({
                           style={{ display: 'block', fontWeight: '700', fontSize: '0.84rem', color: '#0f172a', marginBottom: '6px' }}
                         >
                           <FileText size={13} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '4px' }} />
-                          Optional Delivery Notes
+                          {lang === 'ta' ? 'கூடுதல் குறிப்புகள் (விருப்பத்தேர்வு)' : 'Optional Delivery Notes'}
                         </label>
                         <input
                           id="workflow-notes"
                           type="text"
                           value={orderNotes}
                           onChange={(e) => setOrderNotes(e.target.value)}
-                          placeholder="e.g. Unload at Kitchen Dock Gate 2"
+                          placeholder={lang === 'ta' ? 'எ.கா. சமையலறை கேட் எண் 2-ல் இறக்கவும்' : 'e.g. Unload at Kitchen Dock Gate 2'}
                           style={{
                             width: '100%',
                             padding: '8px 10px',
@@ -566,7 +566,7 @@ export default function CropModals({
                       style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
                     >
                       <ChevronLeft size={16} />
-                      <span>Back / Cancel</span>
+                      <span>{lang === 'ta' ? 'திரும்பு / ரத்து' : 'Back / Cancel'}</span>
                     </button>
 
                     <div style={{ display: 'flex', gap: '8px' }}>
@@ -576,7 +576,7 @@ export default function CropModals({
                         onClick={handleCloseWorkflow}
                         style={{ padding: '8px 16px', borderRadius: '10px' }}
                       >
-                        Cancel
+                        {lang === 'ta' ? 'ரத்து' : 'Cancel'}
                       </button>
                       <button
                         type="submit"
@@ -592,11 +592,11 @@ export default function CropModals({
                         }}
                       >
                         {isSubmittingOrder ? (
-                          <span>Submitting...</span>
+                          <span>{lang === 'ta' ? 'பதிவாகிறது...' : 'Submitting...'}</span>
                         ) : (
                           <>
                             <Check size={16} />
-                            <span>Confirm Order</span>
+                            <span>{lang === 'ta' ? 'ஆர்டரை உறுதிப்படுத்து' : 'Confirm Order'}</span>
                           </>
                         )}
                       </button>

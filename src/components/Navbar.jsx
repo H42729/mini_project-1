@@ -81,7 +81,7 @@ export default function PublicNavbar({
             className="public-navbar-brand d-flex align-items-center gap-2 text-decoration-none py-0 me-2 me-lg-3"
           >
             <img
-              src="/logo.jpg"
+              src="/logo.png"
               alt="Naam Uzhavar"
               width={44}
               height={44}

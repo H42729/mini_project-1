@@ -86,7 +86,13 @@ async function run() {
   // Step 5: Test 1-click Quick Demo Sign In
   console.log('\n--- Step 5: 1-Click Quick Demo Sign In ---');
   await page.locator('button:has-text("Quick Demo Sign In")').click();
-  await page.waitForTimeout(600);
+  await page.waitForTimeout(300);
+  const signInBtn = page.locator('button[type="submit"]:has-text("Sign In")');
+  if (await signInBtn.count() > 0) {
+    await signInBtn.click();
+    await page.waitForTimeout(1000);
+  }
+  await page.waitForURL('**/buyer-dashboard', { timeout: 8000 });
   console.log('After Quick Demo Sign In, URL is:', page.url());
   if (!page.url().includes('/buyer-dashboard')) {
     throw new Error('Expected to return to /buyer-dashboard after Quick Demo Sign In!');

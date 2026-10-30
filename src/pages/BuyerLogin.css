@@ -648,6 +648,17 @@
 
 /* Mobile Devices (<= 768px) */
 @media (max-width: 768px) {
+  /* Keep arrow alone, remove back text in mobile responsive view */
+  .buyer-back-link .back-link-text,
+  .buyer-back-link > span:last-child:not(:first-child) {
+    display: none !important;
+  }
+  .buyer-back-link {
+    padding: 6px 10px !important;
+    gap: 0 !important;
+    min-width: 36px !important;
+    justify-content: center !important;
+  }
   .buyer-auth-page {
     position: relative;
     inset: auto;

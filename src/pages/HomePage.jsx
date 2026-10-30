@@ -43,14 +43,19 @@ export default function HomePage({ onBuyerAuthSuccess: _onBuyerAuthSuccess }) {
 
   // Intro Splash Loader: App logo comes first on entering the app, next the Home Page opens
   const [showSplash, setShowSplash] = useState(true);
+  const [isHeroRevealed, setIsHeroRevealed] = useState(false);
 
   return (
-    <div className="website-root">
+    <div className={`website-root ${isHeroRevealed ? 'hp-revealed' : ''}`}>
       {/* 0. APP LOGO INTRO SPLASH: Displays first when entering the app */}
       {showSplash && (
         <AppSplashLoader
-          duration={1800}
-          onFinish={() => setShowSplash(false)}
+          duration={2000}
+          onStartExit={() => setIsHeroRevealed(true)}
+          onFinish={() => {
+            setIsHeroRevealed(true);
+            setShowSplash(false);
+          }}
         />
       )}
 

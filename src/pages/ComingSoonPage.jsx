@@ -72,7 +72,7 @@ export default function ComingSoonPage() {
           }}
           aria-label="Back to role select"
         >
-          <img src="/logo.jpg" alt="Naam Uzhavar" className="coming-soon-logo-img" />
+          <img src="/logo.png" alt="Naam Uzhavar" className="coming-soon-logo-img" />
           <div className="coming-soon-brand-text">
             <span className="coming-soon-brand-name">
               {t('common.appName')}

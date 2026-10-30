@@ -40,7 +40,7 @@ export default function NotFoundPage() {
           }}
           aria-label="Back to home"
         >
-          <img src="/logo.jpg" alt="Naam Uzhavar" className="not-found-logo-img" />
+          <img src="/logo.png" alt="Naam Uzhavar" className="not-found-logo-img" />
           <div className="not-found-brand-text">
             <span className="not-found-brand-name">
               {t('common.appName')}

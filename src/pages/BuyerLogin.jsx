@@ -315,6 +315,7 @@ export default function BuyerLogin({
     }
   };
 
+
   // Forgot password submission
   const handleForgotSubmit = (e) => {
     e.preventDefault();
@@ -350,7 +351,7 @@ export default function BuyerLogin({
             <div className="buyer-brand-lockup">
               <div className="buyer-brand-logo-card">
                 <img 
-                  src="/logo.jpg" 
+                  src="/logo.png" 
                   alt="Naam Uzhavar Logo" 
                   className="buyer-brand-logo-img"
                   onError={(e) => {
@@ -423,7 +424,7 @@ export default function BuyerLogin({
               leftIcon={<ArrowLeft size={16} />}
               aria-label={t('backLink')}
             >
-              <span>{t('backLink')}</span>
+              <span className="back-link-text">{t('backLink')}</span>
             </Button>
 
             {/* Language Switcher */}
@@ -446,7 +447,7 @@ export default function BuyerLogin({
             {/* Mobile-Only Header Brand Lockup */}
             <div className="buyer-mobile-brand-header">
               <img 
-                src="/logo.jpg" 
+                src="/logo.png" 
                 alt="Naam Uzhavar" 
                 className="buyer-mobile-logo"
                 onError={(e) => {
@@ -569,6 +570,7 @@ export default function BuyerLogin({
                 {t('signInBtn')}
               </Button>
 
+              
               {/* Instant 1-Click Demo Buyer Access */}
               <Button
                 type="button"

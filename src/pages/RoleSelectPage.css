@@ -396,6 +396,17 @@
    MOBILE RESPONSIVE (Cards stacked cleanly like the user screenshot)
    ========================================================================== */
 @media (max-width: 860px) {
+  /* Keep arrow alone, remove the "Home" word in all mobile responsive views */
+  .role-select-back-btn .role-back-home-text,
+  .role-select-back-btn > span:last-child:not(:first-child) {
+    display: none !important;
+  }
+  .role-select-back-btn {
+    padding: 6px 10px !important;
+    gap: 0 !important;
+    min-width: 36px !important;
+    justify-content: center !important;
+  }
   .role-select-cards-grid {
     grid-template-columns: 1fr;
     max-width: 480px;
@@ -444,9 +455,16 @@
   }
 
   .role-select-back-btn {
-    padding: 4px 10px;
+    padding: 4px 8px !important;
     font-size: 0.78rem;
     height: 28px;
+    min-width: 32px !important;
+    gap: 0 !important;
+    justify-content: center !important;
+  }
+  .role-select-back-btn .role-back-home-text,
+  .role-select-back-btn > span:last-child:not(:first-child) {
+    display: none !important;
   }
 }
 
