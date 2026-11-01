@@ -78,10 +78,7 @@ export default function Overview() {
         }
       />
 
-      {/* Primary Feature: Farmer Approval Status Bar & Assigned Driver Pickup Info */}
-      <FarmerApprovalStatusBar />
-
-      {/* Summary Row (ONLY 3 clean cards - NO excessive charts!) */}
+      {/* Summary Metric Cards (Crops Today, Active Orders, In Transit) */}
       <div className="buyer-summary-row">
         <div
           className="buyer-summary-card"
@@ -125,6 +122,9 @@ export default function Overview() {
           <span className="buyer-summary-hint">{t('overview.transitHint')}</span>
         </div>
       </div>
+
+      {/* Farmer Approval Status Bar & Assigned Driver Pickup Info */}
+      <FarmerApprovalStatusBar />
 
       {/* Quick Fresh Arrivals Section */}
       <div className="buyer-section-block">

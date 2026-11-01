@@ -20,7 +20,21 @@ export default function Footer({ className = '' }) {
         <Row className="g-4 mb-5">
           {/* Column 1: Brand Info */}
           <Col xs={12} lg={5} className="pe-lg-5">
-            <div className="d-flex align-items-center gap-2.5 mb-3">
+            <a
+              href="#home"
+              onClick={(e) => {
+                e.preventDefault();
+                if (typeof window !== 'undefined') {
+                  if (window.location.hash) {
+                    window.history.pushState(null, '', '/');
+                  }
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+              }}
+              className="d-flex align-items-center gap-2.5 mb-3 text-decoration-none text-white"
+              title="Go to Home page"
+              style={{ cursor: 'pointer' }}
+            >
               <img
                 src="/logo.png"
                 alt="Logo"
@@ -40,7 +54,7 @@ export default function Footer({ className = '' }) {
                   {t('appSubtitle')}
                 </span>
               </div>
-            </div>
+            </a>
 
             <p className="text-white-50 mb-0 small lh-base" style={{ maxWidth: 420 }}>
               {t('footerDesc')}

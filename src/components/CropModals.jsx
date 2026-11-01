@@ -62,7 +62,7 @@ export default function CropModals({
   const [preferredDeliveryDate, setPreferredDeliveryDate] = useState('');
   const [orderNotes, setOrderNotes] = useState('');
   const [validationError, setValidationError] = useState('');
-  const todayDateStr = new Date().toISOString().split('T')[0];
+  const [todayDateStr] = useState(() => new Date().toISOString().split('T')[0]);
 
   // Synchronize initial form defaults when workflow opens with a crop
   useEffect(() => {

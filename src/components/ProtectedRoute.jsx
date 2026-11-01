@@ -31,34 +31,10 @@ export function ProtectedRoute({ mode = 'auth', children }) {
     }
   }
 
-  // If accessing protected buyer dashboard without credentials:
-  // - If user has explicitly signed out: redirect to login.
-  // - If first-time visitor (no prior signout): auto-seed default demo buyer profile.
+  // If accessing protected buyer dashboard without valid credentials:
+  // Redirect unauthenticated users to the login page
   if (mode === 'auth' && !isAuthenticated) {
-    if (!hasSignedOut) {
-      const defaultProfile = {
-        name: 'Grand Palace Hotel',
-        shopName: 'Grand Palace Luxury Dining',
-        businessName: 'Grand Palace Luxury Dining',
-        contactPerson: 'Mr. S. Rajesh (Procurement Head)',
-        phone: '+91 98401 23456',
-        email: 'procurement@grandpalace.in',
-        buyerType: 'hotel',
-        businessType: 'Hotel & Commercial Kitchen',
-        address: 'Grand Palace Luxury Dining, Bypass Road, Madurai - 625016',
-        gstin: '33AAAAA0000A1Z5',
-        photo: 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=300&auto=format&fit=crop&q=80',
-        role: 'buyer'
-      };
-      try {
-        localStorage.setItem('buyer_current_profile', JSON.stringify(defaultProfile));
-        isAuthenticated = true;
-      } catch {
-        // ignore storage quota error
-      }
-    } else {
-      return <Navigate to={ROUTES.BUYER_LOGIN} replace />;
-    }
+    return <Navigate to={ROUTES.BUYER_LOGIN} replace />;
   }
 
   if (mode === 'guest' && isAuthenticated) {

@@ -7,7 +7,7 @@
 export const ROUTES = {
   HOME: '/',
   ROLE_SELECT: '/role-select',
-  BUYER_LOGIN: '/buyer-login',
+  BUYER_LOGIN: '/role-select?role=buyer',
   BUYER_REGISTER: '/buyer-register',
   BUYER_DASHBOARD: '/buyer-dashboard',
   BUYER_DASHBOARD_CROPS: '/buyer-dashboard/crops',

@@ -39,6 +39,8 @@ export default function NotFoundPage() {
             }
           }}
           aria-label="Back to home"
+          title="Go to Home page"
+          style={{ cursor: 'pointer' }}
         >
           <img src="/logo.png" alt="Naam Uzhavar" className="not-found-logo-img" />
           <div className="not-found-brand-text">

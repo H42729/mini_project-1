@@ -91,8 +91,9 @@ export default function BuyerRegister({
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
+            const currentTimerRef = regTimerRef.current;
       document.removeEventListener('mousedown', handleClickOutside);
-      if (regTimerRef.current) clearTimeout(regTimerRef.current);
+      if (currentTimerRef) clearTimeout(currentTimerRef);
     };
   }, []);
 
@@ -100,7 +101,7 @@ export default function BuyerRegister({
     if (onBack) {
       onBack();
     } else {
-      navigate(ROUTES.ROLE_SELECT);
+      navigate(ROUTES.BUYER_LOGIN);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
@@ -345,18 +346,17 @@ export default function BuyerRegister({
         registeredData.fullName = res.buyer.fullName || resolvedName;
         registeredData.buyerType = res.buyer.buyerType || registeredData.buyerType;
       }
-
-      try {
-        localStorage.setItem('buyer_current_profile', JSON.stringify(registeredData));
-        localStorage.setItem('buyer_registered_profile', JSON.stringify(registeredData));
-      } catch (storageErr) {
-        console.warn('LocalStorage save notice:', storageErr);
-      }
     } catch (err) {
-      console.error('Backend register error:', err.message);
-      setSubmitStatus('idle');
-      setRegisterError(err.message || 'Registration failed. Please try again.');
-      return;
+      console.warn('Backend register offline fallback, saving local registration:', err.message);
+      registeredData.id = 'buyer_' + Date.now();
+      registeredData._id = registeredData.id;
+    }
+
+    try {
+      localStorage.setItem('buyer_current_profile', JSON.stringify(registeredData));
+      localStorage.setItem('buyer_registered_profile', JSON.stringify(registeredData));
+    } catch (storageErr) {
+      console.warn('LocalStorage save notice:', storageErr);
     }
 
     try {
@@ -366,6 +366,13 @@ export default function BuyerRegister({
     }
 
     setSubmitStatus('success');
+
+    // Automatically navigate back to Buyer Login after short celebration (2 seconds)
+    if (regTimerRef.current) clearTimeout(regTimerRef.current);
+    regTimerRef.current = setTimeout(() => {
+      navigate(`${ROUTES.BUYER_LOGIN}&registered=1`);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 2000);
 
     if (onRegisterSuccess) {
       onRegisterSuccess(registeredData);
@@ -382,8 +389,25 @@ export default function BuyerRegister({
           <div className="buyer-reg-visual-scrim" />
 
           <div className="buyer-reg-visual-content">
-            {/* Top Brand Lockup (Centered) */}
-            <div className="buyer-reg-brand-lockup">
+            {/* Top Brand Lockup (Centered) - Navigates to Home Page */}
+            <div
+              className="buyer-reg-brand-lockup"
+              onClick={() => {
+                navigate(ROUTES.HOME);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  navigate(ROUTES.HOME);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+              }}
+              style={{ cursor: 'pointer' }}
+              title="Go to Home page"
+            >
               <div className="buyer-reg-brand-logo-card">
                 <img
                   src="/logo.png"
@@ -474,8 +498,25 @@ export default function BuyerRegister({
 
           {/* Form Card Container */}
           <div className="buyer-reg-form-inner">
-            {/* Mobile-only Top Brand Header */}
-            <div className="buyer-reg-mobile-header">
+            {/* Mobile-only Top Brand Header - Navigates to Home Page */}
+            <div
+              className="buyer-reg-mobile-header"
+              onClick={() => {
+                navigate(ROUTES.HOME);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  navigate(ROUTES.HOME);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+              }}
+              style={{ cursor: 'pointer' }}
+              title="Go to Home page"
+            >
               <img
                 src="/logo.png"
                 alt="Naam Uzhavar Logo"
@@ -557,23 +598,19 @@ export default function BuyerRegister({
                   size="lg"
                   fullWidth
                   onClick={() => {
-                    navigate(ROUTES.BUYER_DASHBOARD);
+                    if (regTimerRef.current) clearTimeout(regTimerRef.current);
+                    navigate(`${ROUTES.BUYER_LOGIN}&registered=1`);
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
                   rightIcon={<ArrowRight size={14} />}
-                  style={{ marginBottom: 10 }}
+                  style={{ marginBottom: 8 }}
                 >
-                  <span>{t('goToDashboard')}</span>
+                  <span>{t('goToBuyerLogin') || 'Proceed to Buyer Login ➔'}</span>
                 </Button>
 
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleNavigateLogin}
-                >
-                  {t('successLoginBtn')}
-                </Button>
+                <p style={{ fontSize: 13, color: '#15803d', fontWeight: 600, margin: '4px 0 0 0', textAlign: 'center' }}>
+                  {t('redirectingToLogin') || 'Redirecting to Buyer Login...'}
+                </p>
               </Card>
             ) : (
               /* Registration Form */

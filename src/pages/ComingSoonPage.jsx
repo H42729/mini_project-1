@@ -21,6 +21,11 @@ export default function ComingSoonPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleGoHome = () => {
+    navigate(ROUTES.HOME);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleExploreBuyer = () => {
     navigate(ROUTES.BUYER_DASHBOARD);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -61,16 +66,18 @@ export default function ComingSoonPage() {
       <header className="coming-soon-topbar">
         <div
           className="coming-soon-brand"
-          onClick={handleBackToRoles}
+          onClick={handleGoHome}
           role="button"
           tabIndex={0}
           onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault();
-              handleBackToRoles();
+              handleGoHome();
             }
           }}
-          aria-label="Back to role select"
+          aria-label="Back to home page"
+          title="Go to Home page"
+          style={{ cursor: 'pointer' }}
         >
           <img src="/logo.png" alt="Naam Uzhavar" className="coming-soon-logo-img" />
           <div className="coming-soon-brand-text">

@@ -132,6 +132,18 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
     }
   }, [buyerProfile]);
 
+  // Auto-persist profile to localStorage whenever updated
+  useEffect(() => {
+    if (profile && typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('buyer_current_profile', JSON.stringify(profile));
+        localStorage.setItem('buyer_registered_profile', JSON.stringify(profile));
+      } catch (e) {
+        console.warn('Could not persist profile to localStorage:', e);
+      }
+    }
+  }, [profile]);
+
   // Data loading state for asynchronous fetching and delay handling
   const [isDataLoading, setIsDataLoading] = useState(false);
 
@@ -311,9 +323,60 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
     reader.readAsDataURL(file);
   };
 
-  // Crops Data & Filters
-  const [crops, setCrops] = useState(INITIAL_CROPS);
-  const [declinedCropIds, setDeclinedCropIds] = useState([]);
+  // Crops Data & Filters with localStorage persistence
+  const [crops, setCrops] = useState(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('buyer_crops');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            return parsed;
+          }
+        }
+      } catch (e) {
+        console.warn('Could not read saved crops from localStorage:', e);
+      }
+    }
+    return INITIAL_CROPS;
+  });
+
+  const [declinedCropIds, setDeclinedCropIds] = useState(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('buyer_declined_crop_ids');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed)) return parsed;
+        }
+      } catch (e) {
+        console.warn('Could not read declinedCropIds from localStorage:', e);
+      }
+    }
+    return [];
+  });
+
+  // Auto-persist crops & declined crop IDs to localStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined' && Array.isArray(crops)) {
+      try {
+        localStorage.setItem('buyer_crops', JSON.stringify(crops));
+      } catch (e) {
+        console.warn('Could not persist crops to localStorage:', e);
+      }
+    }
+  }, [crops]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && Array.isArray(declinedCropIds)) {
+      try {
+        localStorage.setItem('buyer_declined_crop_ids', JSON.stringify(declinedCropIds));
+      } catch (e) {
+        console.warn('Could not persist declinedCropIds to localStorage:', e);
+      }
+    }
+  }, [declinedCropIds]);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState('recent');
@@ -332,11 +395,86 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
   const [farmerDetailsCrop, setFarmerDetailsCrop] = useState(null);
   const [orderConfirmationData, setOrderConfirmationData] = useState(null);
 
-  // Orders State
-  const [orders, setOrders] = useState(INITIAL_ORDERS);
+  // Orders State with localStorage persistence
+  const [orders, setOrders] = useState(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('buyer_orders');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            return parsed;
+          }
+        }
+      } catch (e) {
+        console.warn('Could not read saved orders from localStorage:', e);
+      }
+    }
+    return INITIAL_ORDERS;
+  });
+
   const [activeOrderFilter, setActiveOrderFilter] = useState('active');
-  const [selectedTrackingOrderId, setSelectedTrackingOrderId] = useState('NU-2026-00124');
-  const [activeDashboardOrderId, setActiveDashboardOrderId] = useState(null);
+
+  const [selectedTrackingOrderId, setSelectedTrackingOrderId] = useState(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('buyer_tracking_order_id');
+        if (saved) return saved;
+      } catch (e) {
+        console.warn('Could not read selectedTrackingOrderId from localStorage:', e);
+      }
+    }
+    return 'NU-2026-00124';
+  });
+
+  const [activeDashboardOrderId, setActiveDashboardOrderId] = useState(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('buyer_active_dashboard_order_id');
+        if (saved) return saved;
+      } catch (e) {
+        console.warn('Could not read activeDashboardOrderId from localStorage:', e);
+      }
+    }
+    return null;
+  });
+
+  // Auto-persist orders, active dashboard order ID, and selected tracking order ID
+  useEffect(() => {
+    if (typeof window !== 'undefined' && Array.isArray(orders)) {
+      try {
+        localStorage.setItem('buyer_orders', JSON.stringify(orders));
+      } catch (e) {
+        console.warn('Could not persist orders to localStorage:', e);
+      }
+    }
+  }, [orders]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        if (activeDashboardOrderId) {
+          localStorage.setItem('buyer_active_dashboard_order_id', activeDashboardOrderId);
+        } else {
+          localStorage.removeItem('buyer_active_dashboard_order_id');
+        }
+      } catch (e) {
+        console.warn('Could not persist activeDashboardOrderId to localStorage:', e);
+      }
+    }
+  }, [activeDashboardOrderId]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        if (selectedTrackingOrderId) {
+          localStorage.setItem('buyer_tracking_order_id', selectedTrackingOrderId);
+        }
+      } catch (e) {
+        console.warn('Could not persist selectedTrackingOrderId to localStorage:', e);
+      }
+    }
+  }, [selectedTrackingOrderId]);
 
   const activeDashboardOrder = useMemo(() => {
     if (!orders || orders.length === 0) return null;
@@ -354,8 +492,33 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
     return pendingOrActive || orders[0] || null;
   }, [orders, activeDashboardOrderId]);
 
-  // Messages State
-  const [messages, setMessages] = useState(INITIAL_MESSAGES);
+  // Messages State with localStorage persistence
+  const [messages, setMessages] = useState(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('buyer_messages');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+      } catch (e) {
+        console.warn('Could not read messages from localStorage:', e);
+      }
+    }
+    return INITIAL_MESSAGES;
+  });
+
+  // Auto-persist messages
+  useEffect(() => {
+    if (typeof window !== 'undefined' && Array.isArray(messages)) {
+      try {
+        localStorage.setItem('buyer_messages', JSON.stringify(messages));
+      } catch (e) {
+        console.warn('Could not persist messages to localStorage:', e);
+      }
+    }
+  }, [messages]);
+
   const [replyText, setReplyText] = useState('');
 
   // Synchronize remote backend data (profile, crops, orders) with loading state
@@ -394,61 +557,87 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
       }
 
       if (cropsRes.status === 'fulfilled' && Array.isArray(cropsRes.value?.crops) && cropsRes.value.crops.length > 0) {
-        setCrops(
-          cropsRes.value.crops.map((c) => ({
-            id: c._id || c.id,
-            name: c.name,
-            tamilName: c.nameTa || '',
-            category: c.category || 'vegetables',
-            grade: c.grade || 'Grade A',
-            pricePerKg: c.pricePerKg,
-            availableKg: c.quantityKg,
-            farmer: {
-              name: c.farmerName || 'Local Producer',
-              phone: '+91 98421 78210',
-              village: c.hub || 'Siluvathur, Dindigul'
-            },
-            farmerName: c.farmerName || 'Local Producer',
-            location: c.hub || 'Dindigul Central',
-            hubName: c.hub || 'Dindigul Central',
-            distanceKm: c.distanceKm || 14,
-            image: c.image
-          }))
-        );
+        const fetchedCrops = cropsRes.value.crops.map((c) => ({
+          id: c._id || c.id,
+          name: c.name,
+          tamilName: c.nameTa || '',
+          category: c.category || 'vegetables',
+          grade: c.grade || 'Grade A',
+          pricePerKg: c.pricePerKg,
+          availableKg: c.quantityKg,
+          farmer: {
+            name: c.farmerName || 'Local Producer',
+            phone: '+91 98421 78210',
+            village: c.hub || 'Siluvathur, Dindigul'
+          },
+          farmerName: c.farmerName || 'Local Producer',
+          location: c.hub || 'Dindigul Central',
+          hubName: c.hub || 'Dindigul Central',
+          distanceKm: c.distanceKm || 14,
+          image: c.image
+        }));
+
+        setCrops((prevCrops) => {
+          const prevMap = new Map((prevCrops || []).map((pc) => [pc.id, pc]));
+          return fetchedCrops.map((fc) => {
+            const existing = prevMap.get(fc.id);
+            if (existing && existing.availableKg !== undefined && existing.availableKg < fc.availableKg) {
+              return { ...fc, availableKg: existing.availableKg };
+            }
+            return fc;
+          });
+        });
       }
 
       if (ordersRes.status === 'fulfilled' && Array.isArray(ordersRes.value?.orders) && ordersRes.value.orders.length > 0) {
-        setOrders(
-          ordersRes.value.orders.map((o) => ({
-            ...o,
-            orderId: o.orderId,
-            cropName: o.cropDetails?.name || o.crop?.name || 'Produce',
-            tamilCropName: o.cropDetails?.nameTa || o.crop?.nameTa || '',
-            grade: o.cropDetails?.grade || o.crop?.grade || 'Grade A',
-            image: o.cropDetails?.image || o.crop?.image,
-            unitPrice: o.cropDetails?.pricePerKg || Math.round(o.totalPrice / (o.quantityKg || 1)),
-            farmer: {
-              name: o.cropDetails?.farmerName || 'Farmer Partner',
-              phone: '+91 98421 78210',
-              location: o.cropDetails?.hub || 'Dindigul'
-            },
-            driver: o.driver || {
-              name: 'Kumar M.',
-              vehicleType: 'Tata Ace EV Cargo',
-              vehicleNumber: 'TN 57 AB 1234',
-              phone: '+91 94432 11098',
-              deliveryPin: '4892'
-            },
-            liveTracking: {
-              currentStatus: o.deliveryStatus === 'DELIVERED' ? 'Consignment Delivered' : 'Ready for EV Driver Pickup',
-              currentLocation: `${o.cropDetails?.hub || 'Dindigul'} Hub`,
-              estimatedMinutes: 30,
-              distanceKm: 18,
-              speedKmh: 0,
-              lastUpdated: 'Just now'
+        const fetchedOrders = ordersRes.value.orders.map((o) => ({
+          ...o,
+          orderId: o.orderId,
+          cropName: o.cropDetails?.name || o.crop?.name || 'Produce',
+          tamilCropName: o.cropDetails?.nameTa || o.crop?.nameTa || '',
+          grade: o.cropDetails?.grade || o.crop?.grade || 'Grade A',
+          image: o.cropDetails?.image || o.crop?.image,
+          unitPrice: o.cropDetails?.pricePerKg || Math.round(o.totalPrice / (o.quantityKg || 1)),
+          farmer: {
+            name: o.cropDetails?.farmerName || 'Farmer Partner',
+            phone: '+91 98421 78210',
+            location: o.cropDetails?.hub || 'Dindigul'
+          },
+          driver: o.driver || {
+            name: 'Kumar M.',
+            vehicleType: 'Tata Ace EV Cargo',
+            vehicleNumber: 'TN 57 AB 1234',
+            phone: '+91 94432 11098',
+            deliveryPin: '4892'
+          },
+          liveTracking: {
+            currentStatus: o.deliveryStatus === 'DELIVERED' ? 'Consignment Delivered' : 'Ready for EV Driver Pickup',
+            currentLocation: `${o.cropDetails?.hub || 'Dindigul'} Hub`,
+            estimatedMinutes: 30,
+            distanceKm: 18,
+            speedKmh: 0,
+            lastUpdated: 'Just now'
+          }
+        }));
+
+        setOrders((prevOrders) => {
+          const fetchedIds = new Set(fetchedOrders.map((fo) => fo.orderId));
+          const localOnly = (prevOrders || []).filter((po) => !fetchedIds.has(po.orderId));
+          const mergedFetched = fetchedOrders.map((fo) => {
+            const localMatch = (prevOrders || []).find((po) => po.orderId === fo.orderId);
+            if (localMatch) {
+              return {
+                ...fo,
+                deliveryStatus: localMatch.deliveryStatus || fo.deliveryStatus,
+                status: localMatch.status || fo.status,
+                orderStatus: localMatch.orderStatus || fo.orderStatus,
+                liveTracking: localMatch.liveTracking || fo.liveTracking
+              };
             }
-          }))
-        );
+            return fo;
+          });
+          return [...mergedFetched, ...localOnly];
+        });
       }
     } catch {
       // offline fallback
@@ -491,24 +680,58 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
       })
       .filter((crop) => {
         if (!crop) return false;
-        if (selectedCategory === 'all') return true;
-        if (selectedCategory === 'vegetables') return (crop.category || '').toLowerCase() === 'vegetables';
-        if (selectedCategory === 'tomato') {
-          const name = ((crop.name || '') + ' ' + (crop.tamilName || '') + ' ' + (crop.id || '')).toLowerCase();
-          return name.includes('tomato') || name.includes('தக்காளி');
+        if (!selectedCategory || selectedCategory === 'all') return true;
+
+        // Parse target crop and target grade from selectedCategory (e.g. 'tomato_grade_a', 'onion', etc.)
+        let targetCrop = '';
+        let targetGrade = '';
+
+        if (selectedCategory.startsWith('tomato')) {
+          targetCrop = 'tomato';
+        } else if (selectedCategory.startsWith('onion')) {
+          targetCrop = 'onion';
+        } else if (selectedCategory.startsWith('potato')) {
+          targetCrop = 'potato';
         }
-        if (selectedCategory === 'onion') {
-          const name = ((crop.name || '') + ' ' + (crop.tamilName || '') + ' ' + (crop.id || '')).toLowerCase();
-          return name.includes('onion') || name.includes('shallot') || name.includes('vengayam') || name.includes('வெங்காயம்') || name.includes('bellary');
+
+        if (selectedCategory.includes('grade_a')) {
+          targetGrade = 'grade a';
+        } else if (selectedCategory.includes('grade_b')) {
+          targetGrade = 'grade b';
+        } else if (selectedCategory.includes('grade_c')) {
+          targetGrade = 'grade c';
         }
-        if (selectedCategory === 'potato') {
-          const name = ((crop.name || '') + ' ' + (crop.tamilName || '') + ' ' + (crop.id || '')).toLowerCase();
-          return name.includes('potato') || name.includes('urulai') || name.includes('உருளை');
+
+        // Backward compatibility for standalone grade/category filters
+        if (!targetCrop && targetGrade) {
+          const g = (crop.grade || '').trim().toLowerCase();
+          return g === targetGrade;
         }
-        const g = (crop.grade || '').trim().toLowerCase();
-        if (selectedCategory === 'grade_a') return g === 'grade a';
-        if (selectedCategory === 'grade_b') return g === 'grade b';
-        if (selectedCategory === 'grade_c') return g === 'grade c';
+        if (selectedCategory === 'vegetables') {
+          return (crop.category || '').toLowerCase() === 'vegetables';
+        }
+
+        // Match crop name
+        let matchesCrop = true;
+        if (targetCrop) {
+          const name = ((crop.name || '') + ' ' + (crop.tamilName || '') + ' ' + (crop.id || '')).toLowerCase();
+          if (targetCrop === 'tomato') {
+            matchesCrop = name.includes('tomato') || name.includes('தக்காளி');
+          } else if (targetCrop === 'onion') {
+            matchesCrop = name.includes('onion') || name.includes('shallot') || name.includes('vengayam') || name.includes('வெங்காயம்') || name.includes('bellary');
+          } else if (targetCrop === 'potato') {
+            matchesCrop = name.includes('potato') || name.includes('urulai') || name.includes('உருளை');
+          }
+        }
+
+        if (!matchesCrop) return false;
+
+        // Match grade if specified
+        if (targetGrade) {
+          const g = (crop.grade || '').trim().toLowerCase();
+          return g === targetGrade;
+        }
+
         return true;
       })
       .sort((a, b) => {
@@ -1003,6 +1226,12 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
     try {
       localStorage.removeItem('buyer_current_profile');
       localStorage.removeItem('buyer_registered_profile');
+      localStorage.removeItem('buyer_orders');
+      localStorage.removeItem('buyer_crops');
+      localStorage.removeItem('buyer_declined_crop_ids');
+      localStorage.removeItem('buyer_active_dashboard_order_id');
+      localStorage.removeItem('buyer_tracking_order_id');
+      localStorage.removeItem('buyer_messages');
       removeToken();
       sessionStorage.setItem('buyer_explicit_signout', 'true');
     } catch {

@@ -1,6 +1,6 @@
-// What this file does: Buyer produce marketplace page with category filters, search, sorting, and crop listings.
+// What this file does: Buyer produce marketplace page with produce dropdown filters (Tomato, Onion, Potato with Grade A, B, C), search, sorting, and crop listings.
 
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Scale,
   Search,
@@ -17,15 +17,40 @@ import Button from '../../components/Button';
 import { useBuyer } from '../../context/BuyerContext';
 import CropCard from '../../components/CropCard';
 
-const CATEGORY_FILTERS = [
-  { id: 'all', labelKey: 'crops.filterAll', label: 'All' },
-  { id: 'vegetables', labelKey: 'crops.filterVegetables', label: 'Vegetables' },
-  { id: 'tomato', labelKey: 'crops.filterTomato', label: 'Tomato' },
-  { id: 'onion', labelKey: 'crops.filterOnion', label: 'Onion' },
-  { id: 'potato', labelKey: 'crops.filterPotato', label: 'Potato' },
-  { id: 'grade_a', labelKey: 'crops.filterGradeA', label: 'Grade A' },
-  { id: 'grade_b', labelKey: 'crops.filterGradeB', label: 'Grade B' },
-  { id: 'grade_c', labelKey: 'crops.filterGradeC', label: 'Grade C' }
+const PRODUCE_DROPDOWNS = [
+  {
+    id: 'tomato',
+    labelKey: 'crops.filterTomato',
+    label: 'Tomato',
+    grades: [
+      { id: 'tomato', labelKey: 'crops.filterAllGrades', label: 'All Grades' },
+      { id: 'tomato_grade_a', labelKey: 'crops.filterGradeA', label: 'Grade A', badgeClass: 'grade-a' },
+      { id: 'tomato_grade_b', labelKey: 'crops.filterGradeB', label: 'Grade B', badgeClass: 'grade-b' },
+      { id: 'tomato_grade_c', labelKey: 'crops.filterGradeC', label: 'Grade C', badgeClass: 'grade-c' }
+    ]
+  },
+  {
+    id: 'onion',
+    labelKey: 'crops.filterOnion',
+    label: 'Onion',
+    grades: [
+      { id: 'onion', labelKey: 'crops.filterAllGrades', label: 'All Grades' },
+      { id: 'onion_grade_a', labelKey: 'crops.filterGradeA', label: 'Grade A', badgeClass: 'grade-a' },
+      { id: 'onion_grade_b', labelKey: 'crops.filterGradeB', label: 'Grade B', badgeClass: 'grade-b' },
+      { id: 'onion_grade_c', labelKey: 'crops.filterGradeC', label: 'Grade C', badgeClass: 'grade-c' }
+    ]
+  },
+  {
+    id: 'potato',
+    labelKey: 'crops.filterPotato',
+    label: 'Potato',
+    grades: [
+      { id: 'potato', labelKey: 'crops.filterAllGrades', label: 'All Grades' },
+      { id: 'potato_grade_a', labelKey: 'crops.filterGradeA', label: 'Grade A', badgeClass: 'grade-a' },
+      { id: 'potato_grade_b', labelKey: 'crops.filterGradeB', label: 'Grade B', badgeClass: 'grade-b' },
+      { id: 'potato_grade_c', labelKey: 'crops.filterGradeC', label: 'Grade C', badgeClass: 'grade-c' }
+    ]
+  }
 ];
 
 export default function Crops() {
@@ -41,9 +66,62 @@ export default function Crops() {
     setDeclinedCropIds,
     t,
     lang,
-    handleOpenAccept,
-    handleOpenDecline
+    handleOpenAccept
   } = useBuyer();
+
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const filterToolbarRef = useRef(null);
+
+  // Close dropdown on click outside or Escape key
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (filterToolbarRef.current && !filterToolbarRef.current.contains(e.target)) {
+        setOpenDropdown(null);
+      }
+    };
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setOpenDropdown(null);
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+  // Compute current display label for a produce chip
+  const getDropdownLabel = (produce) => {
+    const baseLabel = typeof t === 'function' && t(produce.labelKey) !== produce.labelKey
+      ? t(produce.labelKey)
+      : produce.label;
+
+    if (!selectedCategory || !selectedCategory.startsWith(produce.id)) {
+      return baseLabel;
+    }
+
+    if (selectedCategory === `${produce.id}_grade_a`) {
+      const gLabel = typeof t === 'function' && t('crops.filterGradeA') !== 'crops.filterGradeA'
+        ? t('crops.filterGradeA')
+        : 'Grade A';
+      return `${baseLabel} • ${gLabel}`;
+    }
+    if (selectedCategory === `${produce.id}_grade_b`) {
+      const gLabel = typeof t === 'function' && t('crops.filterGradeB') !== 'crops.filterGradeB'
+        ? t('crops.filterGradeB')
+        : 'Grade B';
+      return `${baseLabel} • ${gLabel}`;
+    }
+    if (selectedCategory === `${produce.id}_grade_c`) {
+      const gLabel = typeof t === 'function' && t('crops.filterGradeC') !== 'crops.filterGradeC'
+        ? t('crops.filterGradeC')
+        : 'Grade C';
+      return `${baseLabel} • ${gLabel}`;
+    }
+
+    return baseLabel;
+  };
 
   return (
     <div className="buyer-view-container animate-fade-in">
@@ -77,19 +155,74 @@ export default function Crops() {
       </div>
 
       {/* Filters & Sorting Bar */}
-      <div className="buyer-filter-toolbar">
-        {/* Category Filter Chips */}
+      <div className="buyer-filter-toolbar" ref={filterToolbarRef}>
+        {/* Category & Produce Dropdown Filter Chips */}
         <div className="buyer-filter-chips">
-          {CATEGORY_FILTERS.map((cat) => (
-            <button
-              key={cat.id}
-              type="button"
-              className={`buyer-chip ${selectedCategory === cat.id ? 'active' : ''}`}
-              onClick={() => setSelectedCategory(cat.id)}
-            >
-              {typeof t === 'function' && t(cat.labelKey) !== cat.labelKey ? t(cat.labelKey) : (cat.label || cat.id)}
-            </button>
-          ))}
+          {/* 'All' Filter Chip */}
+          <button
+            type="button"
+            className={`buyer-chip ${selectedCategory === 'all' ? 'active' : ''}`}
+            onClick={() => {
+              setSelectedCategory('all');
+              setOpenDropdown(null);
+            }}
+          >
+            {typeof t === 'function' && t('crops.filterAll') !== 'crops.filterAll'
+              ? t('crops.filterAll')
+              : 'All'}
+          </button>
+
+          {/* Produce Dropdowns: Tomato, Onion, Potato */}
+          {PRODUCE_DROPDOWNS.map((produce) => {
+            const isCropActive = selectedCategory && selectedCategory.startsWith(produce.id);
+            const isOpen = openDropdown === produce.id;
+
+            return (
+              <div key={produce.id} className="buyer-filter-dropdown-wrap">
+                <button
+                  type="button"
+                  id={`filter-dropdown-${produce.id}`}
+                  className={`buyer-chip-dropdown-btn ${isCropActive ? 'active' : ''} ${isOpen ? 'is-open' : ''}`}
+                  onClick={() => setOpenDropdown(isOpen ? null : produce.id)}
+                  aria-haspopup="listbox"
+                  aria-expanded={isOpen}
+                >
+                  <span>{getDropdownLabel(produce)}</span>
+                  <ChevronDown size={14} className="buyer-chip-dropdown-caret" />
+                </button>
+
+                {isOpen && (
+                  <div className="buyer-filter-menu" role="listbox" aria-label={`${produce.label} Grades`}>
+                    {produce.grades.map((gradeOpt) => {
+                      const isOptionActive = selectedCategory === gradeOpt.id;
+                      const optLabel = typeof t === 'function' && t(gradeOpt.labelKey) !== gradeOpt.labelKey
+                        ? t(gradeOpt.labelKey)
+                        : gradeOpt.label;
+
+                      return (
+                        <button
+                          key={gradeOpt.id}
+                          type="button"
+                          className={`buyer-filter-menu-item ${isOptionActive ? 'active' : ''}`}
+                          onClick={() => {
+                            setSelectedCategory(gradeOpt.id);
+                            setOpenDropdown(null);
+                          }}
+                        >
+                          <span>{optLabel}</span>
+                          {gradeOpt.badgeClass && (
+                            <span className={`buyer-filter-grade-badge ${gradeOpt.badgeClass}`}>
+                              {gradeOpt.label}
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
 
         {/* Sort By Dropdown */}

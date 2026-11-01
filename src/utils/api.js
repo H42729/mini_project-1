@@ -44,11 +44,22 @@ async function request(endpoint, options = {}) {
     headers['Authorization'] = `Bearer ${token}`;
   }
 
+  let timeoutId;
+  let signal = options.signal;
+  if (!signal && typeof AbortController !== 'undefined') {
+    const controller = new AbortController();
+    signal = controller.signal;
+    timeoutId = setTimeout(() => controller.abort(), 3500);
+  }
+
   try {
     const response = await fetch(url, {
       ...options,
-      headers
+      headers,
+      signal
     });
+
+    if (timeoutId) clearTimeout(timeoutId);
 
     let data = null;
     const contentType = response.headers.get('content-type');
@@ -61,8 +72,8 @@ async function request(endpoint, options = {}) {
     // Handle 401 Unauthorized: clear expired credentials and redirect to login
     if (response.status === 401) {
       removeToken();
-      if (typeof window !== 'undefined' && !window.location.pathname.includes('/buyer-login')) {
-        window.location.href = '/buyer-login';
+      if (typeof window !== 'undefined' && !window.location.pathname.includes('/role-select')) {
+        window.location.href = '/role-select?role=buyer';
       }
       throw new Error(data?.message || 'Session expired. Please log in again.');
     }
@@ -73,7 +84,7 @@ async function request(endpoint, options = {}) {
 
     return data;
   } catch (error) {
-    // Re-throw with readable message for caller handling
+    if (timeoutId) clearTimeout(timeoutId);
     throw error;
   }
 }
