@@ -22,6 +22,11 @@ html[lang="ta"] .navbar.public-navbar {
   background-color: #ffffff !important;
 }
 
+.public-navbar-brand,
+.public-navbar-logo {
+  cursor: pointer;
+}
+
 /* ==========================================================================
    1. DESKTOP VIEW (>= 992px) - 100% Original Desktop Layout
    ========================================================================== */

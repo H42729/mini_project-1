@@ -35,11 +35,15 @@ export default function PublicNavbar({
   }, []);
 
   const handleBrandClick = (e) => {
-    e.preventDefault();
-    if (window.location.pathname === ROUTES.HOME || window.location.hash.startsWith('#/')) {
+    if (e && e.preventDefault) e.preventDefault();
+    if (window.location.pathname === ROUTES.HOME) {
+      if (window.location.hash) {
+        window.history.pushState(null, '', ROUTES.HOME);
+      }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       navigate(ROUTES.HOME);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 

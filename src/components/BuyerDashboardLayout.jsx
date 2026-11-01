@@ -173,11 +173,12 @@ function BuyerDashboardContent() {
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
 
-          {/* Logo Brand Lockup */}
+          {/* Logo Brand Lockup: Navigates to Home Page */}
           <Link
-            to={ROUTES.BUYER_DASHBOARD}
+            to={ROUTES.HOME}
             className="buyer-brand-badge"
             style={{ textDecoration: 'none' }}
+            title="Go to Home page"
           >
             <img src="/logo.png" alt="Naam Uzhavar" className="buyer-brand-logo-img" />
             <div className="buyer-brand-titles">
@@ -410,9 +411,10 @@ function BuyerDashboardContent() {
           <Offcanvas.Header closeButton closeVariant="white" className="border-bottom border-success border-opacity-25 pb-3">
             <Offcanvas.Title>
               <Link
-                to={ROUTES.BUYER_DASHBOARD}
+                to={ROUTES.HOME}
                 className="d-flex align-items-center gap-2 text-decoration-none"
                 onClick={() => setMobileMenuOpen(false)}
+                title="Go to Home page"
               >
                 <img src="/logo.png" alt="Naam Uzhavar" width={38} height={38} className="rounded-circle border border-2 border-success object-fit-cover" />
                 <div className="d-flex flex-column">

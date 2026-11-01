@@ -7,7 +7,6 @@ import { ROUTES } from './routes';
 import ProtectedRoute from './components/ProtectedRoute';
 import HomePage from './pages/HomePage';
 import RoleSelectPage from './pages/RoleSelectPage';
-import BuyerLogin from './pages/BuyerLogin';
 import BuyerRegister from './pages/BuyerRegister';
 import ComingSoonPage from './pages/ComingSoonPage';
 import NotFoundPage from './pages/NotFoundPage';
@@ -47,16 +46,9 @@ export default function App() {
         {/* 2. Unified Role Selection */}
         <Route path={ROUTES.ROLE_SELECT} element={<RoleSelectPage />} />
 
-        {/* 3. Buyer Portal Auth: Login & Register (Guest Protected: logged in users go to dashboard) */}
-        <Route
-          path={ROUTES.BUYER_LOGIN}
-          element={
-            <ProtectedRoute mode="guest">
-              <BuyerLogin />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="/buyer/login" element={<Navigate to={ROUTES.BUYER_LOGIN} replace />} />
+        {/* 3. Buyer Portal Auth: Unified Role Select & Register */}
+        <Route path="/buyer-login" element={<Navigate to="/role-select?role=buyer" replace />} />
+        <Route path="/buyer/login" element={<Navigate to="/role-select?role=buyer" replace />} />
         <Route
           path={ROUTES.BUYER_REGISTER}
           element={
@@ -69,6 +61,11 @@ export default function App() {
 
         {/* Buyer dashboard alias routes (supports slash-separated /buyer and /buyer/dashboard/* paths) */}
         <Route path="/buyer" element={<Navigate to={ROUTES.BUYER_DASHBOARD} replace />} />
+        <Route path="/buyer/crops" element={<Navigate to={ROUTES.BUYER_DASHBOARD_CROPS} replace />} />
+        <Route path="/buyer/orders" element={<Navigate to={ROUTES.BUYER_DASHBOARD_ORDERS} replace />} />
+        <Route path="/buyer/track" element={<Navigate to={ROUTES.BUYER_DASHBOARD_TRACK} replace />} />
+        <Route path="/buyer/invoices" element={<Navigate to={ROUTES.BUYER_DASHBOARD_INVOICES} replace />} />
+        <Route path="/buyer/profile" element={<Navigate to={ROUTES.BUYER_DASHBOARD_PROFILE} replace />} />
         <Route path="/buyer/dashboard" element={<Navigate to={ROUTES.BUYER_DASHBOARD} replace />} />
         <Route path="/buyer/dashboard/crops" element={<Navigate to={ROUTES.BUYER_DASHBOARD_CROPS} replace />} />
         <Route path="/buyer/dashboard/orders" element={<Navigate to={ROUTES.BUYER_DASHBOARD_ORDERS} replace />} />
