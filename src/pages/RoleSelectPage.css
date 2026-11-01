@@ -180,15 +180,18 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   width: 100%;
+  max-width: 680px;
   margin-bottom: 24px;
   position: sticky;
-  top: var(--role-topbar-h, 76px);
+  top: calc(var(--role-topbar-h, 76px) + 8px);
   z-index: 45;
-  padding: 10px 16px 12px 16px;
+  padding: 12px 16px 14px 16px;
   border-radius: 20px;
-  border: 1.5px solid transparent;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
   transition: 
     background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
     border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1),
@@ -199,20 +202,20 @@
 }
 
 .role-switch-container.is-sticky {
-  background: rgba(246, 246, 242, 0.94);
+  background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 10px 28px -4px rgba(15, 23, 42, 0.1), 0 4px 12px -2px rgba(15, 23, 42, 0.05);
-  border-color: rgba(203, 213, 225, 0.85);
+  box-shadow: 0 10px 28px -4px rgba(15, 23, 42, 0.12), 0 4px 12px -2px rgba(15, 23, 42, 0.05);
+  border-color: #94a3b8;
 }
 
 .role-switch-label {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  font-size: 0.84rem;
+  font-size: 0.82rem;
   font-weight: 800;
-  color: #475569;
+  color: #15803d;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -257,11 +260,11 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 6px;
-  background: #ffffff;
-  padding: 6px;
-  border-radius: 16px;
-  border: 1.5px solid #e2e8f0;
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+  background: #f1f5f9;
+  padding: 5px;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  box-shadow: inset 0 1px 3px rgba(15, 23, 42, 0.04);
   width: 100%;
   max-width: 640px;
   box-sizing: border-box;
@@ -269,9 +272,8 @@
 }
 
 .role-switch-container.is-sticky .role-switch-pill {
-  box-shadow: 0 10px 24px -4px rgba(15, 23, 42, 0.12), 0 4px 10px -2px rgba(15, 23, 42, 0.05);
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.06);
   border-color: #cbd5e1;
-  transform: scale(0.99);
 }
 
 .role-switch-btn {
@@ -877,38 +879,46 @@
   }
 
   .role-switch-container {
-    top: var(--role-topbar-h);
-    padding: 8px 6px 10px 6px;
+    top: calc(var(--role-topbar-h) + 6px);
+    padding: 10px 8px 12px 8px;
     margin-bottom: 16px;
     border-radius: 16px;
-    border: 1.5px solid transparent;
+    background: #ffffff;
+    border: 1.5px solid #cbd5e1;
+    box-shadow: 0 3px 12px rgba(15, 23, 42, 0.06);
   }
 
   .role-switch-container.is-sticky {
-    padding: 8px 6px 10px 6px;
+    padding: 10px 8px 12px 8px;
     margin-bottom: 16px;
-    border-radius: 0 0 16px 16px;
-    border-top: none;
-    border-color: rgba(203, 213, 225, 0.9);
-    box-shadow: 0 8px 24px -2px rgba(15, 23, 42, 0.12);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1.5px solid #94a3b8;
+    box-shadow: 0 8px 24px -2px rgba(15, 23, 42, 0.14);
   }
 
   .role-switch-label {
     font-size: 0.72rem;
     gap: 6px;
     margin-bottom: 4px;
+    color: #15803d;
   }
 
   .role-switch-container.is-sticky .role-switch-label {
     font-size: 0.72rem;
     margin-bottom: 4px;
+    color: #15803d;
   }
 
   .role-switch-pill {
     grid-template-columns: repeat(3, 1fr);
     gap: 4px;
     padding: 4px;
-    border-radius: 14px;
+    border-radius: 12px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
   }
 
   .role-switch-btn {

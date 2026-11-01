@@ -71,7 +71,7 @@ export default function RoleSelectPage({
         const topbarEl = document.querySelector('.role-select-topbar');
         const topbarHeight = topbarEl ? topbarEl.getBoundingClientRect().height : 60;
         const rect = switcherRef.current.getBoundingClientRect();
-        setIsSticky(rect.top <= topbarHeight + 1.5);
+        setIsSticky(rect.top <= topbarHeight + 10);
       }
       ticking = false;
     };
