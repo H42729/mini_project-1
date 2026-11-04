@@ -1,5 +1,5 @@
 // server.js - Express backend entry point for Naam Uzhavar Agricultural Marketplace
-// Viva Note: Integrates CORS, JSON parsing, Mongoose, modular routes, and centralized error handling.
+// Viva Note: Integrates CORS, JSON parsing, Mongoose, modular buyer & farmer routes, and centralized error handling.
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -57,13 +57,16 @@ app.use('/api/invoices', require('./routes/invoices'));
 app.use('/api/messages', require('./routes/messages'));
 app.use('/api/profile', require('./routes/profile'));
 
+// Register Integrated Farmer API Routes
+app.use('/api/farmer', require('./routes/farmer'));
+
 // 404 Handler for undefined API routes
 app.use('/api/*', (req, res) => {
   res.status(404).json({ message: `API endpoint '${req.originalUrl}' does not exist.` });
 });
 
 // Simple centralized error-handling middleware
-app.use((err, req, res, next) => {
+app.use((err, req, res, _next) => {
   console.error('❌ Server Error:', err.stack || err.message);
   const statusCode = err.status || err.statusCode || 500;
   res.status(statusCode).json({
@@ -72,7 +75,14 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`🚀 Naam Uzhavar API server listening on http://localhost:${PORT}`);
-  console.log(`📡 Accepting client requests from: ${allowedOrigins.join(', ')}`);
-});
+let server = null;
+if (require.main === module) {
+  server = app.listen(PORT, () => {
+    console.log(`🚀 Naam Uzhavar API server listening on http://localhost:${PORT}`);
+    console.log(`📡 Accepting client requests from: ${allowedOrigins.join(', ')}`);
+  });
+}
+
+module.exports = app;
+module.exports.app = app;
+module.exports.server = server;

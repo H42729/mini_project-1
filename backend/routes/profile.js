@@ -3,7 +3,27 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 const Buyer = require('../models/Buyer');
+
+const isObjectId = (id) => typeof id === 'string' && /^[0-9a-fA-F]{24}$/.test(id);
+const isDbConnected = () => mongoose.connection.readyState === 1;
+
+const DEMO_BUYER_RECORD = {
+  _id: 'buyer_demo_01',
+  businessName: 'Grand Palace Luxury Dining',
+  shopName: 'Grand Palace Luxury Dining',
+  contactPerson: 'Mr. S. Rajesh (Procurement Head)',
+  name: 'Mr. S. Rajesh (Procurement Head)',
+  fullName: 'Mr. S. Rajesh (Procurement Head)',
+  buyerType: 'hotel',
+  email: 'demo@naamuzhavar.com',
+  phone: '+91 98401 23456',
+  gstin: '33AAAAA0000A1Z5',
+  address: 'Grand Palace Luxury Dining, Bypass Road, Madurai - 625016',
+  avatar: 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=300&auto=format&fit=crop&q=80',
+  save: async function () { return this; }
+};
 
 // Helper to derive a clean human contact person name from email or fallback
 const deriveContactPerson = (email, fallbackBusinessName) => {
@@ -88,7 +108,10 @@ router.use(resolveBuyerAuth);
 router.get('/', async (req, res, next) => {
   try {
     let buyer = null;
-    if (req.buyer?.id) {
+    if (!isDbConnected()) {
+      buyer = DEMO_BUYER_RECORD;
+    }
+    if (isObjectId(req.buyer?.id)) {
       buyer = await Buyer.findById(req.buyer.id).select('-password');
     }
     if (!buyer && req.buyer?.email) {
@@ -102,7 +125,7 @@ router.get('/', async (req, res, next) => {
       }).select('-password');
     }
     if (!buyer) {
-      buyer = await Buyer.findOne({}).select('-password');
+      buyer = (await Buyer.findOne({}).select('-password')) || DEMO_BUYER_RECORD;
     }
 
     if (!buyer) {
@@ -161,7 +184,10 @@ const updateBuyerProfile = async (req, res, next) => {
     } = req.body;
 
     let buyer = null;
-    if (req.buyer?.id) {
+    if (!isDbConnected()) {
+      buyer = DEMO_BUYER_RECORD;
+    }
+    if (isObjectId(req.buyer?.id)) {
       buyer = await Buyer.findById(req.buyer.id);
     }
     if (!buyer && (email || req.buyer?.email)) {
@@ -169,7 +195,7 @@ const updateBuyerProfile = async (req, res, next) => {
       buyer = await Buyer.findOne({ email: searchEmail });
     }
     if (!buyer) {
-      buyer = await Buyer.findOne({});
+      buyer = (await Buyer.findOne({})) || { ...DEMO_BUYER_RECORD };
     }
 
     if (!buyer) {

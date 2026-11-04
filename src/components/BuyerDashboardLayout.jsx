@@ -27,7 +27,8 @@ import Modal from './Modal';
 import { BuyerProvider, useBuyer } from '../context/BuyerContext';
 import CropModals from './CropModals';
 import EditProfileModal from './EditProfileModal';
-import LoadingPage from './LoadingPage';
+import LoadingPage from './LoadingPage';
+import { ModulePageSkeleton } from './Skeleton';
 
 /**
  * BuyerDashboardLayout Component
@@ -112,6 +113,16 @@ function BuyerDashboardContent() {
         return p.businessType || 'Commercial Establishment';
     }
   }, [p.buyerType, p.businessType, t]);
+
+  // Lock window / body scroll to prevent duplicate native scrollbars while inside Buyer Dashboard
+  useEffect(() => {
+    document.documentElement.classList.add('dashboard-shell-active');
+    document.body.classList.add('dashboard-shell-active');
+    return () => {
+      document.documentElement.classList.remove('dashboard-shell-active');
+      document.body.classList.remove('dashboard-shell-active');
+    };
+  }, []);
 
   // Auto-scroll viewport to top on route change
   useEffect(() => {
@@ -513,11 +524,7 @@ function BuyerDashboardContent() {
         <main className="buyer-main-viewport" ref={mainViewportRef}>
           {buyer.isDataLoading ? (
             <div className="buyer-view-container animate-fade-in" style={{ padding: '8px 0' }}>
-              <LoadingPage
-                fullScreen={false}
-                onRetry={() => buyer.refreshData(true)}
-                onContinueOffline={() => buyer.setIsDataLoading(false)}
-              />
+              <ModulePageSkeleton />
             </div>
           ) : (
             <Outlet context={buyer} />

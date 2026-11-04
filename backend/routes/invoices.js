@@ -4,6 +4,23 @@ const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/auth');
 const Order = require('../models/Order');
+const Buyer = require('../models/Buyer');
+
+const isObjectId = (id) => typeof id === 'string' && /^[0-9a-fA-F]{24}$/.test(id);
+
+const resolveBuyerIds = async (buyerId) => {
+  const ids = [buyerId];
+  if (!isObjectId(buyerId)) {
+    try {
+      const demoBuyer = await Buyer.findOne({ email: 'demo@naamuzhavar.com' });
+      if (demoBuyer) {
+        ids.push(demoBuyer._id);
+        ids.push(demoBuyer._id.toString());
+      }
+    } catch {}
+  }
+  return ids;
+};
 
 router.use(authMiddleware);
 
@@ -11,8 +28,10 @@ router.use(authMiddleware);
 router.get('/', async (req, res, next) => {
   try {
     // 1. Find all delivered orders for this buyer
+    const buyerIds = await resolveBuyerIds(req.buyer.id);
     const deliveredOrders = await Order.find({
-      buyer: req.buyer.id,
+      buyer: { $in: buyerIds },
+
       status: 'delivered'
     })
       .populate('crop')

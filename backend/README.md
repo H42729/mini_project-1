@@ -1,6 +1,6 @@
 # 🚜 Naam Uzhavar Backend API (நாம் உழவர்)
 
-> **RESTful API Backend for the Naam Uzhavar Direct Agricultural Marketplace**  
+> **Unified RESTful API Backend for the Naam Uzhavar Agricultural Marketplace (Commercial Buyer & Farmer Portals)**  
 > Stack: **Node.js + Express + MongoDB (Mongoose) + JWT + bcryptjs + CORS**
 
 ---
@@ -22,11 +22,14 @@ npm install
 # 3. Create your environment file from template
 cp .env.example .env
 
-# 4. Seed initial produce, demo buyer, and EV delivery orders
+# 4. Seed initial produce, demo buyer, demo farmer, and EV delivery orders
 npm run seed
 
 # 5. Start development server with hot-reload
 npm run dev
+
+# 6. Run automated test suite verifying all Farmer APIs & multi-tenant security
+npm run test:farmer
 ```
 
 The server starts on `http://localhost:5000`.
@@ -35,10 +38,17 @@ The server starts on `http://localhost:5000`.
 
 ## 🔑 2. Demo Credentials
 
-Use these credentials to test authentication or sign in from the React frontend:
+### Commercial Buyer Portal
 * **Email:** `demo@naamuzhavar.com`
 * **Password:** `demo1234`
 * **Role:** Commercial Buyer (Grand Palace Luxury Dining, Madurai)
+
+### Agricultural Farmer Portal
+* **Email:** `farmer@naamuzhavar.com`
+* **Mobile / Identifier:** `+91 94432 78190`
+* **Password:** `farmer1234`
+* **Farmer ID:** `FMR-TN-2026-01`
+* **Role:** Farmer (Ramesh Kumar - Green Valley Natural Farm, Pollachi)
 
 ---
 
@@ -60,27 +70,56 @@ Use these credentials to test authentication or sign in from the React frontend:
 | :--- | :--- | :--- | :--- |
 | `GET` | `/api/health` | Health check to verify server status | ❌ No |
 | `POST` | `/api/auth/register` | Register a new commercial buyer account | ❌ No |
-| `POST` | `/api/auth/login` | Log in and receive a 7-day JWT token | ❌ No |
+| `POST` | `/api/auth/login` | Log in as commercial buyer | ❌ No |
+| `POST` | `/api/auth/farmer/register` | Register a new agricultural farmer account | ❌ No |
+| `POST` | `/api/auth/farmer/login` | Log in as farmer with phone/email and password | ❌ No |
 | `GET` | `/api/crops` | List fresh harvest listings (`?search=&category=&grade=`) | ❌ No |
 
-### Protected Routes (Requires Header: `Authorization: Bearer <token>`)
+### Buyer Protected Routes (`Authorization: Bearer <buyer_token>`)
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
+| `GET` | `/api/auth/me` | Retrieve current buyer session profile |
 | `POST` | `/api/orders` | Place a direct order (server calculates total & assigns EV driver) |
 | `GET` | `/api/orders` | Get all orders belonging to authenticated buyer |
 | `GET` | `/api/orders/:id` | Get single order details by `orderId` or `_id` |
-| `PATCH` | `/api/orders/:id/status` | Demo route: advances delivery status to next stage |
+| `PATCH` | `/api/orders/:id/status` | Advances delivery status to next stage |
 | `GET` | `/api/invoices` | Retrieve commercial accounting invoices for delivered orders |
 | `GET` | `/api/messages` | Read dispatch communication thread |
 | `POST` | `/api/messages` | Send a new message to hub dispatcher or driver |
 | `GET` | `/api/profile` | Get current buyer business profile (no password) |
 | `PUT` | `/api/profile` | Update buyer business details, GSTIN, and avatar |
 
+### Farmer Protected Routes (`Authorization: Bearer <farmer_token>`)
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/auth/farmer/me` | Retrieve current farmer authenticated session |
+| `GET` | `/api/farmer/profile` | Get authenticated farmer's profile, land details, and masked bank info |
+| `PUT` | `/api/farmer/profile` | Update farmer land details, residential address, and bank accounts |
+| `GET` | `/api/farmer/dashboard` | Computed telemetry metrics (active yield, orders, enquiries) & activity stream |
+| `GET` | `/api/farmer/crops` | List farmer's active produce inventory (`?category=&status=&search=&sortBy=`) |
+| `POST` | `/api/farmer/crops` | List a new crop harvest lot in the buyer marketplace |
+| `PUT` | `/api/farmer/crops/:id` | Update produce pricing, variety, or details (strict ownership check) |
+| `PATCH` | `/api/farmer/crops/:id/status` | Pause / resume produce listing status (`active`, `paused`, `sold_out`) |
+| `POST` | `/api/farmer/crops/:id/remove` | Soft-remove produce listing (blocks if active order is in progress) |
+| `DELETE` | `/api/farmer/crops/:id` | Returns `405 Method Not Allowed` to enforce audit integrity |
+| `GET` | `/api/farmer/requests` | List incoming buyer purchase requests & commercial enquiries |
+| `POST` | `/api/farmer/requests/:id/accept` | Accept buyer request, converts to confirmed commercial order, updates stock |
+| `POST` | `/api/farmer/requests/:id/reject` | Reject buyer request with reason note |
+| `GET` | `/api/farmer/orders` | Retrieve farmer's order history ledger with pagination & status filters |
+| `GET` | `/api/farmer/orders/:id` | View single order details with EV driver telemetry and buyer details |
+| `PATCH` | `/api/farmer/orders/:id/status` | Update consignment milestone (`READY_FOR_PICKUP`, `PICKED_UP`, etc.) |
+
 ---
 
-## 🎓 5. Key Architecture Points (For Viva)
+## 🔒 5. Key Architecture & Security Points
 
-1. **Password Hashing (bcryptjs):** Passwords are never saved in plain text. A salt is added and hashed with 10 rounds of bcrypt before being stored in MongoDB.
-2. **Stateless Authentication (JWT):** The server issues a signed JSON Web Token upon login. The frontend passes this token in the `Authorization: Bearer <token>` header for protected endpoints.
-3. **Server-Side Price Calculation:** The frontend sends `cropId` and `quantityKg`. The server looks up the official wholesale price in the database and calculates `totalPrice`, preventing client-side price tampering.
-4. **Order ID & EV Driver Assignment:** Unique order IDs (`NU-YYYY-XXXXX`) and EV vehicle dispatches are generated and assigned exclusively by the server.
+1. **Strict Multi-Tenant Farmer Authorization:**
+   Every `/api/farmer/*` endpoint extracts `req.farmerId` directly from the validated JWT token signature. Attempts by one farmer to inspect, mutate, accept, or delete another farmer's records are strictly blocked with `403 Forbidden`.
+2. **Password Hashing (bcryptjs):**
+   Farmer and Buyer passwords are encrypted with bcrypt (10 rounds) before persisting. Plaintext credentials are never saved or returned in API responses.
+3. **Data Privacy & Masking:**
+   Farmer bank account details are masked (e.g. `••••••••1034`) when transmitting profile data to prevent data leakage.
+4. **Unified Single Express Instance & MongoDB Connection:**
+   Buyer and Farmer modules share one single Express app (`server.js`) and one connection pool (`config/db.js`), preventing memory leaks and duplicate database connections.
+5. **Non-Deletion Agro Audit Safeguard:**
+   Harvest produce listings cannot be hard-deleted if active orders or delivery consignments are linked to them. The system provides audited soft-removal.

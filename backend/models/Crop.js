@@ -1,5 +1,5 @@
 // models/Crop.js - Schema for fresh farm harvest consignments available at regional hubs
-// Viva Note: Represents agricultural produce directly listed from Tamil Nadu farmers.
+// Viva Note: Represents agricultural produce directly listed from Tamil Nadu farmers for commercial buyers.
 const mongoose = require('mongoose');
 
 const cropSchema = new mongoose.Schema(
@@ -24,6 +24,16 @@ const cropSchema = new mongoose.Schema(
       enum: ['Grade A', 'Grade B', 'Grade C'],
       default: 'Grade A'
     },
+    variety: {
+      type: String,
+      default: 'Commercial Hybrid',
+      trim: true
+    },
+    farmingMethod: {
+      type: String,
+      default: 'Natural',
+      trim: true
+    },
     pricePerKg: {
       type: Number,
       required: [true, 'Wholesale price per kg is required'],
@@ -33,6 +43,21 @@ const cropSchema = new mongoose.Schema(
       type: Number,
       required: [true, 'Available quantity in kg is required'],
       min: [0, 'Available quantity cannot be negative']
+    },
+    unit: {
+      type: String,
+      default: 'Kg',
+      trim: true
+    },
+    farmerId: {
+      type: String,
+      default: 'FMR-TN-2026-01',
+      trim: true,
+      index: true
+    },
+    farmer: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Farmer'
     },
     farmerName: {
       type: String,
@@ -51,6 +76,32 @@ const cropSchema = new mongoose.Schema(
     image: {
       type: String,
       default: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&auto=format&fit=crop&q=80'
+    },
+    images: {
+      type: [String],
+      default: []
+    },
+    pickupDate: {
+      type: String,
+      default: ''
+    },
+    status: {
+      type: String,
+      enum: ['active', 'paused', 'sold_out', 'pending', 'removed'],
+      default: 'active',
+      index: true
+    },
+    enquiryCount: {
+      type: Number,
+      default: 0
+    },
+    farmLocation: {
+      address: { type: String, default: '' },
+      village: { type: String, default: 'Pollachi' },
+      taluk: { type: String, default: 'Pollachi' },
+      district: { type: String, default: 'Coimbatore' },
+      pincode: { type: String, default: '642001' },
+      gps: { type: String, default: '' }
     }
   },
   {

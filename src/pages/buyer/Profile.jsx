@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import './Profile.css';
 import { useBuyer } from '../../context/BuyerContext';
+import { ProfileSkeleton } from '../../components/Skeleton';
 
 export default function Profile() {
   const {
@@ -22,8 +23,13 @@ export default function Profile() {
     handlePhotoUpload,
     handleOpenEditProfile,
     setSignOutModalOpen,
+    isDataLoading,
     t
   } = useBuyer();
+
+  if (isDataLoading && !profile) {
+    return <ProfileSkeleton />;
+  }
 
   const p = profile || {};
   const photoSrc = p.photo || p.photoPreview;

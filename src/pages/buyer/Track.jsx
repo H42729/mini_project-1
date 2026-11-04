@@ -20,11 +20,13 @@ import './Track.css';
 import { ROUTES } from '../../routes';
 import { useBuyer } from '../../context/BuyerContext';
 import EmptyState from '../../components/EmptyState';
-import Button from '../../components/Button';
+import Button from '../../components/Button';
+import { TrackingSkeleton } from '../../components/Skeleton';
 
 export default function Track() {
   const navigate = useNavigate();
   const {
+    isDataLoading,
     orders,
     selectedTrackingOrderId,
     setSelectedTrackingOrderId,
@@ -161,6 +163,10 @@ export default function Track() {
       batteryPct: 100
     };
   }, [currentDeliveryStatus, trackingOrder, profile?.address]);
+
+  if (isDataLoading && (!orders || orders.length === 0)) {
+    return <TrackingSkeleton />;
+  }
 
   // If no orders exist or trackingOrder is missing, render graceful EmptyState
   if (!trackingOrder || (orders || []).length === 0) {

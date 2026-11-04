@@ -6,9 +6,125 @@ import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../routes';
 import { useT } from '../hooks/useT';
 import { INITIAL_CROPS, INITIAL_ORDERS, INITIAL_MESSAGES } from '../data/mockData';
-import { api, getToken, setToken, removeToken } from '../utils/api';
+import { api, getToken, setToken, removeBuyerToken } from '../utils/api';
+import { getStoredRequests, saveStoredRequests } from '../services/requestService';
+import { getStoredOrders, saveStoredOrders } from '../services/orderService';
 
 const BuyerContext = createContext(null);
+
+// Strict 4-crop catalog guard for Commercial Buyer module: Tomato, Onion, Potato, Carrot
+export const isAllowedBuyerCrop = (crop) => {
+  if (!crop) return false;
+  const text = `${crop.name || ''} ${crop.tamilName || ''} ${crop.id || ''}`.toLowerCase();
+  
+  const isBanned =
+    text.includes('coconut') || text.includes('தேங்காய்') ||
+    text.includes('okra') || text.includes('vendakkai') || text.includes('வெண்டைக்காய்') ||
+    text.includes('sambar') || text.includes('சாம்பார்') ||
+    text.includes('brinjal') || text.includes('kathirikkai') || text.includes('கத்திரிக்காய்') ||
+    text.includes('chilli') || text.includes('மிளகாய்') ||
+    text.includes('drumstick') || text.includes('முருங்கை') ||
+    text.includes('cabbage') || text.includes('முட்டைக்கோஸ்') ||
+    text.includes('pumpkin') || text.includes('பரங்கிக்காய்') ||
+    text.includes('capsicum') || text.includes('குடைமிளகாய்') ||
+    text.includes('banana') || text.includes('வாழைப்பழம்') ||
+    text.includes('pomegranate') || text.includes('மாதுளை');
+
+  if (isBanned) return false;
+
+  const isTomato = text.includes('tomato') || text.includes('தக்காளி');
+  const isOnion = text.includes('onion') || text.includes('shallot') || text.includes('vengayam') || text.includes('வெங்காயம்') || text.includes('bellary');
+  const isPotato = text.includes('potato') || text.includes('urulai') || text.includes('உருளை');
+  const isCarrot = text.includes('carrot') || text.includes('கேரட்') || text.includes('karat');
+
+  return isTomato || isOnion || isPotato || isCarrot;
+};
+
+/**
+ * Strict produce deduplication for Commercial Buyer Marketplace.
+ * Guarantees that no duplicate crop listings (identical name, or same crop staple + grade)
+ * appear repeated side-by-side. Also guarantees that all 4 staple crops (Tomato, Onion,
+ * Potato, Carrot) remain present and available.
+ */
+export const deduplicateBuyerCrops = (list) => {
+  if (!Array.isArray(list) || list.length === 0) {
+    return (INITIAL_CROPS || []).filter(isAllowedBuyerCrop);
+  }
+
+  const seenIds = new Set();
+  const seenCropKeys = new Set();
+  const result = [];
+
+  for (const crop of list) {
+    if (!crop || !isAllowedBuyerCrop(crop)) continue;
+
+    const cropId = String(crop.id || crop._id || '').trim();
+    if (cropId && seenIds.has(cropId)) continue;
+
+    const text = `${crop.name || ''} ${crop.tamilName || ''} ${cropId}`.toLowerCase();
+    let stapleType = '';
+    if (text.includes('tomato') || text.includes('தக்காளி')) stapleType = 'tomato';
+    else if (text.includes('onion') || text.includes('shallot') || text.includes('vengayam') || text.includes('வெங்காயம்') || text.includes('bellary')) stapleType = 'onion';
+    else if (text.includes('potato') || text.includes('urulai') || text.includes('உருளை')) stapleType = 'potato';
+    else if (text.includes('carrot') || text.includes('கேரட்') || text.includes('karat')) stapleType = 'carrot';
+
+    if (!stapleType) continue;
+
+    const cleanName = String(crop.name || '').trim().toLowerCase();
+    const cleanGrade = String(crop.grade || 'grade a').trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+
+    // Composite keys
+    const nameKey = `${stapleType}_name_${cleanName}`;
+    const stapleGradeKey = `${stapleType}_grade_${cleanGrade}`;
+
+    // If an identical produce card has already been included, skip this duplicate
+    if (seenCropKeys.has(nameKey) || seenCropKeys.has(stapleGradeKey)) {
+      continue;
+    }
+
+    if (cropId) seenIds.add(cropId);
+    seenCropKeys.add(nameKey);
+    seenCropKeys.add(stapleGradeKey);
+    result.push(crop);
+  }
+
+  // Ensure all 4 staples (Tomato, Onion, Potato, Carrot) are present
+  const staples = ['tomato', 'onion', 'potato', 'carrot'];
+  for (const staple of staples) {
+    const hasStaple = result.some((c) => {
+      const text = `${c.name || ''} ${c.tamilName || ''} ${c.id || ''}`.toLowerCase();
+      if (staple === 'tomato') return text.includes('tomato') || text.includes('தக்காளி');
+      if (staple === 'onion') return text.includes('onion') || text.includes('shallot') || text.includes('vengayam') || text.includes('வெங்காயம்');
+      if (staple === 'potato') return text.includes('potato') || text.includes('urulai') || text.includes('உருளை');
+      if (staple === 'carrot') return text.includes('carrot') || text.includes('கேரட்');
+      return false;
+    });
+
+    if (!hasStaple) {
+      const fallbackMatches = (INITIAL_CROPS || [])
+        .filter(isAllowedBuyerCrop)
+        .filter((ic) => {
+          const text = `${ic.name || ''} ${ic.tamilName || ''} ${ic.id || ''}`.toLowerCase();
+          if (staple === 'tomato') return text.includes('tomato') || text.includes('தக்காளி');
+          if (staple === 'onion') return text.includes('onion') || text.includes('shallot') || text.includes('vengayam') || text.includes('வெங்காயம்');
+          if (staple === 'potato') return text.includes('potato') || text.includes('urulai') || text.includes('உருளை');
+          if (staple === 'carrot') return text.includes('carrot') || text.includes('கேரட்');
+          return false;
+        });
+
+      for (const fb of fallbackMatches) {
+        const cleanGrade = String(fb.grade || 'grade a').trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+        const stapleGradeKey = `${staple}_grade_${cleanGrade}`;
+        if (!seenCropKeys.has(stapleGradeKey)) {
+          seenCropKeys.add(stapleGradeKey);
+          result.push(fb);
+        }
+      }
+    }
+  }
+
+  return result;
+};
 
 export function BuyerProvider({ children, buyerProfile, onLogout }) {
   const navigate = useNavigate();
@@ -331,14 +447,15 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
         if (saved) {
           const parsed = JSON.parse(saved);
           if (Array.isArray(parsed) && parsed.length > 0) {
-            return parsed;
+            const allowed = parsed.filter(isAllowedBuyerCrop);
+            if (allowed.length > 0) return deduplicateBuyerCrops(allowed);
           }
         }
       } catch (e) {
         console.warn('Could not read saved crops from localStorage:', e);
       }
     }
-    return INITIAL_CROPS;
+    return deduplicateBuyerCrops(INITIAL_CROPS.filter(isAllowedBuyerCrop));
   });
 
   const [declinedCropIds, setDeclinedCropIds] = useState(() => {
@@ -360,7 +477,7 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
   useEffect(() => {
     if (typeof window !== 'undefined' && Array.isArray(crops)) {
       try {
-        localStorage.setItem('buyer_crops', JSON.stringify(crops));
+        localStorage.setItem('buyer_crops', JSON.stringify(deduplicateBuyerCrops(crops)));
       } catch (e) {
         console.warn('Could not persist crops to localStorage:', e);
       }
@@ -557,7 +674,7 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
       }
 
       if (cropsRes.status === 'fulfilled' && Array.isArray(cropsRes.value?.crops) && cropsRes.value.crops.length > 0) {
-        const fetchedCrops = cropsRes.value.crops.map((c) => ({
+        const fetchedCrops = cropsRes.value.crops.filter(isAllowedBuyerCrop).map((c) => ({
           id: c._id || c.id,
           name: c.name,
           tamilName: c.nameTa || '',
@@ -579,13 +696,14 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
 
         setCrops((prevCrops) => {
           const prevMap = new Map((prevCrops || []).map((pc) => [pc.id, pc]));
-          return fetchedCrops.map((fc) => {
+          const merged = fetchedCrops.map((fc) => {
             const existing = prevMap.get(fc.id);
             if (existing && existing.availableKg !== undefined && existing.availableKg < fc.availableKg) {
               return { ...fc, availableKg: existing.availableKg };
             }
             return fc;
           });
+          return deduplicateBuyerCrops([...merged, ...(prevCrops || [])]);
         });
       }
 
@@ -660,13 +778,35 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
     refreshData(false);
   }, []);
 
+  // Listen for real-time order approvals or rejections from Farmer Module
+  useEffect(() => {
+    const handleSyncBuyerOrders = () => {
+      try {
+        const raw = localStorage.getItem('buyer_orders');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setOrders(parsed);
+          }
+        }
+      } catch {}
+    };
+
+    window.addEventListener('storage', handleSyncBuyerOrders);
+    window.addEventListener('buyer-data-updated', handleSyncBuyerOrders);
+    return () => {
+      window.removeEventListener('storage', handleSyncBuyerOrders);
+      window.removeEventListener('buyer-data-updated', handleSyncBuyerOrders);
+    };
+  }, []);
+
 
 
 
   // Filter crops
   const filteredCrops = useMemo(() => {
-    return (crops || [])
-      .filter((crop) => crop && !declinedCropIds?.includes(crop.id))
+    return deduplicateBuyerCrops(crops || [])
+      .filter((crop) => crop && isAllowedBuyerCrop(crop) && !declinedCropIds?.includes(crop.id))
       .filter((crop) => {
         if (!searchQuery?.trim()) return true;
         const q = searchQuery.toLowerCase().trim();
@@ -692,6 +832,8 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
           targetCrop = 'onion';
         } else if (selectedCategory.startsWith('potato')) {
           targetCrop = 'potato';
+        } else if (selectedCategory.startsWith('carrot')) {
+          targetCrop = 'carrot';
         }
 
         if (selectedCategory.includes('grade_a')) {
@@ -721,6 +863,8 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
             matchesCrop = name.includes('onion') || name.includes('shallot') || name.includes('vengayam') || name.includes('வெங்காயம்') || name.includes('bellary');
           } else if (targetCrop === 'potato') {
             matchesCrop = name.includes('potato') || name.includes('urulai') || name.includes('உருளை');
+          } else if (targetCrop === 'carrot') {
+            matchesCrop = name.includes('carrot') || name.includes('கேரட்') || name.includes('karat');
           }
         }
 
@@ -897,6 +1041,117 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
     setActiveDashboardOrderId(newOrder.orderId);
     setSelectedTrackingOrderId(newOrder.orderId);
     setActiveWorkflowOrder(newOrder);
+
+    // Synchronize request and order directly to Farmer Module local storage so it is immediately visible
+    try {
+      const generatedRequestId = `REQ-2026-${Math.floor(10000 + Math.random() * 90000)}`;
+      const newFarmerRequest = {
+        id: `req-${Date.now()}`,
+        requestId: generatedRequestId,
+        orderId: newOrder.orderId,
+        cropId: workflowCrop.id || workflowCrop._id || 'crop-fmr-01',
+        cropName: workflowCrop.name,
+        tamilCropName: workflowCrop.tamilName || '',
+        cropDetails: {
+          name: workflowCrop.name,
+          nameTa: workflowCrop.tamilName || '',
+          category: workflowCrop.category || 'vegetables',
+          variety: workflowCrop.variety || 'Hybrid Table Grade',
+          grade: workflowCrop.grade || 'Grade A',
+          image: workflowCrop.image || '',
+          pricePerKg: unitPrice
+        },
+        buyerDetails: {
+          businessName: profile.shopName || profile.businessName || 'Grand Palace Luxury Dining',
+          contactPerson: profile.contactPerson || profile.name || 'Procurement Partner',
+          buyerType: profile.buyerType || 'Hotel & Commercial Kitchen',
+          phone: profile.phone || '+91 98401 23456',
+          email: profile.email || 'procurement@grandpalace.in',
+          location: resolvedAddress,
+          address: resolvedAddress,
+          avatar: profile.photo || profile.photoPreview || 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=300&auto=format&fit=crop&q=80',
+          verified: true
+        },
+        farmerId: workflowCrop.farmerId || workflowCrop.farmer?.farmerId || 'FMR-TN-2026-01',
+        farmerName: workflowCrop.farmer?.name || workflowCrop.farmerName || 'Ramesh Kumar',
+        quantity: qty,
+        unit: 'Kg',
+        offeredPrice: unitPrice,
+        totalEstimatedValue: totalPrice,
+        preferredDeliveryDate: newOrder.preferredDeliveryDate,
+        deliveryLocation: resolvedAddress,
+        notes: newOrder.notes,
+        status: 'PENDING',
+        createdAt: new Date().toISOString()
+      };
+
+      // 1. Prepend to farmer_requests_list via resilient helper
+      const curReqs = getStoredRequests();
+      const updatedReqs = [
+        newFarmerRequest,
+        ...curReqs.filter((r) => r.orderId !== newOrder.orderId && r.requestId !== newFarmerRequest.requestId)
+      ];
+      saveStoredRequests(updatedReqs);
+
+      // 2. Prepend to farmer_orders_history via resilient helper
+      const curOrds = getStoredOrders();
+      const updatedOrds = [
+        {
+          ...newOrder,
+          id: `ord-fmr-${Date.now()}`,
+          farmerId: workflowCrop.farmerId || 'FMR-TN-2026-01',
+          farmerName: workflowCrop.farmer?.name || 'Ramesh Kumar',
+          buyerName: profile.shopName || profile.businessName || 'Grand Palace Luxury Dining'
+        },
+        ...curOrds.filter((o) => o.orderId !== newOrder.orderId)
+      ];
+      saveStoredOrders(updatedOrds);
+
+      // 3. Persist buyer_orders in localStorage so it is never lost on refresh or tab close
+      try {
+        const rawBuyerOrds = localStorage.getItem('buyer_orders');
+        let buyerOrdsList = [];
+        if (rawBuyerOrds) {
+          try {
+            const parsed = JSON.parse(rawBuyerOrds);
+            if (Array.isArray(parsed)) buyerOrdsList = parsed;
+          } catch {}
+        }
+        const mergedBuyerOrds = [newOrder, ...buyerOrdsList.filter((o) => o.orderId !== newOrder.orderId)];
+        localStorage.setItem('buyer_orders', JSON.stringify(mergedBuyerOrds));
+      } catch (saveBuyerErr) {
+        console.warn('Could not persist buyer_orders:', saveBuyerErr);
+      }
+
+      // 4. Deduct quantity from farmer_crops_list
+      const rawCrops = localStorage.getItem('farmer_crops_list');
+      if (rawCrops) {
+        try {
+          const parsedCrops = JSON.parse(rawCrops);
+          if (Array.isArray(parsedCrops)) {
+            const updatedCrops = parsedCrops.map((c) => {
+              const matches = c.id === workflowCrop.id ||
+                c.name?.toLowerCase().includes(workflowCrop.name?.toLowerCase()) ||
+                workflowCrop.name?.toLowerCase().includes(c.name?.toLowerCase());
+              if (matches) {
+                const cur = Number(c.availableKg || c.quantityKg || 0);
+                const rem = Math.max(0, cur - qty);
+                return { ...c, availableKg: rem, quantityKg: rem, status: rem === 0 ? 'sold_out' : c.status };
+              }
+              return c;
+            });
+            localStorage.setItem('farmer_crops_list', JSON.stringify(updatedCrops));
+          }
+        } catch {}
+      }
+
+      // 5. Dispatch real-time cross-tab / cross-context notification
+      window.dispatchEvent(new CustomEvent('farmer-data-updated', {
+        detail: { request: newFarmerRequest, order: newOrder }
+      }));
+    } catch (syncErr) {
+      console.warn('Cross-module farmer sync warning:', syncErr);
+    }
 
     // Close confirmation modal and smoothly navigate to Buyer Dashboard
     setWorkflowModalOpen(false);
@@ -1232,7 +1487,7 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
       localStorage.removeItem('buyer_active_dashboard_order_id');
       localStorage.removeItem('buyer_tracking_order_id');
       localStorage.removeItem('buyer_messages');
-      removeToken();
+      removeBuyerToken();
       sessionStorage.setItem('buyer_explicit_signout', 'true');
     } catch {
       // ignore storage error

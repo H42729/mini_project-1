@@ -12,13 +12,15 @@ import './Overview.css';
 import { ROUTES } from '../../routes';
 import SectionHeader from '../../components/SectionHeader';
 import Skeleton from '../../components/Skeleton';
-import { useBuyer } from '../../context/BuyerContext';
-import CropCard from '../../components/CropCard';
+import { useBuyer, deduplicateBuyerCrops } from '../../context/BuyerContext';
+import CropCard from '../../components/CropCard';
+import { DashboardSkeleton } from '../../components/Skeleton';
 import FarmerApprovalStatusBar from '../../components/FarmerApprovalStatusBar';
 
 export default function Overview() {
   const navigate = useNavigate();
   const {
+    isDataLoading,
     profile,
     crops,
     orders,
@@ -45,7 +47,7 @@ export default function Overview() {
 
   // Overview Fresh Arrivals: Showcase fresh lots (excluding declined ones), independent of marketplace search
   const freshArrivals = useMemo(() => {
-    return (crops || [])
+    return deduplicateBuyerCrops(crops || [])
       .filter((crop) => crop && !declinedCropIds?.includes(crop.id))
       .slice(0, 3);
   }, [crops, declinedCropIds]);
@@ -56,6 +58,10 @@ export default function Overview() {
     }
     navigate(ROUTES.BUYER_DASHBOARD_TRACK);
   };
+
+  if (isDataLoading && (!orders || orders.length === 0)) {
+    return <DashboardSkeleton role="buyer" />;
+  }
 
   return (
     <div className="buyer-view-container animate-fade-in">

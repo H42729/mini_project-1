@@ -1,6 +1,6 @@
-// seed.js - Database initialization script for Naam Uzhavar
+// seed.js - Database initialization script for Naam Uzhavar (Commercial Buyer & Farmer Module)
 // Viva Note: Clears old test collections and seeds production-grade agricultural data
-// including regional crops, a demo buyer account, sample EV orders, and chat messages.
+// including regional crops, demo buyer account, demo farmer account, requests, EV orders, and messages.
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const dotenv = require('dotenv');
@@ -8,286 +8,124 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const Buyer = require('./models/Buyer');
+const Farmer = require('./models/Farmer');
 const Crop = require('./models/Crop');
 const Order = require('./models/Order');
+const BuyerRequest = require('./models/BuyerRequest');
 const Message = require('./models/Message');
 
 const SEED_CROPS = [
-  {
-    name: 'Kodaikanal Golden Hill Potatoes',
-    nameTa: 'கொடைக்கானல் உருளைக்கிழங்கு (கிரேடு A)',
-    category: 'vegetables',
-    grade: 'Grade A',
-    pricePerKg: 36,
-    quantityKg: 620,
-    farmerName: 'K. Selvam (Poombarai)',
-    hub: 'Kodaikanal',
-    distanceKm: 45,
-    image: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=600&auto=format&fit=crop&q=80'
-  },
-  {
-    name: 'Batlagundu Commercial Gravy Potatoes',
-    nameTa: 'உருளைக்கிழங்கு (கிரேடு C)',
-    category: 'vegetables',
-    grade: 'Grade C',
-    pricePerKg: 22,
-    quantityKg: 850,
-    farmerName: 'T. Meenakshi (Batlagundu)',
-    hub: 'Batlagundu',
-    distanceKm: 32,
-    image: 'https://images.unsplash.com/photo-1590165482129-1b8b27698780?w=600&auto=format&fit=crop&q=80'
-  },
   {
     name: 'Country Tomato',
     nameTa: 'நாட்டு தக்காளி',
     category: 'vegetables',
     grade: 'Grade A',
-    pricePerKg: 32,
-    quantityKg: 500,
-    farmerName: 'Ravi Kumar (Siluvathur)',
-    hub: 'Dindigul Central',
-    distanceKm: 12,
-    image: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&auto=format&fit=crop&q=80'
-  },
-  {
-    name: 'Oddanchatram Fresh Salad Tomatoes',
-    nameTa: 'நாட்டு தக்காளி (கிரேடு B)',
-    category: 'vegetables',
-    grade: 'Grade B',
-    pricePerKg: 27,
-    quantityKg: 650,
-    farmerName: 'P. Murugesan (Oddanchatram)',
-    hub: 'Oddanchatram',
-    distanceKm: 28,
-    image: 'https://images.unsplash.com/photo-1561136594-7f68413baa99?w=600&auto=format&fit=crop&q=80'
-  },
-  {
-    name: "Tender Lady's Finger (Vendakkai)",
-    nameTa: 'வெண்டைக்காய்',
-    category: 'vegetables',
-    grade: 'Grade C',
-    pricePerKg: 30,
-    quantityKg: 250,
-    farmerName: 'T. Meenakshi (Batlagundu)',
-    hub: 'Batlagundu',
-    distanceKm: 32,
-    image: 'https://images.unsplash.com/photo-1425543103986-22abb7d7e8d2?w=600&auto=format&fit=crop&q=80'
-  },
-  {
-    name: 'Kodaikanal Sweet Crisp Carrots',
-    nameTa: 'மலை கேரட்',
-    category: 'vegetables',
-    grade: 'Grade A',
-    pricePerKg: 34,
-    quantityKg: 520,
-    farmerName: 'K. Selvam (Poombarai)',
-    hub: 'Kodaikanal',
-    distanceKm: 45,
-    image: 'https://images.unsplash.com/photo-1447175008436-054170c2e979?w=600&auto=format&fit=crop&q=80'
-  },
-  {
-    name: 'Oddanchatram Sambar Veggie Pack',
-    nameTa: 'சாம்பார் காய்கறி தொகுப்பு',
-    category: 'vegetables',
-    grade: 'Grade B',
-    pricePerKg: 21,
-    quantityKg: 800,
-    farmerName: 'S. Velumani (Kallimanthayam)',
-    hub: 'Oddanchatram',
-    distanceKm: 28,
-    image: 'https://images.unsplash.com/photo-1597362925123-77861d3fbac7?w=600&auto=format&fit=crop&q=80'
-  },
-  {
-    name: 'Small Shallots (Chinna Vengayam)',
-    nameTa: 'சின்ன வெங்காயம்',
-    category: 'vegetables',
-    grade: 'Grade A',
-    pricePerKg: 58,
-    quantityKg: 400,
-    farmerName: 'P. Murugesan (Oddanchatram)',
-    hub: 'Oddanchatram',
-    distanceKm: 28,
-    image: 'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=600&auto=format&fit=crop&q=80'
-  },
-  {
-    name: 'Palani Farm Red Onions Lot',
-    nameTa: 'பெரிய வெங்காயம்',
-    category: 'vegetables',
-    grade: 'Grade B',
-    pricePerKg: 38,
-    quantityKg: 700,
-    farmerName: 'M. Ramasamy (Ayakudi)',
-    hub: 'Palani',
-    distanceKm: 38,
-    image: 'https://images.unsplash.com/photo-1508747703725-719777637510?w=600&auto=format&fit=crop&q=80'
-  },
-  {
-    name: 'Farm Bulk Gravy Tomatoes',
-    nameTa: 'நாட்டு தக்காளி (கிரேடு C)',
-    category: 'vegetables',
-    grade: 'Grade C',
-    pricePerKg: 20,
-    quantityKg: 750,
-    farmerName: 'M. Chinnasamy (Reddiarchatram)',
-    hub: 'Dindigul Central',
-    distanceKm: 14,
-    image: 'https://images.unsplash.com/photo-1546470427-e26264be0b11?w=600&auto=format&fit=crop&q=80'
-  },
-  {
-    name: 'Nilakottai Fresh Green Produce',
-    nameTa: 'பச்சை காய்கறி கலவை',
-    category: 'vegetables',
-    grade: 'Grade A',
-    pricePerKg: 42,
-    quantityKg: 480,
-    farmerName: 'A. Ganesan (Nilakottai)',
-    hub: 'Nilakottai',
-    distanceKm: 24,
-    image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=600&auto=format&fit=crop&q=80'
-  },
-  {
-    name: 'Batlagundu Gravy Potato & Onion Lot',
-    nameTa: 'உருளை & வெங்காயம்',
-    category: 'vegetables',
-    grade: 'Grade B',
-    pricePerKg: 25,
-    quantityKg: 900,
-    farmerName: 'T. Meenakshi (Batlagundu)',
-    hub: 'Batlagundu',
-    distanceKm: 32,
-    image: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=600&auto=format&fit=crop&q=80'
-  },
-  {
-    name: 'Hill Country Carrots',
-    nameTa: 'மலை கேரட்',
-    category: 'vegetables',
-    grade: 'Grade A',
-    pricePerKg: 45,
-    quantityKg: 350,
-    farmerName: 'K. Selvam (Poombarai)',
-    hub: 'Kodaikanal',
-    distanceKm: 45,
-    image: 'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=600&auto=format&fit=crop&q=80'
-  },
-  {
-    name: 'Dindigul Round Brinjal (Kathirikkai)',
-    nameTa: 'நாட்டு கத்திரிக்காய் (கிரேடு C)',
-    category: 'vegetables',
-    grade: 'Grade C',
-    pricePerKg: 24,
-    quantityKg: 450,
-    farmerName: 'S. Alagarsamy (Oddanchatram)',
-    hub: 'Oddanchatram',
-    distanceKm: 26,
-    image: 'https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?w=600&auto=format&fit=crop&q=80'
-  },
-  {
-    name: 'Samba Green Chillies',
-    nameTa: 'பச்சை மிளகாய்',
-    category: 'vegetables',
-    grade: 'Grade A',
-    pricePerKg: 62,
-    quantityKg: 180,
-    farmerName: 'A. Ganesan (Nilakottai)',
-    hub: 'Nilakottai',
-    distanceKm: 24,
-    image: 'https://images.unsplash.com/photo-1588252303782-cb80119abd6d?w=600&auto=format&fit=crop&q=80'
-  },
-  {
-    name: 'Nilakottai Sambar Drumsticks',
-    nameTa: 'முருங்கைக்காய் (கிரேடு C)',
-    category: 'vegetables',
-    grade: 'Grade C',
-    pricePerKg: 35,
-    quantityKg: 320,
-    farmerName: 'R. Dharmaraj (Nilakottai)',
-    hub: 'Nilakottai',
-    distanceKm: 22,
-    image: 'https://images.unsplash.com/photo-1550989460-0adf9ea622e2?w=600&auto=format&fit=crop&q=80'
-  },
-  {
-    name: 'Palani Fresh Potatoes',
-    nameTa: 'உருளைக்கிழங்கு',
-    category: 'vegetables',
-    grade: 'Grade B',
+    variety: 'Hybrid Tomato',
+    farmingMethod: 'Natural',
     pricePerKg: 28,
-    quantityKg: 800,
-    farmerName: 'M. Ramasamy (Ayakudi)',
-    hub: 'Palani',
-    distanceKm: 38,
-    image: 'https://images.unsplash.com/photo-1508313880080-c4bef0730395?w=600&auto=format&fit=crop&q=80'
-  },
-  {
-    name: 'Commercial Bellary Onions',
-    nameTa: 'பெரிய வெங்காயம் (கிரேடு C)',
-    category: 'vegetables',
-    grade: 'Grade C',
-    pricePerKg: 26,
-    quantityKg: 950,
-    farmerName: 'V. Ramanathan (Oddanchatram)',
-    hub: 'Oddanchatram',
-    distanceKm: 28,
-    image: 'https://images.unsplash.com/photo-1580201092675-a0a6a6cafbb1?w=600&auto=format&fit=crop&q=80'
-  },
-  {
-    name: 'Oddanchatram Fresh Cabbage',
-    nameTa: 'முட்டைக்கோஸ்',
-    category: 'vegetables',
-    grade: 'Grade B',
-    pricePerKg: 22,
-    quantityKg: 600,
-    farmerName: 'S. Velumani (Kallimanthayam)',
-    hub: 'Oddanchatram',
-    distanceKm: 28,
-    image: 'https://images.unsplash.com/photo-1594282486552-05b4d80fbb9f?w=600&auto=format&fit=crop&q=80'
-  },
-  {
-    name: 'Sambar Yellow Pumpkin (Parangikai)',
-    nameTa: 'பரங்கிக்காய் (கிரேடு C)',
-    category: 'vegetables',
-    grade: 'Grade C',
-    pricePerKg: 18,
     quantityKg: 500,
-    farmerName: 'G. Natarajan (Palani Rural)',
-    hub: 'Palani',
-    distanceKm: 35,
-    image: 'https://images.unsplash.com/photo-1570586437263-ab629fccc818?w=600&auto=format&fit=crop&q=80'
+    unit: 'Kg',
+    farmerId: 'FMR-TN-2026-01',
+    farmerName: 'Ramesh Kumar',
+    hub: 'Pollachi Hub',
+    distanceKm: 12,
+    image: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&auto=format&fit=crop&q=80',
+    images: [
+      'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1561136594-7f68413baa99?w=600&auto=format&fit=crop&q=80'
+    ],
+    pickupDate: '2026-11-03',
+    status: 'active',
+    enquiryCount: 3,
+    farmLocation: {
+      address: 'SF No. 142/2, Kinathukadavu Main Road',
+      village: 'Pollachi',
+      taluk: 'Pollachi Taluk',
+      district: 'Coimbatore',
+      pincode: '642001',
+      gps: '10.6588° N, 77.0094° E'
+    }
   },
   {
-    name: 'Sirumalai Green Capsicum',
-    nameTa: 'குடைமிளகாய்',
+    name: 'Dindigul Red Onion',
+    nameTa: 'திண்டுக்கல் வெங்காயம்',
     category: 'vegetables',
-    grade: 'Grade B',
-    pricePerKg: 48,
+    grade: 'Grade A',
+    variety: 'Small Shallot (Chinna Vengayam)',
+    farmingMethod: 'Organic',
+    pricePerKg: 55,
+    quantityKg: 350,
+    unit: 'Kg',
+    farmerId: 'FMR-TN-2026-01',
+    farmerName: 'Ramesh Kumar',
+    hub: 'Oddanchatram Hub',
+    distanceKm: 28,
+    image: 'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=600&auto=format&fit=crop&q=80',
+    images: ['https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=600&auto=format&fit=crop&q=80'],
+    pickupDate: '2026-11-04',
+    status: 'active',
+    enquiryCount: 2,
+    farmLocation: {
+      address: 'SF No. 142/2, Kinathukadavu Main Road',
+      village: 'Pollachi',
+      taluk: 'Pollachi Taluk',
+      district: 'Coimbatore',
+      pincode: '642001'
+    }
+  },
+  {
+    name: 'Batlagundu Potato',
+    nameTa: 'பட்லகுண்டு உருளைக்கிழங்கு',
+    category: 'tubers',
+    grade: 'Grade A',
+    variety: 'Kufri Jyoti Table',
+    farmingMethod: 'Natural',
+    pricePerKg: 32,
+    quantityKg: 450,
+    unit: 'Kg',
+    farmerId: 'FMR-TN-2026-01',
+    farmerName: 'Ramesh Kumar',
+    hub: 'Batlagundu Hub',
+    distanceKm: 34,
+    image: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=600&auto=format&fit=crop&q=80',
+    images: ['https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=600&auto=format&fit=crop&q=80'],
+    pickupDate: '2026-11-04',
+    status: 'active',
+    enquiryCount: 3,
+    farmLocation: {
+      address: 'SF No. 142/2, Kinathukadavu Main Road',
+      village: 'Pollachi',
+      taluk: 'Pollachi Taluk',
+      district: 'Coimbatore',
+      pincode: '642001'
+    }
+  },
+  {
+    name: 'Ooty Country Carrot',
+    nameTa: 'ஊட்டி மலை கேரட்',
+    category: 'vegetables',
+    grade: 'Grade A',
+    variety: 'Kuroda Sweet',
+    farmingMethod: 'Conventional',
+    pricePerKg: 42,
     quantityKg: 300,
-    farmerName: 'V. Senthil (Sirumalai)',
-    hub: 'Sirumalai',
-    distanceKm: 22,
-    image: 'https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?w=600&auto=format&fit=crop&q=80'
-  },
-  {
-    name: 'Sirumalai Hill Bananas',
-    nameTa: 'சிறுமலை வாழை',
-    category: 'vegetables',
-    grade: 'Grade C',
-    pricePerKg: 36,
-    quantityKg: 650,
-    farmerName: 'N. Balakrishnan (Natham)',
-    hub: 'Natham',
-    distanceKm: 36,
-    image: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=600&auto=format&fit=crop&q=80'
-  },
-  {
-    name: 'Vadamadurai Red Pomegranates',
-    nameTa: 'மாதுளை',
-    category: 'vegetables',
-    grade: 'Grade C',
-    pricePerKg: 95,
-    quantityKg: 220,
-    farmerName: 'C. Muthuraj (Vadamadurai)',
-    hub: 'Vadamadurai',
-    distanceKm: 18,
-    image: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=600&auto=format&fit=crop&q=80'
+    unit: 'Kg',
+    farmerId: 'FMR-TN-2026-01',
+    farmerName: 'Ramesh Kumar',
+    hub: 'Mettupalayam Hub',
+    distanceKm: 42,
+    image: 'https://images.unsplash.com/photo-1447175008436-054170c2e979?w=600&auto=format&fit=crop&q=80',
+    images: ['https://images.unsplash.com/photo-1447175008436-054170c2e979?w=600&auto=format&fit=crop&q=80'],
+    pickupDate: '2026-11-05',
+    status: 'active',
+    enquiryCount: 1,
+    farmLocation: {
+      address: 'SF No. 142/2, Kinathukadavu Main Road',
+      village: 'Pollachi',
+      taluk: 'Pollachi Taluk',
+      district: 'Coimbatore',
+      pincode: '642001'
+    }
   }
 ];
 
@@ -295,7 +133,7 @@ async function seed() {
   try {
     const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/naam-uzhavar';
     console.log(`Connecting to MongoDB at: ${mongoUri}...`);
-    await mongoose.connect(mongoUri);
+    await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 2500 });
     console.log('✓ Connected to MongoDB');
 
     // 1. Clear old data
@@ -303,7 +141,9 @@ async function seed() {
     await Promise.all([
       Crop.deleteMany({}),
       Buyer.deleteMany({}),
+      Farmer.deleteMany({}),
       Order.deleteMany({}),
+      BuyerRequest.deleteMany({}),
       Message.deleteMany({})
     ]);
     console.log('✓ Cleaned existing collections');
@@ -316,12 +156,12 @@ async function seed() {
     // 3. Create Demo Commercial Buyer
     console.log('Creating demo buyer account (demo@naamuzhavar.com)...');
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash('demo1234', salt);
+    const hashedBuyerPassword = await bcrypt.hash('demo1234', salt);
 
     const demoBuyer = await Buyer.create({
       businessName: 'Grand Palace Luxury Dining',
       email: 'demo@naamuzhavar.com',
-      password: hashedPassword,
+      password: hashedBuyerPassword,
       phone: '+91 98401 23456',
       gstin: '33AAAAA0000A1Z5',
       address: 'Grand Palace Luxury Dining, Bypass Road, Madurai - 625016',
@@ -329,86 +169,156 @@ async function seed() {
     });
     console.log(`✓ Created demo buyer: ${demoBuyer.email}`);
 
-    // 4. Create sample orders linked to demo buyer
-    console.log('Creating initial demo orders...');
+    // 4. Create Demo Agricultural Farmer
+    console.log('Creating demo farmer account (farmer@naamuzhavar.com)...');
+    const hashedFarmerPassword = await bcrypt.hash('farmer1234', salt);
+
+    const demoFarmer = await Farmer.create({
+      farmerId: 'FMR-TN-2026-01',
+      name: 'Ramesh Kumar',
+      email: 'farmer@naamuzhavar.com',
+      phone: '+91 94432 78190',
+      password: hashedFarmerPassword,
+      role: 'farmer',
+      avatar: 'https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?w=300&auto=format&fit=crop&q=80',
+      rating: 4.92,
+      totalHarvests: 54,
+      isVerified: true,
+      farmDetails: {
+        farmName: 'Green Valley Natural Farm',
+        landOwnerName: 'Ramesh Kumar',
+        landAddress: 'SF No. 142/2, Kinathukadavu Main Road',
+        village: 'Pollachi',
+        taluk: 'Pollachi Taluk',
+        district: 'Coimbatore',
+        state: 'Tamil Nadu',
+        pincode: '642001',
+        landArea: 4.5,
+        landAreaUnit: 'Acres',
+        gpsCoordinates: '10.6588° N, 77.0094° E'
+      },
+      residentialDetails: {
+        address: '12/4, South Thottam Street, Kinathukadavu',
+        village: 'Pollachi',
+        taluk: 'Pollachi Taluk',
+        district: 'Coimbatore',
+        state: 'Tamil Nadu',
+        pincode: '642001',
+        sameAsFarm: false
+      },
+      bankDetails: {
+        accountHolderName: 'Ramesh Kumar',
+        bankName: 'State Bank of India',
+        accountNumber: '30495821034',
+        ifscCode: 'SBIN0001248',
+        branchName: 'Pollachi Bazaar Branch',
+        accountType: 'Savings'
+      }
+    });
+    console.log(`✓ Created demo farmer: ${demoFarmer.email} (${demoFarmer.farmerId})`);
+
+    // 5. Create Buyer Requests
+    console.log('Creating sample buyer purchase requests...');
     const tomatoCrop = insertedCrops[0];
     const onionCrop = insertedCrops[1];
-    const carrotCrop = insertedCrops[2];
 
+    await BuyerRequest.create([
+      {
+        requestId: 'REQ-2026-78192',
+        crop: tomatoCrop._id,
+        cropDetails: {
+          name: tomatoCrop.name,
+          nameTa: tomatoCrop.nameTa,
+          category: tomatoCrop.category,
+          variety: tomatoCrop.variety,
+          grade: tomatoCrop.grade,
+          image: tomatoCrop.image
+        },
+        buyer: demoBuyer._id,
+        buyerDetails: {
+          businessName: demoBuyer.businessName,
+          contactPerson: 'M. Senthil Nathan',
+          buyerType: 'Hotel & Commercial Kitchen',
+          phone: demoBuyer.phone,
+          email: demoBuyer.email,
+          location: 'Coimbatore Commercial Hub',
+          avatar: demoBuyer.avatar,
+          verified: true
+        },
+        farmerId: demoFarmer.farmerId,
+        farmerName: demoFarmer.name,
+        quantity: 200,
+        unit: 'Kg',
+        offeredPrice: 28,
+        totalEstimatedValue: 5600,
+        preferredDeliveryDate: '2026-11-03',
+        deliveryLocation: 'Sri Lakshmi Hotels Kitchen Gate 1, Gandhipuram, Coimbatore',
+        notes: 'Require freshly harvested red table-grade tomatoes. Morning dispatch preferred.',
+        status: 'PENDING'
+      }
+    ]);
+    console.log('✓ Created sample buyer request');
+
+    // 6. Create sample orders linked to buyer & farmer
+    console.log('Creating initial demo orders...');
     await Order.create([
       {
-        orderId: 'NU-2026-00124',
+        orderId: 'ORD-4821',
         buyer: demoBuyer._id,
-        crop: tomatoCrop._id,
-        quantityKg: 200,
-        totalPrice: tomatoCrop.pricePerKg * 200,
-        status: 'on_the_way',
+        crop: insertedCrops[2]._id,
+        cropDetails: {
+          name: insertedCrops[2].name,
+          nameTa: insertedCrops[2].nameTa,
+          grade: insertedCrops[2].grade,
+          image: insertedCrops[2].image,
+          pricePerKg: 38,
+          farmerName: demoFarmer.name,
+          hub: insertedCrops[2].hub
+        },
+        quantityKg: 500,
+        totalPrice: 19000,
+        orderStatus: 'CONFIRMED',
+        deliveryStatus: 'READY_FOR_PICKUP',
+        status: 'READY_FOR_PICKUP',
+        paymentStatus: 'ESCROW_LOCKED',
         driver: {
           name: 'Kumar M.',
           vehicle: 'Tata Ace EV Cargo (TN 57 AB 1234)',
-          phone: '+91 94432 11098'
+          phone: '+91 94432 11098',
+          deliveryPin: '4892'
         },
-        deliveryAddress: demoBuyer.address
-      },
-      {
-        orderId: 'NU-2026-00119',
-        buyer: demoBuyer._id,
-        crop: onionCrop._id,
-        quantityKg: 150,
-        totalPrice: onionCrop.pricePerKg * 150,
-        status: 'preparing',
-        driver: {
-          name: 'S. Arumugam',
-          vehicle: 'Mahindra Zor Grand EV (TN 45 EF 5678)',
-          phone: '+91 98423 44556'
-        },
-        deliveryAddress: demoBuyer.address
-      },
-      {
-        orderId: 'NU-2026-00098',
-        buyer: demoBuyer._id,
-        crop: carrotCrop._id,
-        quantityKg: 100,
-        totalPrice: carrotCrop.pricePerKg * 100,
-        status: 'delivered',
-        driver: {
-          name: 'V. Prakash',
-          vehicle: 'Tata Ace EV Cargo (TN 43 CD 9012)',
-          phone: '+91 97890 88990'
-        },
-        deliveryAddress: demoBuyer.address
+        deliveryAddress: demoBuyer.address,
+        farmerId: demoFarmer.farmerId,
+        notes: 'Bulk consignment for daily retail dispatch.'
       }
     ]);
-    console.log('✓ Created 3 sample EV delivery orders');
+    console.log('✓ Created sample order');
 
-    // 5. Create initial chat messages
-    console.log('Creating initial chat messages...');
+    // 7. Initial chat messages
     await Message.create([
       {
         buyer: demoBuyer._id,
         sender: 'driver',
-        text: 'Good morning sir, produce picked from Dindigul Central. Crossed Samayanallur Bypass. Expected arrival at Kitchen Gate 2 in 25 minutes.'
-      },
-      {
-        buyer: demoBuyer._id,
-        sender: 'hub',
-        text: 'Vanakkam sir, today harvest is premium Grade A country tomatoes, crate packed carefully. Thank you for direct acceptance.'
+        text: 'Good morning sir, produce picked from Dindigul Central. Expected arrival at Kitchen Gate 2 in 25 minutes.'
       }
     ]);
     console.log('✓ Created initial thread messages');
 
     console.log('\n======================================================');
-    console.log('🌱 Naam Uzhavar Database Seed Completed Successfully!');
-    console.log('Demo Credentials:');
-    console.log('  Email:    demo@naamuzhavar.com');
-    console.log('  Password: demo1234');
+    console.log('🌱 Naam Uzhavar Unified Database Seed Completed!');
+    console.log('Buyer Credentials:   demo@naamuzhavar.com / demo1234');
+    console.log('Farmer Credentials:  farmer@naamuzhavar.com / farmer1234');
     console.log('======================================================\n');
 
     process.exit(0);
   } catch (error) {
-    console.error('❌ Seeding Error:', error);
+    console.error('❌ Seeding Notice/Error:', error.message);
     process.exit(1);
   }
 }
 
-seed();
+if (require.main === module) {
+  seed();
+}
+
+module.exports = seed;

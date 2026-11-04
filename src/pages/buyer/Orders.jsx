@@ -17,11 +17,13 @@ import './Orders.css';
 import { ROUTES } from '../../routes';
 import { useBuyer } from '../../context/BuyerContext';
 import EmptyState from '../../components/EmptyState';
-import Button from '../../components/Button';
+import Button from '../../components/Button';
+import { TableSkeleton } from '../../components/Skeleton';
 
 export default function Orders() {
   const navigate = useNavigate();
   const {
+    isDataLoading,
     orders,
     activeOrderFilter,
     setActiveOrderFilter,
@@ -83,7 +85,9 @@ export default function Orders() {
 
       {/* Order Cards List */}
       <div className="buyer-order-list">
-        {filteredOrders.length > 0 ? (
+        {isDataLoading && (!orders || orders.length === 0) ? (
+          <TableSkeleton rows={4} columns={6} hasFilterBar={false} />
+        ) : filteredOrders.length > 0 ? (
           filteredOrders.map((order) => {
             const isDelivered = order.deliveryStatus === 'DELIVERED' || order.status === 'delivered';
             const isPendingApproval = order.orderStatus === 'PENDING_FARMER_APPROVAL';

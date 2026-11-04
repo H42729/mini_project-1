@@ -1,6 +1,6 @@
 // models/Order.js - Schema for buyer orders and live EV cargo consignments
-// Viva Note: Ties a Buyer to a purchased Crop, records the server-calculated total price,
-// and separates order approval status from EV driver delivery milestones.
+// Viva Note: Ties a Buyer to a purchased Crop, records server-calculated total price,
+// separates order approval from EV delivery milestones, and tracks farmer consignment fulfillment.
 const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema(
@@ -9,12 +9,12 @@ const orderSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      trim: true
+      trim: true,
+      index: true
     },
     buyer: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Buyer',
-      required: true
+      type: mongoose.Schema.Types.Mixed,
+      required: false
     },
     crop: {
       type: mongoose.Schema.Types.ObjectId,
@@ -43,13 +43,15 @@ const orderSchema = new mongoose.Schema(
     orderStatus: {
       type: String,
       enum: ['PENDING_FARMER_APPROVAL', 'CONFIRMED', 'REJECTED', 'CANCELLED'],
-      default: 'PENDING_FARMER_APPROVAL'
+      default: 'PENDING_FARMER_APPROVAL',
+      index: true
     },
     // Delivery Status: NOT_ASSIGNED -> READY_FOR_PICKUP -> PICKED_UP -> IN_TRANSIT -> DELIVERED
     deliveryStatus: {
       type: String,
       enum: ['NOT_ASSIGNED', 'READY_FOR_PICKUP', 'PICKED_UP', 'IN_TRANSIT', 'DELIVERED'],
-      default: 'NOT_ASSIGNED'
+      default: 'NOT_ASSIGNED',
+      index: true
     },
     // Retain legacy status field for backwards compatibility
     status: {
@@ -71,6 +73,36 @@ const orderSchema = new mongoose.Schema(
       type: String,
       default: ''
     },
+    farmerId: {
+      type: String,
+      default: 'FMR-TN-2026-01',
+      trim: true,
+      index: true
+    },
+    farmer: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Farmer'
+    },
+    paymentStatus: {
+      type: String,
+      enum: ['PENDING', 'ESCROW_LOCKED', 'PAID', 'RELEASED_TO_FARMER'],
+      default: 'ESCROW_LOCKED'
+    },
+    pickupDate: {
+      type: String,
+      default: ''
+    },
+    rejectionReason: {
+      type: String,
+      default: ''
+    },
+    statusHistory: [
+      {
+        status: { type: String, default: '' },
+        timestamp: { type: String, default: () => new Date().toISOString() },
+        note: { type: String, default: '' }
+      }
+    ],
     notes: {
       type: String,
       default: ''
