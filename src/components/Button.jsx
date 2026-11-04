@@ -37,8 +37,15 @@ const Button = forwardRef(function Button(
   if (variant === 'ghost') {
     bsVariant = 'link';
     customClass = 'btn-ghost text-decoration-none';
-  } else if (variant === 'outline') {
-    bsVariant = 'outline-primary';
+  } else if (variant === 'outline' || variant === 'secondary') {
+    bsVariant = 'outline-secondary';
+    customClass = 'buyer-btn-outline';
+  } else if (variant === 'primary') {
+    bsVariant = 'primary';
+    customClass = 'buyer-btn-primary';
+  } else if (variant === 'danger') {
+    bsVariant = 'danger';
+    customClass = 'buyer-btn-danger';
   } else if (variant === 'harvest') {
     bsVariant = 'warning';
     customClass = 'btn-harvest';
@@ -46,6 +53,9 @@ const Button = forwardRef(function Button(
 
   // Size mapping (Bootstrap supports 'sm' and 'lg'; 'md' is default)
   const bsSize = size === 'sm' ? 'sm' : size === 'lg' ? 'lg' : undefined;
+  if (size === 'sm') {
+    customClass += ' small';
+  }
 
   const classes = [
     'd-inline-flex align-items-center justify-content-center gap-2 fw-semibold',

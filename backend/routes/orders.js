@@ -6,7 +6,53 @@ const router = express.Router();
 const authMiddleware = require('../middleware/auth');
 const Order = require('../models/Order');
 const Crop = require('../models/Crop');
+const mongoose = require('mongoose');
 const Buyer = require('../models/Buyer');
+const BuyerRequest = require('../models/BuyerRequest');
+
+const isObjectId = (id) => typeof id === 'string' && /^[0-9a-fA-F]{24}$/.test(id);
+const isDbConnected = () => mongoose.connection.readyState === 1;
+
+let IN_MEMORY_BUYER_ORDERS = [
+  {
+    _id: 'ord-001',
+    id: 'ord-001',
+    orderId: 'NU-2026-8095',
+    buyer: 'buyer_demo_01',
+    farmerId: 'FMR-TN-2026-01',
+    cropDetails: {
+      name: 'Country Tomato',
+      nameTa: 'நாட்டு தக்காளி',
+      grade: 'Grade A',
+      image: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&auto=format&fit=crop&q=80',
+      pricePerKg: 28,
+      farmerName: 'Ramesh Kumar',
+      hub: 'Pollachi Hub'
+    },
+    quantityKg: 200,
+    totalPrice: 5600,
+    orderStatus: 'CONFIRMED',
+    deliveryStatus: 'READY_FOR_PICKUP',
+    status: 'READY_FOR_PICKUP',
+    deliveryAddress: 'Grand Palace Luxury Dining, Bypass Road, Madurai - 625016',
+    preferredDeliveryDate: '2026-11-03',
+    createdAt: new Date(Date.now() - 3600000 * 48).toISOString()
+  }
+];
+
+const resolveBuyerIds = async (buyerId) => {
+  const ids = [buyerId];
+  if (!isObjectId(buyerId) && isDbConnected()) {
+    try {
+      const demoBuyer = await Buyer.findOne({ email: 'demo@naamuzhavar.com' });
+      if (demoBuyer) {
+        ids.push(demoBuyer._id);
+        ids.push(demoBuyer._id.toString());
+      }
+    } catch {}
+  }
+  return ids;
+};
 
 // All order routes require valid authentication
 router.use(authMiddleware);
@@ -76,7 +122,14 @@ router.post('/', async (req, res, next) => {
     // 4. Resolve delivery address from request or buyer profile
     let address = deliveryAddress;
     if (!address) {
-      const buyer = await Buyer.findById(req.buyer.id);
+      let buyer = null;
+      if (isObjectId(req.buyer?.id)) {
+        buyer = await Buyer.findById(req.buyer.id);
+      } else if (req.buyer?.email) {
+        buyer = await Buyer.findOne({ email: req.buyer.email.toLowerCase().trim() });
+      } else {
+        buyer = await Buyer.findOne({ email: 'demo@naamuzhavar.com' });
+      }
       address = buyer ? buyer.address : 'Madurai Commercial Kitchen Gate 2';
     }
 
@@ -89,10 +142,12 @@ router.post('/', async (req, res, next) => {
     const deliveryPin = `${Math.floor(1000 + Math.random() * 9000)}`;
 
     // 7. Create order document with PENDING_FARMER_APPROVAL & NOT_ASSIGNED
+    const resolvedFarmerId = crop.farmerId || 'FMR-TN-2026-01';
     const newOrder = await Order.create({
       orderId,
       buyer: req.buyer.id,
       crop: crop._id,
+      farmerId: resolvedFarmerId,
       cropDetails: {
         name: crop.name,
         nameTa: crop.nameTa || '',
@@ -119,6 +174,101 @@ router.post('/', async (req, res, next) => {
     // Populate crop details before responding
     await newOrder.populate('crop');
 
+    // 8. Auto-create matching BuyerRequest for Farmer Module visibility
+    try {
+      const reqSeq = Math.floor(10000 + Math.random() * 90000);
+      const requestId = `REQ-${new Date().getFullYear()}-${reqSeq}`;
+      let buyerRecord = null;
+      if (isObjectId(req.buyer?.id)) {
+        buyerRecord = await Buyer.findById(req.buyer.id);
+      } else if (req.buyer?.email) {
+        buyerRecord = await Buyer.findOne({ email: req.buyer.email.toLowerCase().trim() });
+      }
+      if (!buyerRecord) {
+        buyerRecord = await Buyer.findOne({ email: 'demo@naamuzhavar.com' });
+      }
+
+      const buyerBusinessName =
+        buyerRecord?.shopName ||
+        buyerRecord?.businessName ||
+        req.buyer?.businessName ||
+        req.buyer?.shopName ||
+        'Grand Palace Luxury Dining';
+      const buyerContact =
+        buyerRecord?.contactPerson ||
+        buyerRecord?.name ||
+        req.buyer?.contactPerson ||
+        req.buyer?.name ||
+        'Procurement Partner';
+      const buyerType =
+        buyerRecord?.buyerType ||
+        req.buyer?.buyerType ||
+        'Hotel & Commercial Kitchen';
+      const buyerPhone =
+        buyerRecord?.phone ||
+        req.buyer?.phone ||
+        '+91 98401 23456';
+      const buyerEmail =
+        buyerRecord?.email ||
+        req.buyer?.email ||
+        'procurement@grandpalace.in';
+      const buyerAvatar =
+        buyerRecord?.avatar ||
+        buyerRecord?.photo ||
+        req.buyer?.avatar ||
+        'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=300&auto=format&fit=crop&q=80';
+
+      const createdBuyerReq = await BuyerRequest.create({
+        requestId,
+        crop: crop._id,
+        cropDetails: {
+          name: crop.name,
+          nameTa: crop.nameTa || '',
+          category: crop.category || 'vegetables',
+          variety: crop.variety || 'Hybrid Harvest',
+          grade: crop.grade || 'Grade A',
+          image: crop.image || '',
+          pricePerKg: crop.pricePerKg
+        },
+        buyer: req.buyer.id,
+        buyerDetails: {
+          businessName: buyerBusinessName,
+          contactPerson: buyerContact,
+          buyerType: buyerType,
+          phone: buyerPhone,
+          email: buyerEmail,
+          location: address,
+          address: address,
+          avatar: buyerAvatar,
+          verified: true
+        },
+        farmerId: resolvedFarmerId,
+        farmerName: crop.farmerName || 'Ramesh Kumar',
+        quantity: qty,
+        unit: 'Kg',
+        offeredPrice: crop.pricePerKg,
+        totalEstimatedValue: totalPrice,
+        preferredDeliveryDate: preferredDeliveryDate || '',
+        deliveryLocation: address,
+        notes: notes || '',
+        status: 'PENDING',
+        orderId: newOrder.orderId
+      });
+
+      // Synchronize in-memory farmer store
+      try {
+        const farmerRouter = require('./farmer');
+        if (typeof farmerRouter.addInMemoryBuyerRequest === 'function') {
+          farmerRouter.addInMemoryBuyerRequest(createdBuyerReq.toObject ? createdBuyerReq.toObject() : createdBuyerReq);
+        }
+        if (typeof farmerRouter.addInMemoryOrder === 'function') {
+          farmerRouter.addInMemoryOrder(newOrder.toObject ? newOrder.toObject() : newOrder);
+        }
+      } catch {}
+    } catch (requestErr) {
+      console.warn('Notice: Could not automatically create BuyerRequest alongside Order:', requestErr.message);
+    }
+
     return res.status(201).json({
       message: 'Order created successfully. Pending farmer approval.',
       order: newOrder
@@ -131,7 +281,8 @@ router.post('/', async (req, res, next) => {
 // GET /api/orders - Get all orders placed by the authenticated buyer
 router.get('/', async (req, res, next) => {
   try {
-    const orders = await Order.find({ buyer: req.buyer.id })
+    const buyerIds = await resolveBuyerIds(req.buyer.id);
+    const orders = await Order.find({ buyer: { $in: buyerIds } })
       .populate('crop')
       .sort({ createdAt: -1 });
 
@@ -151,7 +302,7 @@ router.get('/:id', async (req, res, next) => {
 
     const order = await Order.findOne({
       $and: [
-        { buyer: req.buyer.id },
+        { buyer: { $in: await resolveBuyerIds(req.buyer.id) } },
         { $or: [{ orderId: id }, { _id: id.match(/^[0-9a-fA-F]{24}$/) ? id : null }] }
       ]
     }).populate('crop');
@@ -174,7 +325,7 @@ router.patch('/:id/simulate-farmer', async (req, res, next) => {
 
     const order = await Order.findOne({
       $and: [
-        { buyer: req.buyer.id },
+        { buyer: { $in: await resolveBuyerIds(req.buyer.id) } },
         { $or: [{ orderId: id }, { _id: id.match(/^[0-9a-fA-F]{24}$/) ? id : null }] }
       ]
     }).populate('crop');
@@ -228,7 +379,7 @@ router.patch('/:id/simulate-delivery-arrangement', async (req, res, next) => {
 
     const order = await Order.findOne({
       $and: [
-        { buyer: req.buyer.id },
+        { buyer: { $in: await resolveBuyerIds(req.buyer.id) } },
         { $or: [{ orderId: id }, { _id: id.match(/^[0-9a-fA-F]{24}$/) ? id : null }] }
       ]
     }).populate('crop');
@@ -264,7 +415,7 @@ router.patch('/:id/simulate-delivery-step', async (req, res, next) => {
 
     const order = await Order.findOne({
       $and: [
-        { buyer: req.buyer.id },
+        { buyer: { $in: await resolveBuyerIds(req.buyer.id) } },
         { $or: [{ orderId: id }, { _id: id.match(/^[0-9a-fA-F]{24}$/) ? id : null }] }
       ]
     }).populate('crop');
@@ -322,7 +473,7 @@ router.patch('/:id/status', async (req, res, next) => {
 
     const order = await Order.findOne({
       $and: [
-        { buyer: req.buyer.id },
+        { buyer: { $in: await resolveBuyerIds(req.buyer.id) } },
         { $or: [{ orderId: id }, { _id: id.match(/^[0-9a-fA-F]{24}$/) ? id : null }] }
       ]
     }).populate('crop');

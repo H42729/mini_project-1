@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "nodemon server.js",
     "start": "node server.js",
-    "seed": "node seed.js"
+    "seed": "node seed.js",
+    "test:farmer": "node test_farmer_apis.js",
+    "test:audit": "node test_full_audit.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

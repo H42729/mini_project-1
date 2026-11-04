@@ -1,4 +1,4 @@
-// What this file does: Defines all application route path constants (e.g., ROUTES.HOME, ROUTES.BUYER_DASHBOARD).
+// What this file does: Defines all application route path constants (e.g., ROUTES.HOME, ROUTES.BUYER_DASHBOARD, ROUTES.FARMER_DASHBOARD).
 
 /**
  * Centralized Route Paths Definition
@@ -16,6 +16,22 @@ export const ROUTES = {
   BUYER_DASHBOARD_INVOICES: '/buyer-dashboard/invoices',
   BUYER_DASHBOARD_MESSAGES: '/buyer-dashboard/messages',
   BUYER_DASHBOARD_PROFILE: '/buyer-dashboard/profile',
+  // Farmer Authentication Routes
+  FARMER_LOGIN: '/farmer-login',
+  LOGIN: '/farmer-login',
+  FARMER_REGISTER: '/farmer-register',
+  REGISTER: '/farmer-register',
+  // Farmer Module Dashboard & Sub-pages
+  FARMER_DASHBOARD: '/farmer-dashboard',
+  DASHBOARD: '/farmer-dashboard',
+  FARMER_DASHBOARD_CROPS: '/farmer-dashboard/crops',
+  FARMER_DASHBOARD_YIELD: '/farmer-dashboard/crops',
+  FARMER_YIELD: '/farmer-dashboard/crops',
+  YIELD: '/farmer-dashboard/crops',
+  FARMER_DASHBOARD_REQUESTS: '/farmer-dashboard/requests',
+  FARMER_DASHBOARD_ORDERS: '/farmer-dashboard/orders',
+  FARMER_DASHBOARD_PROFILE: '/farmer-dashboard/profile',
+  // Shared
   COMING_SOON: '/coming-soon',
   NOT_FOUND: '/404',
 };

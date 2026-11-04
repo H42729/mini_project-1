@@ -15,7 +15,8 @@ import Input from '../../components/Input';
 import EmptyState from '../../components/EmptyState';
 import Button from '../../components/Button';
 import { useBuyer } from '../../context/BuyerContext';
-import CropCard from '../../components/CropCard';
+import CropCard from '../../components/CropCard';
+import Skeleton from '../../components/Skeleton';
 
 const PRODUCE_DROPDOWNS = [
   {
@@ -50,11 +51,23 @@ const PRODUCE_DROPDOWNS = [
       { id: 'potato_grade_b', labelKey: 'crops.filterGradeB', label: 'Grade B', badgeClass: 'grade-b' },
       { id: 'potato_grade_c', labelKey: 'crops.filterGradeC', label: 'Grade C', badgeClass: 'grade-c' }
     ]
+  },
+  {
+    id: 'carrot',
+    labelKey: 'crops.filterCarrot',
+    label: 'Carrot',
+    grades: [
+      { id: 'carrot', labelKey: 'crops.filterAllGrades', label: 'All Grades' },
+      { id: 'carrot_grade_a', labelKey: 'crops.filterGradeA', label: 'Grade A', badgeClass: 'grade-a' },
+      { id: 'carrot_grade_b', labelKey: 'crops.filterGradeB', label: 'Grade B', badgeClass: 'grade-b' },
+      { id: 'carrot_grade_c', labelKey: 'crops.filterGradeC', label: 'Grade C', badgeClass: 'grade-c' }
+    ]
   }
 ];
 
 export default function Crops() {
   const {
+    isDataLoading,
     crops,
     filteredCrops,
     searchQuery,
@@ -134,7 +147,7 @@ export default function Crops() {
             <Scale size={15} />
             <span>
               {t('crops.totalStock', {
-                n: (crops || []).reduce((acc, c) => acc + (Number(c?.availableKg) || 0), 0)
+                n: (filteredCrops || []).reduce((acc, c) => acc + (Number(c?.availableKg) || 0), 0)
               })}
             </span>
           </div>
@@ -248,7 +261,29 @@ export default function Crops() {
       </div>
 
       {/* Crops Grid (Desktop 3-4, Tablet 2, Mobile 1) */}
-      {filteredCrops && filteredCrops.length > 0 ? (
+      {isDataLoading && (!crops || crops.length === 0) ? (
+        <div className="buyer-crop-grid nu-skeleton-fade-in" aria-hidden="true">
+          {Array.from({ length: 6 }).map((_, idx) => (
+            <div key={idx} className="nu-skeleton-card-shell nu-skeleton-crop-card">
+              <Skeleton height={180} className="nu-skeleton-crop-image" />
+              <div className="nu-skeleton-crop-body">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Skeleton width="55%" height={18} style={{ borderRadius: 4 }} />
+                  <Skeleton width={70} height={22} style={{ borderRadius: 9999 }} />
+                </div>
+                <Skeleton width="40%" height={13} style={{ borderRadius: 4 }} />
+                <div style={{ borderTop: '1px solid rgba(227, 227, 221, 0.6)', paddingTop: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 4, width: '45%' }}>
+                    <Skeleton width="90%" height={18} style={{ borderRadius: 4 }} />
+                    <Skeleton width="60%" height={11} style={{ borderRadius: 4 }} />
+                  </div>
+                  <Skeleton width={90} height={34} style={{ borderRadius: 8 }} />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : filteredCrops && filteredCrops.length > 0 ? (
         <div className="buyer-crop-grid">
           {filteredCrops.map((crop) => (
             <CropCard

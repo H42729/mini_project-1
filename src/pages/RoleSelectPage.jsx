@@ -18,7 +18,8 @@ import {
 import { useT } from '../hooks/useT';
 import { ROUTES } from '../routes';
 import Button from '../components/Button';
-import { api, setToken } from '../utils/api';
+import { api, setToken, DEMO_FARMER_JWT, DEMO_BUYER_JWT } from '../utils/api';
+import { INITIAL_FARMER_PROFILE } from '../data/farmerMockData';
 import './RoleSelectPage.css';
 
 export default function RoleSelectPage({
@@ -52,6 +53,24 @@ export default function RoleSelectPage({
       setActiveRole(roleParam);
     }
   }, [searchParams]);
+
+  // Check if user just registered as a farmer and redirect has a pending email
+  useEffect(() => {
+    if (activeRole === 'farmer') {
+      try {
+        const pendingEmail = localStorage.getItem('farmer_registration_pending_email');
+        if (pendingEmail) {
+          setFarmerMobile(pendingEmail);
+          setAuthSuccess(
+            lang === 'ta'
+              ? 'உழவர் பதிவு வெற்றிகரமானது! உங்கள் கடவுச்சொல்லை உள்ளிட்டு உள்நுழையவும்.'
+              : 'Farmer account registered successfully! Please enter your password to sign in.'
+          );
+          localStorage.removeItem('farmer_registration_pending_email');
+        }
+      } catch {}
+    }
+  }, [activeRole, lang]);
 
   // Sticky scroll detection: accurately tracks when switcher docks underneath topbar
   const switcherRef = useRef(null);
@@ -106,60 +125,195 @@ export default function RoleSelectPage({
   const [showFarmerPin, setShowFarmerPin] = useState(false);
   const [farmerRemember, setFarmerRemember] = useState(true);
 
-  const handleFarmerSubmit = (e) => {
+  const handleFarmerSubmit = async (e) => {
     if (e) e.preventDefault();
     setAuthError('');
 
     const trimmedMobile = farmerMobile.trim();
+    const trimmedPin = farmerPin.trim();
+
     if (!trimmedMobile) {
-      setAuthError(lang === 'ta' ? 'அலைபேசி எண்ணை உள்ளிடவும்' : 'Please enter your registered mobile number or Farmer ID.');
+      setAuthError(
+        lang === 'ta'
+          ? 'அலைபேசி எண் அல்லது மின்னஞ்சலை உள்ளிடவும்'
+          : 'Please enter your registered mobile number or Email ID.'
+      );
       return;
     }
-    if (!farmerPin.trim()) {
-      setAuthError(lang === 'ta' ? '4-இலக்க பாதுகாப்பு பின்னை உள்ளிடவும்' : 'Please enter your 4-digit security PIN or password.');
+    if (!trimmedPin) {
+      setAuthError(
+        lang === 'ta'
+          ? 'கடவுச்சொல் அல்லது பின்னை உள்ளிடவும்'
+          : 'Please enter your password or security PIN.'
+      );
       return;
     }
 
     setIsSubmitting(true);
-    setTimeout(() => {
+
+    const completeFarmerLogin = (farmerData, successName, specificToken) => {
+      const activeToken =
+        specificToken ||
+        (farmerData.name && farmerData.name.toLowerCase() !== 'ramesh kumar'
+          ? `farmer_token_${farmerData.farmerId || 'registered'}`
+          : DEMO_FARMER_JWT);
+      setToken(activeToken, 'farmer');
+      const profileToStore = {
+        ...farmerData,
+        role: 'farmer',
+        isVerified: true
+      };
+      try {
+        localStorage.removeItem('buyer_current_profile');
+        localStorage.setItem('farmer_current_profile', JSON.stringify(profileToStore));
+        sessionStorage.removeItem('farmer_explicit_signout');
+      } catch (err) {
+        console.warn('Could not store farmer profile:', err);
+      }
+
       setIsSubmitting(false);
       setAuthSuccess(
         lang === 'ta'
-          ? 'விவசாயி சரிபார்ப்பு வெற்றிகரமாக முடிந்தது! விவசாயி தளத்திற்கு செல்கிறது...'
-          : 'Farmer identity verified! Connecting to Farmer Direct Mandi Portal...'
+          ? `${successName || profileToStore.name || 'விவசாயி'} சரிபார்க்கப்பட்டது! உழவர் தளத்திற்கு செல்கிறது...`
+          : `Farmer ${successName || profileToStore.name || ''} verified! Connecting to Farmer Direct Portal...`
       );
+
       setTimeout(() => {
         if (onSelectFarmer) {
           onSelectFarmer();
         } else {
-          navigate(`${ROUTES.COMING_SOON}?role=farmer`);
+          navigate(ROUTES.FARMER_DASHBOARD);
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-      }, 1200);
-    }, 700);
+      }, 700);
+    };
+
+    try {
+      // Connect to backend farmer login API
+      const res = await api.post('/auth/farmer/login', {
+        identifier: trimmedMobile,
+        phone: trimmedMobile,
+        email: trimmedMobile,
+        password: trimmedPin
+      });
+
+      const farmerData = res?.farmer || {
+        farmerId: 'FMR-TN-2026-01',
+        name: 'Ramesh Kumar',
+        email: trimmedMobile.includes('@') ? trimmedMobile : 'ramesh.kumar@naamuzhavar.com',
+        phone: trimmedMobile,
+        avatar: 'https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?w=300&auto=format&fit=crop&q=80',
+        rating: 4.92,
+        totalHarvests: 54,
+        isVerified: true,
+        role: 'farmer'
+      };
+
+      completeFarmerLogin(farmerData, farmerData.name, res?.token);
+    } catch (err) {
+      console.warn('Backend farmer login notice, checking registered credentials:', err.message);
+
+      // Check offline registered farmer accounts from localStorage
+      const registeredRaw = localStorage.getItem('farmer_registered_profile');
+      const registeredListRaw = localStorage.getItem('registered_farmers_list');
+      const allRegistered = [];
+      if (registeredRaw) {
+        try { allRegistered.push(JSON.parse(registeredRaw)); } catch {}
+      }
+      if (registeredListRaw) {
+        try { allRegistered.push(...JSON.parse(registeredListRaw)); } catch {}
+      }
+
+      const cleanDigits = trimmedMobile.replace(/\D/g, '');
+      const matchedFarmer = allRegistered.find((rf) => {
+        if (!rf) return false;
+        const emailMatches = rf.email && rf.email.toLowerCase() === trimmedMobile.toLowerCase();
+        const rfDigits = (rf.phone || '').replace(/\D/g, '');
+        const phoneMatches = cleanDigits.length >= 10 && rfDigits.length >= 10 && (cleanDigits.endsWith(rfDigits.slice(-10)) || rfDigits.endsWith(cleanDigits.slice(-10)));
+        return emailMatches || phoneMatches;
+      });
+
+      if (matchedFarmer) {
+        if (matchedFarmer.password && matchedFarmer.password !== trimmedPin) {
+          setIsSubmitting(false);
+          setAuthError(
+            lang === 'ta'
+              ? 'தவறான கடவுச்சொல். மீண்டும் முயற்சிக்கவும்.'
+              : 'Invalid password. Please check your credentials.'
+          );
+          return;
+        }
+
+        completeFarmerLogin(matchedFarmer, matchedFarmer.name);
+        return;
+      }
+
+      // Check offline demo credentials strictly if backend is unreachable
+      const isDemoFarmerAccount =
+        trimmedMobile.toLowerCase() === 'farmer@naamuzhavar.com' ||
+        trimmedMobile.toLowerCase() === 'ramesh.kumar@naamuzhavar.com' ||
+        (cleanDigits.length >= 10 && cleanDigits.endsWith('78190'));
+      const isDemoFarmerPin = trimmedPin === '4821' || trimmedPin === 'farmer1234';
+
+      if (isDemoFarmerAccount && isDemoFarmerPin) {
+        handleQuickDemoFarmer();
+        return;
+      }
+
+      setIsSubmitting(false);
+      setAuthError(
+        err.message ||
+        (lang === 'ta'
+          ? 'அலைபேசி எண்/மின்னஞ்சல் அல்லது கடவுச்சொல் தவறானது. மீண்டும் முயற்சிக்கவும்.'
+          : 'Invalid mobile/email or password. Please verify your credentials.')
+      );
+    }
   };
 
   const handleQuickDemoFarmer = () => {
-    setFarmerMobile('+91 98421 78210');
+    setFarmerMobile('+91 94432 78190');
     setFarmerPin('4821');
     setAuthError('');
     setIsSubmitting(true);
+
+    setToken(DEMO_FARMER_JWT);
+
+    const farmerData = {
+      ...INITIAL_FARMER_PROFILE,
+      farmerId: 'FMR-TN-2026-01',
+      name: 'Ramesh Kumar',
+      email: 'ramesh.kumar@naamuzhavar.com',
+      phone: '+91 94432 78190',
+      avatar: 'https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?w=300&auto=format&fit=crop&q=80',
+      rating: 4.92,
+      totalHarvests: 54,
+      isVerified: true,
+      role: 'farmer'
+    };
+
+    try {
+      localStorage.removeItem('buyer_current_profile');
+      localStorage.setItem('farmer_current_profile', JSON.stringify(farmerData));
+      sessionStorage.removeItem('farmer_explicit_signout');
+    } catch (err) {
+      console.warn('Could not store farmer profile:', err);
+    }
+
+    setIsSubmitting(false);
+    setAuthSuccess(
+      lang === 'ta'
+        ? 'ரமேஷ் குமார் (பொள்ளாச்சி மையம்) - விவசாயி சரிபார்க்கப்பட்டது!'
+        : 'Farmer Ramesh Kumar (Pollachi Hub) verified!'
+    );
+
     setTimeout(() => {
-      setIsSubmitting(false);
-      setAuthSuccess(
-        lang === 'ta'
-          ? 'ரவி குமார் (திண்டுக்கல் மையம்) - விவசாயி சரிபார்க்கப்பட்டது!'
-          : 'Farmer Ravi Kumar (Siluvathur, Dindigul Central Hub) verified!'
-      );
-      setTimeout(() => {
-        if (onSelectFarmer) {
-          onSelectFarmer();
-        } else {
-          navigate(`${ROUTES.COMING_SOON}?role=farmer`);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-      }, 1100);
-    }, 600);
+      if (onSelectFarmer) {
+        onSelectFarmer();
+      } else {
+        navigate(ROUTES.FARMER_DASHBOARD);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }, 700);
   };
 
   // ---------------------------------------------------------------------------
@@ -238,6 +392,7 @@ export default function RoleSelectPage({
           role: 'buyer'
         };
         try {
+          localStorage.removeItem('farmer_current_profile');
           localStorage.setItem('buyer_current_profile', JSON.stringify(buyerData));
           localStorage.setItem('buyer_registered_profile', JSON.stringify(buyerData));
         } catch {
@@ -263,24 +418,69 @@ export default function RoleSelectPage({
         }
       }, 700);
     } catch (err) {
-      console.warn('Backend login fallback:', err.message);
-      // Seamless local offline fallback for demo/eval
-      if (trimmedId.includes('demo') || trimmedId.includes('grandpalace') || buyerPassword === 'demo1234') {
+      console.warn('Backend buyer login error:', err.message);
+
+      // Check offline demo credentials strictly if backend is unreachable
+      const cleanDigits = trimmedId.replace(/\D/g, '');
+      const isDemoBuyerAccount =
+        trimmedId.toLowerCase() === 'demo@naamuzhavar.com' ||
+        trimmedId.toLowerCase() === 'hotel.saravana@gmail.com' ||
+        (cleanDigits.length >= 10 && cleanDigits.endsWith('23456'));
+      const isDemoBuyerPass = buyerPassword === 'demo1234' || buyerPassword === 'saravana123';
+
+      if (isDemoBuyerAccount && isDemoBuyerPass) {
         handleQuickDemoBuyer();
-      } else {
-        setIsSubmitting(false);
-        setAuthError(err.message || 'Invalid email/phone or password. For instant access, use Quick Demo below.');
+        return;
       }
+
+      // Check if user matches a locally registered offline buyer profile
+      try {
+        const stored = localStorage.getItem('buyer_registered_profile');
+        if (stored) {
+          const registered = JSON.parse(stored);
+          const matchEmail = registered.email && registered.email.toLowerCase() === trimmedId.toLowerCase();
+          const matchPhone = registered.phone && registered.phone.replace(/\D/g, '').endsWith(cleanDigits);
+          if ((matchEmail || matchPhone) && buyerPassword.length >= 6) {
+            localStorage.setItem('buyer_current_profile', JSON.stringify(registered));
+            setToken(DEMO_BUYER_JWT);
+            setIsSubmitting(false);
+            setAuthSuccess(t('loginSuccessToast') || 'Signed in successfully! Redirecting...');
+            setTimeout(() => {
+              if (onSelectBuyer) onSelectBuyer();
+              else {
+                navigate(ROUTES.BUYER_DASHBOARD);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }
+            }, 700);
+            return;
+          }
+        }
+      } catch {}
+
+      setIsSubmitting(false);
+      setAuthError(
+        err.message ||
+        (lang === 'ta'
+          ? 'மின்னஞ்சல் அல்லது கடவுச்சொல் தவறானது. மீண்டும் முயற்சிக்கவும்.'
+          : 'Invalid email/phone or password. Please verify your credentials.')
+      );
     }
   };
 
-  const handleQuickDemoBuyer = () => {
-    setBuyerIdentifier('demo@naamuzhavar.com');
+  const handleQuickDemoBuyer = (customIdentifier) => {
+    const isEmail = typeof customIdentifier === 'string' && customIdentifier.includes('@');
+    const defaultEmail = isEmail ? customIdentifier : 'demo@naamuzhavar.com';
+    const defaultPhone = (!isEmail && typeof customIdentifier === 'string' && customIdentifier.length >= 10)
+      ? customIdentifier
+      : '+91 98401 23456';
+
+    setBuyerIdentifier(defaultEmail);
     setBuyerPassword('demo1234');
     setAuthError('');
     setIsSubmitting(true);
 
     try {
+      localStorage.removeItem('farmer_current_profile');
       sessionStorage.removeItem('buyer_explicit_signout');
     } catch {
       // ignore
@@ -292,15 +492,15 @@ export default function RoleSelectPage({
       contactPerson: 'Mr. S. Rajesh (Procurement Head)',
       shopName: 'Grand Palace Luxury Dining',
       businessName: 'Grand Palace Luxury Dining',
-      phone: '+91 98401 23456',
-      email: 'demo@naamuzhavar.com',
+      phone: defaultPhone,
+      email: defaultEmail,
       buyerType: 'hotel',
       role: 'buyer',
       address: 'Grand Palace Luxury Dining, Bypass Road, Madurai - 625016',
       gstin: '33AAAAA0000A1Z5'
     };
 
-    setToken('demo_token_' + Date.now());
+    setToken(DEMO_BUYER_JWT);
     try {
       localStorage.setItem('buyer_current_profile', JSON.stringify(demoData));
       localStorage.setItem('buyer_registered_profile', JSON.stringify(demoData));
@@ -618,7 +818,7 @@ export default function RoleSelectPage({
                   />
                   <span>{t('rememberMe') || 'Remember my credentials'}</span>
                 </label>
-                <span className="role-auxiliary-link" onClick={handleQuickDemoFarmer}>
+                <span className="role-auxiliary-link" onClick={() => setAuthError(lang === 'ta' ? 'உதவிக்கு எங்களை அழைக்கவும்: 1800-425-1555' : 'For login help, call toll-free: 1800-425-1555')}>
                   {lang === 'ta' ? 'உதவி தேவையா? OTP பெறுக' : 'OTP Login Assistance'}
                 </span>
               </div>
@@ -649,7 +849,7 @@ export default function RoleSelectPage({
               {/* Footer Register Callout */}
               <div className="role-form-footer">
                 <span>{t('newFarmerPrompt') || 'New farmer?'}</span>
-                <Link to={`${ROUTES.COMING_SOON}?role=farmer`} className="role-register-link">
+                <Link to={ROUTES.FARMER_REGISTER} className="role-register-link">
                   {t('registerFarmerLink') || 'Register to sell produce directly ➔'}
                 </Link>
               </div>
