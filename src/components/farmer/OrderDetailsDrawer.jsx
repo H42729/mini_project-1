@@ -8,13 +8,15 @@ import {
   Calendar,
   Phone,
   Truck,
-  X
+  X,
+  ShieldCheck,
+  Landmark
 } from 'lucide-react';
 import Modal from '../Modal';
 import { formatDisplayOrderId } from '../../utils/orderId';
 import { resolveCropFallbackImage } from '../../services/cropService';
 
-export default function OrderDetailsDrawer({ order, isOpen, onClose, lang }) {
+export default function OrderDetailsDrawer({ order, isOpen, onClose, onClaimPayout, lang }) {
   if (!order) return null;
 
   const o = order;
@@ -194,6 +196,51 @@ export default function OrderDetailsDrawer({ order, isOpen, onClose, lang }) {
               </div>
             </div>
           </div>
+
+          {/* Escrow Payment Status Row */}
+          <div
+            style={{
+              marginTop: 10,
+              padding: '8px 12px',
+              background: o.paymentStatus === 'RELEASED_TO_FARMER' ? '#f0fdf4' : '#fffbeb',
+              border: o.paymentStatus === 'RELEASED_TO_FARMER' ? '1px solid #bbf7d0' : '1px solid #fde68a',
+              borderRadius: 8,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: 6
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <ShieldCheck size={16} color={(o.paymentStatus === 'RELEASED_TO_FARMER' || o.paymentStatus === 'PAID') ? '#166534' : '#b45309'} />
+              <span style={{ fontSize: '0.78rem', fontWeight: 700, color: (o.paymentStatus === 'RELEASED_TO_FARMER' || o.paymentStatus === 'PAID') ? '#166534' : '#b45309' }}>
+                {(o.paymentStatus === 'RELEASED_TO_FARMER' || o.paymentStatus === 'PAID')
+                  ? (lang === 'ta' ? 'வங்கிக்கு வரவு வைக்கப்பட்டது ✓' : 'Settled to Bank Account ✓')
+                  : (lang === 'ta' ? 'பணம் நிலுவையில் உள்ளது' : 'Payment Pending')}
+              </span>
+              <span style={{ fontSize: '0.72rem', color: '#64748b' }}>
+                • {o.paymentMethod || 'UPI Payment'}
+              </span>
+            </div>
+            <span style={{ fontFamily: 'monospace', fontSize: '0.72rem', fontWeight: 700, color: '#334155' }}>
+              {o.utrNumber || o.transactionRef || 'BANK-REF'}
+            </span>
+          </div>
+
+          {o.paymentStatus !== 'RELEASED_TO_FARMER' && o.paymentStatus !== 'PAID' && onClaimPayout && (
+            <div style={{ marginTop: 8 }}>
+              <button
+                type="button"
+                className="farmer-claim-btn"
+                style={{ width: '100%', justifyContent: 'center', padding: '8px 14px' }}
+                onClick={() => onClaimPayout(o)}
+              >
+                <Landmark size={14} />
+                <span>{lang === 'ta' ? 'வங்கிக்கு பணம் மாற்று' : 'Claim Payout to Bank Account'}</span>
+              </button>
+            </div>
+          )}
         </div>
 
         {/* 3. BUYER & DELIVERY LOCATION CARD */}

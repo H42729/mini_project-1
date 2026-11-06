@@ -14,10 +14,13 @@ import {
   Check,
   X,
   PackageCheck,
-  Clock
+  Clock,
+  ShieldCheck,
+  CreditCard
 } from 'lucide-react';
 import { useT } from '../hooks/useT';
 import { useBuyer } from '../context/BuyerContext';
+import DemoPaymentModal from './common/DemoPaymentModal';
 
 const FALLBACK_CROP_IMG =
   'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&auto=format&fit=crop&q=80';
@@ -63,6 +66,8 @@ export default function CropModals({
   const [orderNotes, setOrderNotes] = useState('');
   const [validationError, setValidationError] = useState('');
   const [todayDateStr] = useState(() => new Date().toISOString().split('T')[0]);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [pendingOrderData, setPendingOrderData] = useState(null);
 
   // Synchronize initial form defaults when workflow opens with a crop
   useEffect(() => {
@@ -118,12 +123,24 @@ export default function CropModals({
       return;
     }
 
-    handleConfirmCreateOrder({
+    setPendingOrderData({
       quantityKg: qty,
       deliveryAddress: deliveryAddress.trim(),
       preferredDeliveryDate,
       notes: orderNotes.trim()
     });
+    setIsPaymentModalOpen(true);
+  };
+
+  const handlePaymentSuccess = (paymentResult) => {
+    if (pendingOrderData) {
+      handleConfirmCreateOrder({
+        ...pendingOrderData,
+        paymentMethod: paymentResult.methodTitle || paymentResult.method,
+        transactionRef: paymentResult.transactionRef,
+        utrNumber: paymentResult.utrNumber
+      });
+    }
   };
 
   const crop = workflowCrop || activeWorkflowOrder;
@@ -595,8 +612,12 @@ export default function CropModals({
                           <span>{lang === 'ta' ? 'பதிவாகிறது...' : 'Submitting...'}</span>
                         ) : (
                           <>
-                            <Check size={16} />
-                            <span>{lang === 'ta' ? 'ஆர்டரை உறுதிப்படுத்து' : 'Confirm Order'}</span>
+                            <CreditCard size={16} />
+                            <span>
+                              {lang === 'ta'
+                                ? `தொகையை செலுத்தி உறுதிசெய் (₹${calculatedTotal.toLocaleString('en-IN')})`
+                                : `Pay & Confirm Order (₹${calculatedTotal.toLocaleString('en-IN')})`}
+                            </span>
                           </>
                         )}
                       </button>
@@ -674,6 +695,33 @@ export default function CropModals({
                     <div style={{ gridColumn: 'span 2' }}>
                       <span style={{ color: '#64748b', fontSize: '0.76rem', display: 'block' }}>Delivery Address</span>
                       <span style={{ color: '#334155' }}>{activeWorkflowOrder.deliveryAddress}</span>
+                    </div>
+                    <div
+                      style={{
+                        gridColumn: 'span 2',
+                        background: '#f0fdf4',
+                        padding: '10px 12px',
+                        borderRadius: '8px',
+                        border: '1px solid #bbf7d0',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        flexWrap: 'wrap',
+                        gap: '6px'
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <ShieldCheck size={16} color="#166534" />
+                        <span style={{ fontSize: '0.8rem', color: '#166534', fontWeight: 700 }}>
+                          {lang === 'ta' ? 'எஸ்க்ரோவில் பணம் பாதுகாக்கப்பட்டுள்ளது' : 'Agri-Escrow Secured'}
+                        </span>
+                        <span style={{ fontSize: '0.74rem', color: '#15803d' }}>
+                          • {activeWorkflowOrder.paymentMethod || 'UPI (Google Pay)'}
+                        </span>
+                      </div>
+                      <span style={{ fontFamily: 'monospace', fontSize: '0.74rem', color: '#166534', fontWeight: 700 }}>
+                        {activeWorkflowOrder.transactionRef || 'TXN-UPI-SECURED'}
+                      </span>
                     </div>
                   </div>
 
@@ -1060,6 +1108,18 @@ export default function CropModals({
           </div>
         </div>
       )}
+
+      {/* 3. Demo Agri-Escrow Payment Gateway Modal */}
+      <DemoPaymentModal
+        isOpen={isPaymentModalOpen}
+        onClose={() => setIsPaymentModalOpen(false)}
+        amount={calculatedTotal}
+        orderId={activeWorkflowOrder?.orderId || `NU-2026-${Math.floor(10000 + Math.random() * 90000)}`}
+        cropName={workflowCrop?.name || 'Produce'}
+        quantityKg={orderQuantity}
+        lang={lang}
+        onPaymentSuccess={handlePaymentSuccess}
+      />
     </>
   );
 }

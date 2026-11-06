@@ -31,6 +31,12 @@ export const ROUTES = {
   FARMER_DASHBOARD_REQUESTS: '/farmer-dashboard/requests',
   FARMER_DASHBOARD_ORDERS: '/farmer-dashboard/orders',
   FARMER_DASHBOARD_PROFILE: '/farmer-dashboard/profile',
+  // Driver Module Routes
+  DRIVER_LOGIN: '/role-select?role=driver',
+  DRIVER_DASHBOARD: '/driver-dashboard',
+  DRIVER_DASHBOARD_TRIPS: '/driver-dashboard/trips',
+  DRIVER_DASHBOARD_EARNINGS: '/driver-dashboard/earnings',
+  DRIVER_DASHBOARD_PROFILE: '/driver-dashboard/profile',
   // Shared
   COMING_SOON: '/coming-soon',
   NOT_FOUND: '/404',

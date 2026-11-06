@@ -7,19 +7,25 @@ import {
   Search,
   Eye,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Landmark,
+  Calendar
 } from 'lucide-react';
 import { useFarmer } from '../../context/FarmerContext';
 import { formatDisplayOrderId } from '../../utils/orderId';
 import OrderDetailsDrawer from '../../components/farmer/OrderDetailsDrawer';
+import FarmerPayoutModal from '../../components/farmer/FarmerPayoutModal';
 import SectionHeader from '../../components/SectionHeader';
 import { TableSkeleton } from '../../components/Skeleton';
+import api from '../../utils/api';
 import './OrderHistory.css';
 
 export default function OrderHistory() {
   const {
     isDataLoading,
     orders,
+    setOrders,
+    profile,
     selectedOrderDetails,
     setSelectedOrderDetails,
     orderDrawerOpen,
@@ -31,7 +37,64 @@ export default function OrderHistory() {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('newest');
   const [currentPage, setCurrentPage] = useState(1);
+  const [claimPayoutOrder, setClaimPayoutOrder] = useState(null);
   const itemsPerPage = 8;
+
+  const handlePayoutSuccess = (payoutData) => {
+    const targetId = payoutData.orderId;
+
+    if (setOrders) {
+      setOrders((prev) => {
+        const updated = (prev || []).map((o) => {
+          if (o.orderId === targetId || o.id === targetId || o._id === targetId) {
+            return {
+              ...o,
+              paymentStatus: 'RELEASED_TO_FARMER',
+              utrNumber: payoutData.utrNumber,
+              payoutClaimedAt: payoutData.claimedAt,
+              payoutMethod: payoutData.method
+            };
+          }
+          return o;
+        });
+        try {
+          localStorage.setItem('farmer_orders_history', JSON.stringify(updated));
+          window.dispatchEvent(new CustomEvent('farmer-data-updated'));
+        } catch {}
+        return updated;
+      });
+    }
+
+    // Keep drawer selected order synchronized if open
+    if (setSelectedOrderDetails) {
+      setSelectedOrderDetails((prev) => {
+        if (!prev) return null;
+        if (prev.orderId === targetId || prev.id === targetId || prev._id === targetId) {
+          return {
+            ...prev,
+            paymentStatus: 'RELEASED_TO_FARMER',
+            utrNumber: payoutData.utrNumber,
+            payoutClaimedAt: payoutData.claimedAt,
+            payoutMethod: payoutData.method
+          };
+        }
+        return prev;
+      });
+    }
+
+    // Asynchronously synchronize with backend API
+    try {
+      api.post(`/farmer/orders/${targetId}/claim-payout`, {
+        utrNumber: payoutData.utrNumber,
+        method: payoutData.method
+      }).catch((err) => {
+        console.warn('Backend claim-payout sync notice (state preserved locally):', err?.message);
+      });
+    } catch {}
+
+    // NOTE: Do NOT call setClaimPayoutOrder(null) here.
+    // The user will dismiss the modal via onClose when they finish viewing the success receipt.
+  };
 
   // Filtered orders
   const filteredOrders = useMemo(() => {
@@ -211,53 +274,81 @@ export default function OrderHistory() {
               </thead>
               <tbody>
                 {paginatedOrders.map((ord) => {
-                  const isDelivered = ord.deliveryStatus === 'DELIVERED';
+                  const isDelivered = ord.deliveryStatus === 'DELIVERED' || ord.orderStatus === 'DELIVERED';
                   const isCancelled = ord.orderStatus === 'CANCELLED' || ord.orderStatus === 'REJECTED';
+                  const isNotAssigned = ord.deliveryStatus === 'NOT_ASSIGNED';
+                  const isPaid = ord.paymentStatus === 'RELEASED_TO_FARMER' || ord.paymentStatus === 'PAID';
+                  const canClaimPayout = isDelivered && !isPaid;
                   const c = ord.cropDetails || {};
 
                   return (
                     <tr key={ord.id || ord._id || ord.orderId}>
                       <td>
-                        <span className="font-mono fw-bold text-dark">{formatDisplayOrderId(ord.orderId)}</span>
+                        <span className="farmer-order-id">{formatDisplayOrderId(ord.orderId)}</span>
                       </td>
                       <td>
-                        <span className="fw-semibold">{ord.buyerName || ord.buyerDetails?.businessName || 'Commercial Buyer'}</span>
+                        <div className="farmer-buyer-cell" title={ord.buyerName || ord.buyerDetails?.businessName || 'Commercial Buyer'}>
+                          {ord.buyerName || ord.buyerDetails?.businessName || 'Commercial Buyer'}
+                        </div>
                       </td>
                       <td>
-                        <span className="small">{c.name || ord.cropName}</span>
+                        <div className="farmer-crop-cell" title={c.name || ord.cropName}>
+                          {c.name || ord.cropName}
+                        </div>
                       </td>
                       <td>
-                        <span className="font-mono fw-bold">{ord.quantityKg ?? ord.quantity ?? 0} {ord.unit || 'Kg'}</span>
+                        <span className="font-mono fw-bold" style={{ whiteSpace: 'nowrap' }}>
+                          {ord.quantityKg ?? ord.quantity ?? 0} {ord.unit || 'Kg'}
+                        </span>
                       </td>
                       <td>
-                        <span className="font-mono">₹{ord.pricePerUnit || c.pricePerKg || ord.offeredPrice || 0}</span>
+                        <span className="font-mono" style={{ whiteSpace: 'nowrap' }}>
+                          ₹{ord.pricePerUnit || c.pricePerKg || ord.offeredPrice || 0}
+                        </span>
                       </td>
                       <td>
-                        <span className="font-mono fw-bold text-success">₹{(ord.totalPrice ?? ord.totalEstimatedValue ?? ((ord.quantityKg ?? ord.quantity ?? 0) * (ord.pricePerUnit || c.pricePerKg || ord.offeredPrice || 0))).toLocaleString('en-IN')}</span>
+                        <span className="font-mono fw-bold text-success" style={{ whiteSpace: 'nowrap' }}>
+                          ₹{(ord.totalPrice ?? ord.totalEstimatedValue ?? ((ord.quantityKg ?? ord.quantity ?? 0) * (ord.pricePerUnit || c.pricePerKg || ord.offeredPrice || 0))).toLocaleString('en-IN')}
+                        </span>
                       </td>
                       <td>
-                        <span className="small text-muted">{ord.pickupDate || ord.preferredDeliveryDate || 'Recent'}</span>
+                        <span className="small text-muted" style={{ whiteSpace: 'nowrap' }}>
+                          {ord.pickupDate || ord.preferredDeliveryDate || 'Recent'}
+                        </span>
                       </td>
                       <td>
-                        <span className={`status-pill ${isDelivered ? 'success' : isCancelled ? 'danger' : 'info'}`}>
+                        <span className={`status-pill ${isDelivered ? 'success' : (isCancelled || isNotAssigned) ? 'danger' : 'info'}`} style={{ whiteSpace: 'nowrap' }}>
                           {ord.deliveryStatus || ord.orderStatus}
                         </span>
                       </td>
                       <td>
-                        <span className={`status-pill ${ord.paymentStatus === 'RELEASED_TO_FARMER' ? 'success' : 'pending'}`}>
-                          {ord.paymentStatus === 'RELEASED_TO_FARMER' ? 'PAID' : 'ESCROW'}
+                        <span className={`status-pill ${isPaid ? 'success' : 'pending'}`} style={{ whiteSpace: 'nowrap' }}>
+                          {isPaid ? 'PAID' : 'PENDING'}
                         </span>
                       </td>
-                      <td style={{ textAlign: 'right' }}>
-                        <button
-                          type="button"
-                          className="buyer-btn-outline small"
-                          onClick={() => handleOpenOrder(ord)}
-                          title={lang === 'ta' ? 'விவரம்' : 'View'}
-                        >
-                          <Eye size={13} />
-                          <span>{lang === 'ta' ? 'விவரம்' : 'View'}</span>
-                        </button>
+                      <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
+                        <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'flex-end', gap: '6px' }}>
+                          {canClaimPayout && (
+                            <button
+                              type="button"
+                              className="farmer-claim-btn"
+                              onClick={() => setClaimPayoutOrder(ord)}
+                              title={lang === 'ta' ? 'வங்கிக்கு மாற்று' : 'Claim Payout'}
+                            >
+                              <Landmark size={12} />
+                              <span>{lang === 'ta' ? 'பணம் பெறு' : 'Claim Payout'}</span>
+                            </button>
+                          )}
+                          <button
+                            type="button"
+                            className="farmer-view-btn"
+                            onClick={() => handleOpenOrder(ord)}
+                            title={lang === 'ta' ? 'விவரம்' : 'View'}
+                          >
+                            <Eye size={13} />
+                            <span>{lang === 'ta' ? 'விவரம்' : 'View'}</span>
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   );
@@ -269,50 +360,90 @@ export default function OrderHistory() {
           {/* Mobile Cards View */}
           <div className="farmer-mobile-cards-grid mt-3">
             {paginatedOrders.map((ord) => {
-              const isDelivered = ord.deliveryStatus === 'DELIVERED';
+              const isDelivered = ord.deliveryStatus === 'DELIVERED' || ord.orderStatus === 'DELIVERED';
               const isCancelled = ord.orderStatus === 'CANCELLED' || ord.orderStatus === 'REJECTED';
+              const isNotAssigned = ord.deliveryStatus === 'NOT_ASSIGNED';
+              const isPaid = ord.paymentStatus === 'RELEASED_TO_FARMER' || ord.paymentStatus === 'PAID';
+              const canClaimPayout = isDelivered && !isPaid;
               const c = ord.cropDetails || {};
 
               return (
                 <div key={ord.id || ord._id || ord.orderId} className="farmer-mobile-crop-card">
-                  <div className="d-flex align-items-center justify-content-between">
-                    <span className="font-mono fw-bold fs-6">{formatDisplayOrderId(ord.orderId)}</span>
-                    <span className={`status-pill ${isDelivered ? 'success' : isCancelled ? 'danger' : 'info'}`}>
+                  {/* Card Header: Order ID + Status */}
+                  <div className="farmer-mobile-card-header">
+                    <span className="farmer-order-id fs-6">{formatDisplayOrderId(ord.orderId)}</span>
+                    <span className={`status-pill ${isDelivered ? 'success' : (isCancelled || isNotAssigned) ? 'danger' : 'info'}`}>
                       {ord.deliveryStatus || ord.orderStatus}
                     </span>
                   </div>
 
-                  <div className="fw-bold">{ord.buyerName || ord.buyerDetails?.businessName}</div>
+                  {/* Buyer Business Name */}
+                  <div className="farmer-mobile-buyer-name">
+                    {ord.buyerName || ord.buyerDetails?.businessName || 'Commercial Buyer'}
+                  </div>
 
+                  {/* Clean 2x2 Metric Inset Grid */}
                   <div className="mobile-card-body-grid">
-                    <div>
-                      <span className="text-muted small">{lang === 'ta' ? 'பயிர்' : 'Produce'}</span>
-                      <div className="fw-semibold small">{c.name || ord.cropName}</div>
+                    <div className="mobile-metric-item">
+                      <span className="mobile-metric-label">{lang === 'ta' ? 'பயிர்' : 'Produce'}</span>
+                      <span className="mobile-metric-val" title={c.name || ord.cropName}>
+                        {c.name || ord.cropName}
+                      </span>
                     </div>
-                    <div>
-                      <span className="text-muted small">{lang === 'ta' ? 'அளவு' : 'Quantity'}</span>
-                      <div className="fw-bold font-mono">{ord.quantityKg ?? ord.quantity ?? 0} {ord.unit || 'Kg'}</div>
+
+                    <div className="mobile-metric-item right-col">
+                      <span className="mobile-metric-label">{lang === 'ta' ? 'அளவு' : 'Quantity'}</span>
+                      <span className="mobile-metric-val">
+                        {ord.quantityKg ?? ord.quantity ?? 0} {ord.unit || 'Kg'}
+                      </span>
                     </div>
-                    <div>
-                      <span className="text-muted small">{lang === 'ta' ? 'மொத்த தொகை' : 'Total Price'}</span>
-                      <div className="fw-bold font-mono text-success">₹{(ord.totalPrice ?? ord.totalEstimatedValue ?? ((ord.quantityKg ?? ord.quantity ?? 0) * (ord.pricePerUnit || c.pricePerKg || ord.offeredPrice || 0))).toLocaleString('en-IN')}</div>
+
+                    <div className="mobile-metric-item">
+                      <span className="mobile-metric-label">{lang === 'ta' ? 'மொத்த தொகை' : 'Total Price'}</span>
+                      <span className="mobile-metric-val price">
+                        ₹{(ord.totalPrice ?? ord.totalEstimatedValue ?? ((ord.quantityKg ?? ord.quantity ?? 0) * (ord.pricePerUnit || c.pricePerKg || ord.offeredPrice || 0))).toLocaleString('en-IN')}
+                      </span>
                     </div>
-                    <div>
-                      <span className="text-muted small">{lang === 'ta' ? 'பணம் நிலை' : 'Payment'}</span>
-                      <div className="small fw-semibold">{ord.paymentStatus || 'ESCROW'}</div>
+
+                    <div className="mobile-metric-item right-col">
+                      <span className="mobile-metric-label">{lang === 'ta' ? 'பணம் நிலை' : 'Payment'}</span>
+                      <div>
+                        <span className={`status-pill ${isPaid ? 'success' : 'pending'}`}>
+                          {isPaid ? 'PAID' : 'PENDING'}
+                        </span>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="d-flex align-items-center justify-content-between pt-2 border-top">
-                    <span className="small text-muted">{ord.pickupDate || 'Recent'}</span>
-                    <button
-                      type="button"
-                      className="buyer-btn-outline small"
-                      onClick={() => handleOpenOrder(ord)}
-                    >
-                      <Eye size={13} />
-                      <span>{lang === 'ta' ? 'முழு விவரம்' : 'View Details'}</span>
-                    </button>
+                  {/* Card Footer: Date + Actions */}
+                  <div className="farmer-mobile-card-footer">
+                    <div className="farmer-mobile-date">
+                      <Calendar size={13} className="text-muted" />
+                      <span>{ord.pickupDate || ord.preferredDeliveryDate || 'Recent'}</span>
+                    </div>
+
+                    <div className="farmer-mobile-actions">
+                      {canClaimPayout && (
+                        <button
+                          type="button"
+                          className="farmer-claim-btn"
+                          onClick={() => setClaimPayoutOrder(ord)}
+                          title={lang === 'ta' ? 'வங்கிக்கு மாற்று' : 'Claim Payout'}
+                        >
+                          <Landmark size={12} />
+                          <span>{lang === 'ta' ? 'பணம் பெறு' : 'Claim Payout'}</span>
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        className="farmer-view-btn"
+                        onClick={() => handleOpenOrder(ord)}
+                        title={lang === 'ta' ? 'முழு விவரம்' : 'View Details'}
+                      >
+                        <Eye size={13} />
+                        <span>{lang === 'ta' ? 'முழு விவரம்' : 'View Details'}</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               );
@@ -355,7 +486,21 @@ export default function OrderHistory() {
         order={selectedOrderDetails}
         isOpen={orderDrawerOpen}
         onClose={() => setOrderDrawerOpen(false)}
+        onClaimPayout={(orderToClaim) => {
+          setOrderDrawerOpen(false);
+          setClaimPayoutOrder(orderToClaim);
+        }}
         lang={lang}
+      />
+
+      {/* 4. FARMER DIRECT ESCROW PAYOUT MODAL */}
+      <FarmerPayoutModal
+        isOpen={!!claimPayoutOrder}
+        onClose={() => setClaimPayoutOrder(null)}
+        order={claimPayoutOrder}
+        profile={profile}
+        lang={lang}
+        onPayoutSuccess={handlePayoutSuccess}
       />
     </div>
   );

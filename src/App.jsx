@@ -14,7 +14,7 @@ import ComingSoonPage from './pages/ComingSoonPage';
 import NotFoundPage from './pages/NotFoundPage';
 import BuyerDashboardLayout from './components/BuyerDashboardLayout';
 import FarmerDashboardLayout from './components/farmer/FarmerDashboardLayout';
-import LoadingPage from './components/LoadingPage';
+import DriverDashboardLayout from './components/driver/DriverDashboardLayout';
 import { ModulePageSkeleton } from './components/Skeleton';
 
 // Lazy-loaded buyer dashboard sub-pages directly without barrel files for optimal code splitting
@@ -31,6 +31,10 @@ const FarmerYield = lazy(() => import('./pages/farmer/YieldManagement.jsx'));
 const FarmerRequests = lazy(() => import('./pages/farmer/Requests.jsx'));
 const FarmerOrders = lazy(() => import('./pages/farmer/OrderHistory.jsx'));
 const FarmerProfile = lazy(() => import('./pages/farmer/FarmerProfile.jsx'));
+const DriverOverview = lazy(() => import('./pages/driver/DriverOverview.jsx'));
+const DriverTrips = lazy(() => import('./pages/driver/DriverTrips.jsx'));
+const DriverEarnings = lazy(() => import('./pages/driver/DriverEarnings.jsx'));
+const DriverProfile = lazy(() => import('./pages/driver/DriverProfile.jsx'));
 
 /**
  * Fallback skeleton loader during lazy chunk transition for Buyer pages
@@ -361,7 +365,56 @@ export default function App() {
           <Route path="*" element={<Navigate to={ROUTES.FARMER_DASHBOARD} replace />} />
         </Route>
 
-        {/* 7. Placeholder Portals (Driver Coming Soon) */}
+        {/* 7. Complete Responsive Driver Logistics Module */}
+        <Route
+          path={ROUTES.DRIVER_DASHBOARD}
+          element={
+            <ProtectedRoute role="driver" mode="auth">
+              <DriverDashboardLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route
+            index
+            element={
+              <Suspense fallback={<FarmerDashboardPageFallback />}>
+                <DriverOverview />
+              </Suspense>
+            }
+          />
+          <Route
+            path="trips"
+            element={
+              <Suspense fallback={<FarmerDashboardPageFallback />}>
+                <DriverTrips />
+              </Suspense>
+            }
+          />
+          <Route
+            path="earnings"
+            element={
+              <Suspense fallback={<FarmerDashboardPageFallback />}>
+                <DriverEarnings />
+              </Suspense>
+            }
+          />
+          <Route
+            path="profile"
+            element={
+              <Suspense fallback={<FarmerDashboardPageFallback />}>
+                <DriverProfile />
+              </Suspense>
+            }
+          />
+          <Route path="*" element={<Navigate to={ROUTES.DRIVER_DASHBOARD} replace />} />
+        </Route>
+
+        {/* Driver Aliases */}
+        <Route path="/driver" element={<Navigate to={ROUTES.DRIVER_DASHBOARD} replace />} />
+        <Route path="/driver/dashboard" element={<Navigate to={ROUTES.DRIVER_DASHBOARD} replace />} />
+        <Route path="/driver/*" element={<Navigate to={ROUTES.DRIVER_DASHBOARD} replace />} />
+
+        {/* 8. Placeholder Portals */}
         <Route path={ROUTES.COMING_SOON} element={<ComingSoonPage />} />
 
         {/* 8. 404 Catch-All Page Not Found Fallback */}

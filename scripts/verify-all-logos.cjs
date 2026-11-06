@@ -12,10 +12,6 @@ const chromePaths = [
 const executablePath = chromePaths.find(p => fs.existsSync(p));
 const BASE_URL = 'http://localhost:5173';
 
-function normalizeColor(c) {
-  return c ? c.replace(/\s+/g, '').toLowerCase() : '';
-}
-
 async function run() {
   console.log('Launching browser for Universal Logo Audit...');
   const browser = await chromium.launch({ executablePath, headless: true });

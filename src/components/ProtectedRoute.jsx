@@ -3,14 +3,6 @@
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { ROUTES } from '../routes';
-import {
-  setFarmerToken,
-  setBuyerToken,
-  getFarmerToken,
-  getBuyerToken,
-  DEMO_FARMER_JWT,
-  DEMO_BUYER_JWT
-} from '../utils/api';
 
 /**
  * ProtectedRoute Component
@@ -20,6 +12,37 @@ import {
  * - mode='guest': For guest/auth routes (login/register).
  */
 export function ProtectedRoute({ role = 'buyer', mode = 'auth', children }) {
+  if (role === 'driver') {
+    const hasDriverSignedOut =
+      typeof sessionStorage !== 'undefined' &&
+      sessionStorage.getItem('driver_explicit_signout') === 'true';
+
+    let isDriverAuth = false;
+    if (!hasDriverSignedOut) {
+      try {
+        const raw = localStorage.getItem('driver_current_profile');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            isDriverAuth = true;
+          }
+        }
+      } catch {
+        isDriverAuth = false;
+      }
+    }
+
+    if (mode === 'auth' && !isDriverAuth) {
+      return <Navigate to={ROUTES.DRIVER_LOGIN} replace />;
+    }
+
+    if (mode === 'guest' && isDriverAuth) {
+      return <Navigate to={ROUTES.DRIVER_DASHBOARD} replace />;
+    }
+
+    return children ? children : <Outlet />;
+  }
+
   if (role === 'farmer') {
     const hasFarmerSignedOut =
       typeof sessionStorage !== 'undefined' &&

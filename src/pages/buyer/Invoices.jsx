@@ -11,12 +11,16 @@ import {
   Clock,
   MapPin,
   Calendar,
-  FileText
+  FileText,
+  CreditCard,
+  ShieldCheck
 } from 'lucide-react';
 import './Invoices.css';
 import { useBuyer } from '../../context/BuyerContext';
 import { ROUTES } from '../../routes';
 import EmptyState from '../../components/EmptyState';
+import DemoPaymentModal from '../../components/common/DemoPaymentModal';
+import api from '../../utils/api';
 
 // Seed historical delivered invoices for accounting records
 const ARCHIVED_INVOICES = [
@@ -62,13 +66,22 @@ export default function Invoices() {
   const [searchParams] = useSearchParams();
   const urlOrderId = searchParams.get('orderId');
 
-  const { orders, profile, lang } = useBuyer();
+  const { orders, setOrders, profile, lang } = useBuyer();
   const p = profile || {};
 
   const [searchQuery, setSearchQuery] = useState(urlOrderId || '');
   const [activeTab, setActiveTab] = useState('all'); // 'all' | 'paid' | 'pending'
   const [selectedInvoiceId, setSelectedInvoiceId] = useState(urlOrderId || null);
   const [prevUrlOrderId, setPrevUrlOrderId] = useState(urlOrderId);
+  const [payingInvoice, setPayingInvoice] = useState(null);
+  const [paidInvoiceIds, setPaidInvoiceIds] = useState(() => {
+    try {
+      const saved = localStorage.getItem('buyer_paid_invoices');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
   const printTimerRef = useRef(null);
 
   // Synchronize state during render when URL query changes (React-recommended pattern, no cascading effect)
@@ -76,6 +89,60 @@ export default function Invoices() {
     setPrevUrlOrderId(urlOrderId);
     setSelectedInvoiceId(urlOrderId);
   }
+
+  // Handle invoice payment via demo gateway
+  const handleInvoicePaymentSuccess = (paymentResult) => {
+    if (!payingInvoice) return;
+    const invId = payingInvoice.id;
+    const ordId = payingInvoice.orderId;
+
+    const nextPaidIds = [...paidInvoiceIds, invId, ordId];
+    setPaidInvoiceIds(nextPaidIds);
+    try {
+      localStorage.setItem('buyer_paid_invoices', JSON.stringify(nextPaidIds));
+    } catch {}
+
+    // Update orders list in context and localStorage
+    if (setOrders) {
+      setOrders((prev) => {
+        const updated = (prev || []).map((o) => {
+          if (o.orderId === ordId || o.id === ordId) {
+            return {
+              ...o,
+              paymentStatus: 'PAID',
+              status: 'delivered',
+              deliveryStatus: 'DELIVERED',
+              paymentMethod: paymentResult.methodTitle || paymentResult.method,
+              transactionRef: paymentResult.transactionRef,
+              utrNumber: paymentResult.utrNumber
+            };
+          }
+          return o;
+        });
+        try {
+          localStorage.setItem('buyer_orders', JSON.stringify(updated));
+          window.dispatchEvent(new CustomEvent('buyer-data-updated'));
+        } catch {}
+        return updated;
+      });
+    }
+
+    // Persist to backend if this is a live order (skip synthetic archival invoices)
+    if (ordId && !ordId.startsWith('NU-2026-00088') && !ordId.startsWith('NU-2026-00075')) {
+      try {
+        api.post(`/orders/${ordId}/pay`, {
+          paymentMethod: paymentResult.methodTitle || paymentResult.method,
+          transactionRef: paymentResult.transactionRef,
+          utrNumber: paymentResult.utrNumber
+        }).catch((err) => {
+          console.warn('Backend order payment notice (persisted locally):', err?.message);
+        });
+      } catch {}
+    }
+
+    // NOTE: Do NOT call setPayingInvoice(null) here.
+    // Modal stays in 'SUCCESS' state until buyer clicks 'Continue to Dashboard' or 'X'.
+  };
 
   // Cleanup print timer on unmount
   useEffect(() => {
@@ -92,13 +159,18 @@ export default function Invoices() {
     const liveInvoices = safeOrders.map((order, idx) => {
       const rawOrderId = String(order?.orderId || '');
       const cleanNum = rawOrderId.replace(/[^0-9]/g, '') || `${100 + idx}`;
-      const isPaid = order?.status === 'delivered';
+      const invId = `INV-2026-${cleanNum.slice(-5).padStart(5, '0')}`;
+      const isPaid =
+        order?.status === 'delivered' ||
+        order?.paymentStatus === 'PAID' ||
+        paidInvoiceIds.includes(invId) ||
+        paidInvoiceIds.includes(rawOrderId);
       const qty = Number(order?.quantityKg) || 0;
       const unitPrice = Number(order?.unitPrice) || 0;
       const totalAmount = Number(order?.totalPrice) || qty * unitPrice;
 
       return {
-        id: `INV-2026-${cleanNum.slice(-5).padStart(5, '0')}`,
+        id: invId,
         orderId: order?.orderId || `NU-2026-${cleanNum}`,
         invoiceDate: order?.orderTime || 'Today',
         cropName: order?.cropName || 'Farm Produce',
@@ -117,8 +189,13 @@ export default function Invoices() {
       };
     });
 
-    return [...liveInvoices, ...ARCHIVED_INVOICES];
-  }, [orders]);
+    const mappedArchived = ARCHIVED_INVOICES.map((arch) => ({
+      ...arch,
+      status: paidInvoiceIds.includes(arch.id) ? 'paid' : arch.status
+    }));
+
+    return [...liveInvoices, ...mappedArchived];
+  }, [orders, paidInvoiceIds]);
 
   // Derive active selected invoice for modal preview
   const selectedInvoice = useMemo(() => {
@@ -346,6 +423,17 @@ export default function Invoices() {
                 </div>
 
                 <div className="simple-item-actions">
+                  {inv.status !== 'paid' && (
+                    <button
+                      type="button"
+                      className="buyer-btn-primary"
+                      style={{ padding: '6px 12px', fontSize: '0.78rem', borderRadius: '8px', display: 'inline-flex', alignItems: 'center', gap: '5px' }}
+                      onClick={() => setPayingInvoice(inv)}
+                    >
+                      <CreditCard size={13} />
+                      <span>{lang === 'ta' ? 'பணம் செலுத்து' : 'Pay Now'}</span>
+                    </button>
+                  )}
                   <button
                     type="button"
                     className="simple-btn-view"
@@ -513,6 +601,27 @@ export default function Invoices() {
                   <span className="gtotal-val">₹{(Number(selectedInvoice.totalAmount) || 0).toLocaleString('en-IN')}</span>
                 </div>
 
+                {/* Pay Invoice Action if Pending */}
+                {selectedInvoice.status !== 'paid' && (
+                  <div style={{ marginTop: '16px', padding: '12px 14px', background: '#f0fdf4', border: '1px solid #86efac', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <ShieldCheck size={18} color="#166534" />
+                      <span style={{ fontSize: '0.82rem', color: '#166534', fontWeight: 600 }}>
+                        {lang === 'ta' ? 'பாதுகாப்பான இடைத்தரகர் இல்லா எஸ்க்ரோ நுழைவாயில்' : 'Protected by Naam Uzhavar Agri-Escrow'}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      className="buyer-btn-primary"
+                      style={{ padding: '8px 18px', borderRadius: '8px', fontSize: '0.85rem' }}
+                      onClick={() => setPayingInvoice(selectedInvoice)}
+                    >
+                      <CreditCard size={14} />
+                      <span>{lang === 'ta' ? 'இப்போதே பணம் செலுத்து' : `Pay ₹${(Number(selectedInvoice.totalAmount) || 0).toLocaleString('en-IN')} Now`}</span>
+                    </button>
+                  </div>
+                )}
+
                 {/* Minimal Footer Note */}
                 <div className="simple-sheet-footer">
                   <span>
@@ -525,6 +634,20 @@ export default function Invoices() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Demo Payment Gateway Modal */}
+      {payingInvoice && (
+        <DemoPaymentModal
+          isOpen={!!payingInvoice}
+          onClose={() => setPayingInvoice(null)}
+          amount={Number(payingInvoice.totalAmount) || 0}
+          orderId={payingInvoice.orderId || payingInvoice.id}
+          cropName={payingInvoice.cropName}
+          quantityKg={payingInvoice.quantityKg}
+          lang={lang}
+          onPaymentSuccess={handleInvoicePaymentSuccess}
+        />
       )}
     </div>
   );

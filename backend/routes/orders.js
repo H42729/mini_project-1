@@ -13,33 +13,6 @@ const BuyerRequest = require('../models/BuyerRequest');
 const isObjectId = (id) => typeof id === 'string' && /^[0-9a-fA-F]{24}$/.test(id);
 const isDbConnected = () => mongoose.connection.readyState === 1;
 
-let IN_MEMORY_BUYER_ORDERS = [
-  {
-    _id: 'ord-001',
-    id: 'ord-001',
-    orderId: 'NU-2026-8095',
-    buyer: 'buyer_demo_01',
-    farmerId: 'FMR-TN-2026-01',
-    cropDetails: {
-      name: 'Country Tomato',
-      nameTa: 'நாட்டு தக்காளி',
-      grade: 'Grade A',
-      image: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=600&auto=format&fit=crop&q=80',
-      pricePerKg: 28,
-      farmerName: 'Ramesh Kumar',
-      hub: 'Pollachi Hub'
-    },
-    quantityKg: 200,
-    totalPrice: 5600,
-    orderStatus: 'CONFIRMED',
-    deliveryStatus: 'READY_FOR_PICKUP',
-    status: 'READY_FOR_PICKUP',
-    deliveryAddress: 'Grand Palace Luxury Dining, Bypass Road, Madurai - 625016',
-    preferredDeliveryDate: '2026-11-03',
-    createdAt: new Date(Date.now() - 3600000 * 48).toISOString()
-  }
-];
-
 const resolveBuyerIds = async (buyerId) => {
   const ids = [buyerId];
   if (!isObjectId(buyerId) && isDbConnected()) {
@@ -83,7 +56,16 @@ const generateOrderId = async () => {
 // POST /api/orders - Create a new direct produce order
 router.post('/', async (req, res, next) => {
   try {
-    const { cropId, quantityKg, deliveryAddress, preferredDeliveryDate, notes } = req.body;
+    const {
+      cropId,
+      quantityKg,
+      deliveryAddress,
+      preferredDeliveryDate,
+      notes,
+      paymentMethod,
+      transactionRef,
+      utrNumber
+    } = req.body;
 
     // 1. Validate inputs
     if (!cropId) {
@@ -168,7 +150,11 @@ router.post('/', async (req, res, next) => {
       },
       deliveryAddress: address,
       preferredDeliveryDate: preferredDeliveryDate || '',
-      notes: notes || ''
+      notes: notes || '',
+      paymentStatus: 'PENDING',
+      paymentMethod: paymentMethod || 'UPI (Google Pay)',
+      transactionRef: transactionRef || `TXN-UPI-${Math.floor(100000 + Math.random() * 900000)}`,
+      utrNumber: utrNumber || `UTR-SBIN-2026-${Math.floor(10000 + Math.random() * 90000)}`
     });
 
     // Populate crop details before responding
@@ -251,6 +237,10 @@ router.post('/', async (req, res, next) => {
         preferredDeliveryDate: preferredDeliveryDate || '',
         deliveryLocation: address,
         notes: notes || '',
+      paymentStatus: 'PENDING',
+      paymentMethod: paymentMethod || 'UPI (Google Pay)',
+      transactionRef: transactionRef || `TXN-UPI-${Math.floor(100000 + Math.random() * 900000)}`,
+      utrNumber: utrNumber || `UTR-SBIN-2026-${Math.floor(10000 + Math.random() * 90000)}`,
         status: 'PENDING',
         orderId: newOrder.orderId
       });
@@ -501,6 +491,42 @@ router.patch('/:id/status', async (req, res, next) => {
 
     return res.json({
       message: `Order status advanced to "${nextStatus}" for demonstration.`,
+      order
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// POST /api/orders/:orderId/pay - Simulate demo payment for order or invoice
+router.post('/:orderId/pay', async (req, res, next) => {
+  try {
+    const { orderId } = req.params;
+    const { paymentMethod, transactionRef, utrNumber } = req.body;
+
+    const query = isObjectId(orderId) ? { _id: orderId } : { orderId };
+    const order = await Order.findOne(query);
+
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found.' });
+    }
+
+    order.paymentStatus = 'PAID';
+    order.paymentMethod = paymentMethod || 'UPI (Google Pay)';
+    order.transactionRef = transactionRef || `TXN-UPI-${Math.floor(100000 + Math.random() * 900000)}`;
+    order.utrNumber = utrNumber || `UTR-SBIN-2026-${Math.floor(10000 + Math.random() * 90000)}`;
+    order.statusHistory = order.statusHistory || [];
+    order.statusHistory.push({
+      status: order.orderStatus,
+      timestamp: new Date().toISOString(),
+      note: `Payment completed via ${order.paymentMethod}. Ref: ${order.transactionRef}`
+    });
+
+    await order.save();
+
+    return res.json({
+      success: true,
+      message: 'Demo payment recorded successfully.',
       order
     });
   } catch (error) {

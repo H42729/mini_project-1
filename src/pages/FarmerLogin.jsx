@@ -66,9 +66,12 @@ export default function FarmerLogin({
       }
     } catch {}
 
+    const submitTimer = submitTimerRef;
+    const forgotTimer = forgotTimerRef;
+
     return () => {
-      if (submitTimerRef.current) clearTimeout(submitTimerRef.current);
-      if (forgotTimerRef.current) clearTimeout(forgotTimerRef.current);
+      if (submitTimer.current) clearTimeout(submitTimer.current);
+      if (forgotTimer.current) clearTimeout(forgotTimer.current);
     };
   }, []);
 
