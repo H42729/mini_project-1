@@ -86,7 +86,22 @@ const orderSchema = new mongoose.Schema(
     paymentStatus: {
       type: String,
       enum: ['PENDING', 'ESCROW_LOCKED', 'PAID', 'RELEASED_TO_FARMER'],
-      default: 'ESCROW_LOCKED'
+      default: 'PENDING'
+    },
+    paymentMethod: {
+      type: String,
+      default: 'UPI (Google Pay)'
+    },
+    transactionRef: {
+      type: String,
+      default: ''
+    },
+    utrNumber: {
+      type: String,
+      default: ''
+    },
+    payoutClaimedAt: {
+      type: Date
     },
     pickupDate: {
       type: String,

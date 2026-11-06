@@ -295,7 +295,7 @@ export default function YieldManagement() {
                   <thead>
                     <tr>
                       <th style={{ width: '28%' }}>{lang === 'ta' ? 'விளைச்சல் பயிர்' : 'Produce Crop'}</th>
-                      <th style={{ width: '16%' }}>{lang === 'ta' ? 'ரகம் & தரம்' : 'Variety & Grade'}</th>
+                      <th style={{ width: '16%' }}>{lang === 'ta' ? 'தரம்' : 'Grade'}</th>
                       <th style={{ width: '13%' }}>{lang === 'ta' ? 'கிடைக்கும் அளவு' : 'Available Qty'}</th>
                       <th style={{ width: '13%' }}>{lang === 'ta' ? 'எதிர்பார்க்கும் விலை' : 'Expected Price'}</th>
                       <th style={{ width: '11%' }}>{lang === 'ta' ? 'ஏற்றுமதி தேதி' : 'Pickup Date'}</th>
@@ -327,12 +327,9 @@ export default function YieldManagement() {
                           </div>
                         </td>
                         <td>
-                          <div className="farmer-table-spec">
-                            <span className="farmer-spec-variety">{crop.variety || 'Standard'}</span>
-                            <span className="farmer-spec-sub">
-                              {crop.farmingMethod?.split(' ')[0] || 'Natural'} • {crop.grade || 'Grade A'}
-                            </span>
-                          </div>
+                          <span className={`farmer-grade-badge ${(crop.grade || 'Grade A').toLowerCase().replace(/\s+/g, '-')}`}>
+                            {crop.grade || 'Grade A'}
+                          </span>
                         </td>
                         <td>
                           <span className="farmer-table-num">
@@ -445,7 +442,9 @@ export default function YieldManagement() {
                           </div>
                           {crop.tamilName && <span className="crop-cell-tamil">{crop.tamilName}</span>}
                           <div className="farmer-mobile-spec-line">
-                            {crop.variety || 'Standard'} • {crop.grade || 'Grade A'} • {crop.farmingMethod?.split(' ')[0] || 'Natural'}
+                            <span className={`farmer-grade-badge ${(crop.grade || 'Grade A').toLowerCase().replace(/\s+/g, '-')}`}>
+                              {crop.grade || 'Grade A'}
+                            </span>
                           </div>
                         </div>
                       </div>

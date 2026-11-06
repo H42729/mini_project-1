@@ -53,7 +53,6 @@ async function main() {
       const switcher = document.querySelector('.role-switch-container');
       const pill = document.querySelector('.role-switch-pill');
       const container = document.querySelector('.role-select-container');
-      const root = document.querySelector('.role-select-root');
       return {
         windowWidth: window.innerWidth,
         rootScrollWidth: document.documentElement.scrollWidth,

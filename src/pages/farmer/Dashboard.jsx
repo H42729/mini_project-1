@@ -5,7 +5,6 @@ import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Wheat,
-  ShoppingBag,
   Truck,
   ArrowRight,
   Plus,
@@ -14,7 +13,8 @@ import {
   XCircle,
   MapPin,
   Calendar,
-  Sprout
+  Landmark,
+  ShieldCheck
 } from 'lucide-react';
 import { useFarmer } from '../../context/FarmerContext';
 import { deduplicateRequests } from '../../services/requestService';
@@ -35,7 +35,6 @@ export default function Dashboard() {
     crops,
     requests,
     orders,
-    metrics,
     handleAcceptRequest,
     handleRejectRequest,
     selectedRequestDetails,
@@ -78,6 +77,15 @@ export default function Dashboard() {
     pendingResponses: pendingRequestsCount + pendingOrdersCount,
     confirmedOrders: confirmedRequestsCount || 2
   };
+
+  const totalEscrowFunds = (orders || []).reduce((sum, o) => {
+    if (o.paymentStatus !== 'RELEASED_TO_FARMER' && o.orderStatus !== 'REJECTED' && o.orderStatus !== 'CANCELLED') {
+      const q = o.quantityKg ?? o.quantity ?? 0;
+      const p = o.pricePerUnit || o.cropDetails?.pricePerKg || o.offeredPrice || 0;
+      return sum + (Number(o.totalPrice ?? o.totalEstimatedValue ?? (q * p)) || 0);
+    }
+    return sum;
+  }, 0);
 
   // Combine top incoming enquiries and orders for Buyer Activity, strictly enforcing 5 distinct commercial buyers
   const buyerActivities = useMemo(() => {
@@ -250,6 +258,74 @@ export default function Dashboard() {
           <span className="buyer-summary-hint">
             {buyerEnquiries.pendingResponses} {lang === 'ta' ? 'பதில் தேவை' : 'Pending Response'} • {buyerEnquiries.confirmedOrders} {lang === 'ta' ? 'உறுதிசெய்யப்பட்டது' : 'Confirmed'}
           </span>
+        </div>
+      </div>
+
+      {/* Agri-Escrow & Direct Bank Financial Banner */}
+      <div
+        style={{
+          background: 'linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%)',
+          border: '1.5px solid #86efac',
+          borderRadius: '16px',
+          padding: '16px 20px',
+          marginBottom: '24px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '16px'
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+          <div
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: '12px',
+              background: '#dcfce7',
+              color: '#166534',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0
+            }}
+          >
+            <Landmark size={22} />
+          </div>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <h4 style={{ margin: 0, fontWeight: 800, fontSize: '1rem', color: '#166534' }}>
+                {lang === 'ta' ? 'நேரடி எஸ்க்ரோ வங்கி கணக்கு' : 'Direct Producer Escrow Settlement'}
+              </h4>
+              <span style={{ fontSize: '0.68rem', color: '#166534', background: '#bbf7d0', padding: '2px 8px', borderRadius: 9999, fontWeight: 700 }}>
+                VERIFIED ✓
+              </span>
+            </div>
+            <p style={{ margin: '3px 0 0', fontSize: '0.78rem', color: '#15803d' }}>
+              {p.bankDetails?.bankName || 'State Bank of India'} • A/c: {p.bankDetails?.accountNumber ? `•••• •••• ${p.bankDetails.accountNumber.slice(-4)}` : '•••• 1034'} • IFSC: {p.bankDetails?.ifscCode || 'SBIN0001248'}
+            </p>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
+          <div>
+            <span style={{ fontSize: '0.72rem', color: '#15803d', fontWeight: 700, textTransform: 'uppercase', display: 'block' }}>
+              {lang === 'ta' ? 'நிலுவையில் உள்ள தொகை' : 'Pending Payout'}
+            </span>
+            <span className="font-mono" style={{ fontSize: '1.25rem', fontWeight: 800, color: '#166534' }}>
+              ₹{totalEscrowFunds.toLocaleString('en-IN')}
+            </span>
+          </div>
+
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => navigate(ROUTES.FARMER_DASHBOARD_ORDERS)}
+            style={{ borderColor: '#166534', color: '#166534', background: '#ffffff', fontSize: '0.82rem', fontWeight: 700 }}
+          >
+            <ShieldCheck size={14} className="me-1" />
+            <span>{lang === 'ta' ? 'பணம் கோரு' : 'Claim Payout'}</span>
+          </Button>
         </div>
       </div>
 

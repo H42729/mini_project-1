@@ -929,7 +929,15 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
   };
 
   // Step 2: Confirm & Place Order
-  const handleConfirmCreateOrder = async ({ quantityKg, deliveryAddress, preferredDeliveryDate, notes }) => {
+  const handleConfirmCreateOrder = async ({
+    quantityKg,
+    deliveryAddress,
+    preferredDeliveryDate,
+    notes,
+    paymentMethod,
+    transactionRef,
+    utrNumber
+  }) => {
     if (!workflowCrop) return;
     const qty = Number(quantityKg);
     const available = Number(workflowCrop.availableKg || workflowCrop.quantityKg || 0);
@@ -980,6 +988,10 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
       deliveryAddress: resolvedAddress,
       preferredDeliveryDate: preferredDeliveryDate || new Date().toISOString().split('T')[0],
       notes: notes ? notes.trim() : '',
+      paymentStatus: 'PENDING',
+      paymentMethod: paymentMethod || 'UPI (Google Pay)',
+      transactionRef: transactionRef || `TXN-UPI-${Math.floor(100000 + Math.random() * 900000)}`,
+      utrNumber: utrNumber || `UTR-SBIN-2026-${Math.floor(10000 + Math.random() * 90000)}`,
       location: workflowCrop.location || workflowCrop.hubName || 'Dindigul Central',
       hub: workflowCrop.location || workflowCrop.hubName || 'Dindigul Central',
       farmer: {
@@ -1009,7 +1021,10 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
           quantityKg: qty,
           deliveryAddress: resolvedAddress,
           preferredDeliveryDate: newOrder.preferredDeliveryDate,
-          notes: newOrder.notes
+          notes: newOrder.notes,
+          paymentMethod: newOrder.paymentMethod,
+          transactionRef: newOrder.transactionRef,
+          utrNumber: newOrder.utrNumber
         });
         if (res && res.order) {
           newOrder = {
@@ -1082,6 +1097,10 @@ export function BuyerProvider({ children, buyerProfile, onLogout }) {
         deliveryLocation: resolvedAddress,
         notes: newOrder.notes,
         status: 'PENDING',
+        paymentStatus: 'PENDING',
+        paymentMethod: newOrder.paymentMethod,
+        transactionRef: newOrder.transactionRef,
+        utrNumber: newOrder.utrNumber,
         createdAt: new Date().toISOString()
       };
 

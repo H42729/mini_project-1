@@ -292,7 +292,7 @@ export function ProfileSkeleton() {
 /**
  * 9. Dashboard Overview Skeleton (Farmer & Buyer Dashboard Landing)
  */
-export function DashboardSkeleton({ role = 'farmer' }) {
+export function DashboardSkeleton({ role: _role = 'farmer' }) {
   return (
     <div className="nu-skeleton-fade-in" aria-hidden="true" style={{ width: '100%' }}>
       <HeaderSkeleton hasAction={true} />

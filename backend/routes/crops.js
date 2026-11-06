@@ -198,7 +198,7 @@ router.get('/', async (req, res, _next) => {
       count: deduplicated.length,
       crops: deduplicated
     });
-  } catch (_error) {
+  } catch {
     return res.json({
       count: FALLBACK_CROPS.length,
       crops: FALLBACK_CROPS

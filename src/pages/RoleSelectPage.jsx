@@ -535,6 +535,30 @@ export default function RoleSelectPage({
   const [showDriverPin, setShowDriverPin] = useState(false);
   const [driverRemember, setDriverRemember] = useState(true);
 
+  const completeDriverLogin = (driverData) => {
+    try {
+      localStorage.setItem('driver_current_profile', JSON.stringify(driverData));
+      sessionStorage.removeItem('driver_explicit_signout');
+    } catch (err) {
+      console.warn('Could not store driver profile:', err);
+    }
+    setToken('driver_token_kumar_m', 'driver');
+    setIsSubmitting(false);
+    setAuthSuccess(
+      lang === 'ta'
+        ? `${driverData.name || 'ஓட்டுநர்'} முனையம் சரிபார்க்கப்பட்டது! பயண வழிகளுக்கு செல்கிறது...`
+        : `Driver ${driverData.name || ''} verified! Connecting to EV Dispatch Terminal...`
+    );
+    setTimeout(() => {
+      if (onSelectDriver) {
+        onSelectDriver();
+      } else {
+        navigate(ROUTES.DRIVER_DASHBOARD);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }, 700);
+  };
+
   const handleDriverSubmit = (e) => {
     if (e) e.preventDefault();
     setAuthError('');
@@ -550,22 +574,27 @@ export default function RoleSelectPage({
     }
 
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setAuthSuccess(
-        lang === 'ta'
-          ? 'ஓட்டுநர் முனையம் சரிபார்க்கப்பட்டது! பயண வழிகளுக்கு செல்கிறது...'
-          : 'Driver vehicle verified! Connecting to EV Dispatch Terminal...'
-      );
-      setTimeout(() => {
-        if (onSelectDriver) {
-          onSelectDriver();
-        } else {
-          navigate(`${ROUTES.COMING_SOON}?role=driver`);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-      }, 1200);
-    }, 700);
+    const driverData = {
+      driverId: 'DRV-TN-2026-08',
+      name: 'Kumar M.',
+      phone: trimmedDriver.includes('@') ? '+91 94432 11098' : trimmedDriver,
+      email: trimmedDriver.includes('@') ? trimmedDriver : 'kumar.logistics@naamuzhavar.com',
+      avatar: 'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?w=300&auto=format&fit=crop&q=80',
+      assignedHub: driverHub || 'Dindigul Central Hub',
+      vehicle: {
+        model: 'Tata Ace EV Cargo',
+        vehicleNumber: 'TN 57 AB 1234',
+        type: 'Zero-Emission EV Light Commercial Vehicle (LCV)',
+        batteryCapacityKwh: 21.3,
+        currentBatteryPct: 82,
+        estimatedRangeKm: 68,
+        maxPayloadKg: 600,
+        healthPct: 98,
+        chargingStatus: 'DISCHARGING'
+      },
+      role: 'driver'
+    };
+    completeDriverLogin(driverData);
   };
 
   const handleQuickDemoDriver = () => {
@@ -574,22 +603,27 @@ export default function RoleSelectPage({
     setDriverHub('Dindigul Central Hub');
     setAuthError('');
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setAuthSuccess(
-        lang === 'ta'
-          ? 'குமார் எம். (டாடா ஏஸ் EV சரக்கு TN 57 AB 1234) - சரிபார்க்கப்பட்டது!'
-          : 'Driver Kumar M. (Tata Ace EV Cargo TN 57 AB 1234) authenticated!'
-      );
-      setTimeout(() => {
-        if (onSelectDriver) {
-          onSelectDriver();
-        } else {
-          navigate(`${ROUTES.COMING_SOON}?role=driver`);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-      }, 1100);
-    }, 600);
+    const driverData = {
+      driverId: 'DRV-TN-2026-08',
+      name: 'Kumar M.',
+      phone: '+91 94432 11098',
+      email: 'kumar.logistics@naamuzhavar.com',
+      avatar: 'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?w=300&auto=format&fit=crop&q=80',
+      assignedHub: 'Dindigul Central Hub',
+      vehicle: {
+        model: 'Tata Ace EV Cargo',
+        vehicleNumber: 'TN 57 AB 1234',
+        type: 'Zero-Emission EV Light Commercial Vehicle (LCV)',
+        batteryCapacityKwh: 21.3,
+        currentBatteryPct: 82,
+        estimatedRangeKm: 68,
+        maxPayloadKg: 600,
+        healthPct: 98,
+        chargingStatus: 'DISCHARGING'
+      },
+      role: 'driver'
+    };
+    completeDriverLogin(driverData);
   };
 
   const handleBack = () => {

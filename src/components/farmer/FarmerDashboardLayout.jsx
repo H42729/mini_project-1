@@ -16,8 +16,7 @@ import {
   Info,
   AlertCircle,
   ShieldCheck,
-  Wheat,
-  Bell
+  Wheat
 } from 'lucide-react';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import { ROUTES } from '../../routes';
@@ -156,20 +155,6 @@ function FarmerDashboardContent() {
             title="Toggle English / தமிழ்"
           >
             {lang === 'ta' ? 'English' : 'தமிழ்'}
-          </button>
-
-          {/* Notification Icon */}
-          <button
-            type="button"
-            className="buyer-icon-circle-btn"
-            aria-label="Notifications"
-            title="Notifications"
-            onClick={() => navigate(ROUTES.FARMER_DASHBOARD_REQUESTS)}
-          >
-            <Bell size={18} />
-            {pendingRequestsCount > 0 && (
-              <span className="buyer-bell-dot farmer-bell-dot">{pendingRequestsCount}</span>
-            )}
           </button>
 
           {/* Farmer Profile Pill with Dropdown */}

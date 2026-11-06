@@ -353,7 +353,7 @@ export const requestService = {
       orderStatus: 'CONFIRMED',
       deliveryStatus: 'READY_FOR_PICKUP',
       status: 'CONFIRMED',
-      paymentStatus: 'ESCROW_LOCKED',
+      paymentStatus: 'PENDING',
       pickupDate: req.preferredDeliveryDate || 'Today',
       preferredDeliveryDate: req.preferredDeliveryDate,
       deliveryAddress: req.deliveryLocation,
