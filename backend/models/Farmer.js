@@ -93,6 +93,12 @@ const farmerSchema = new mongoose.Schema(
     isVerified: {
       type: Boolean,
       default: true
+    },
+    status: {
+      type: String,
+      enum: ['active', 'suspended'],
+      default: 'active',
+      index: true
     }
   },
   {
