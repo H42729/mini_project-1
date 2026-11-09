@@ -78,17 +78,22 @@ d:\mini project\
 │   ├── App.jsx                   # Central routing matrix & code-splitting
 │   ├── routes.js                 # Central dictionary of route constants
 │   │
-│   ├── context/                  # Global State Management
+│   ├── context/                  # Global Reactive State Management
 │   │   ├── LanguageContext.jsx   # Global bilingual state ('en' | 'ta') & Web Speech TTS
-│   │   └── BuyerContext.jsx      # Commercial marketplace, order lifecycle, & delivery state
+│   │   ├── FarmerContext.jsx     # Farmer producer inventory, biddings, & escrow payouts
+│   │   ├── BuyerContext.jsx      # Commercial marketplace, order lifecycle, & delivery state
+│   │   ├── DriverContext.jsx     # EV Cargo logistics telemetry, trips, & wallet
+│   │   └── AdminContext.jsx      # Centralized operations command center & audit metrics
 │   │
-│   ├── components/               # UI Building Blocks
-│   │   ├── BuyerDashboardLayout.jsx # Persistent dashboard shell
-│   │   ├── BuyerDashboardLayout.css # Layout, drawer, navigation & modal styles
-│   │   ├── ProtectedRoute.jsx    # Authentication & guest navigation guard
+│   ├── components/               # UI Building Blocks & Layout Shells
+│   │   ├── BuyerDashboardLayout.jsx # Persistent commercial buyer layout shell
+│   │   ├── farmer/               # Farmer components (FarmerDashboardLayout, CropForm, FarmerPayoutModal, etc.)
+│   │   ├── driver/               # Driver components (DriverDashboardLayout, etc.)
+│   │   ├── admin/                # Admin components (AdminDashboardLayout, etc.)
+│   │   ├── common/               # Shared modals (DemoPaymentModal, etc.)
+│   │   ├── ProtectedRoute.jsx    # Multi-role authentication & guest navigation guard
 │   │   ├── CropCard.jsx          # Produce lot presentation card
-│   │   ├── CropModals.jsx        # Integrated Order Confirmation & Demo Approval workflow
-│   │   ├── EditProfileModal.jsx  # Commercial procurement business profile editor
+│   │   ├── CropModals.jsx        # Integrated Order Confirmation & Approval workflow
 │   │   ├── Button.jsx            # Atomic button component (primary, secondary, danger)
 │   │   ├── Card.jsx              # Reusable surface card container
 │   │   ├── Input.jsx             # Controlled input with validation styling
@@ -102,25 +107,43 @@ d:\mini project\
 │   ├── pages/                    # Route-level Page Components
 │   │   ├── HomePage.jsx          # Public branding & mission landing page
 │   │   ├── RoleSelectPage.jsx    # Unified portal selector (Farmer, Buyer, Driver)
-│   │   ├── BuyerLogin.jsx        # Buyer authentication screen
 │   │   ├── BuyerRegister.jsx     # Commercial buyer self-service onboarding
-│   │   ├── ComingSoonPage.jsx    # Farmer & Driver portal placeholder
+│   │   ├── FarmerLogin.jsx       # Farmer authentication screen
+│   │   ├── FarmerRegister.jsx    # Farmer self-service KYC onboarding
 │   │   ├── NotFoundPage.jsx      # 404 fallback view
-│   │   └── buyer/                # Sub-pages rendered inside BuyerDashboardLayout
-│   │       ├── Overview.jsx      # Morning summary KPIs, stock totals, live spotlight
-│   │       ├── Crops.jsx         # Real-time produce marketplace with multi-tier filters
-│   │       ├── Orders.jsx        # Active and historical consignment tracking table
-│   │       ├── Track.jsx         # Live EV delivery telemetry & 4-stage milestone tracker
-│   │       ├── Invoices.jsx      # Commercial GST tax invoices with thermal print
-│   │       └── Profile.jsx       # Business credentials, GSTIN, and receiving dock setup
+│   │   ├── farmer/               # 🌾 Farmer Module Sub-pages
+│   │   │   ├── Dashboard.jsx     # Producer telemetry, active yield, earnings
+│   │   │   ├── YieldManagement.jsx # Harvest listing CRUD, grade, and lot controls
+│   │   │   ├── Requests.jsx      # Buyer inquiries & commercial bid negotiation
+│   │   │   ├── OrderHistory.jsx  # Consignment fulfillment ledger & instant escrow payouts
+│   │   │   └── FarmerProfile.jsx # Land acreage, pattadhar verification, masked bank details
+│   │   ├── buyer/                # 🏢 Buyer Module Sub-pages
+│   │   │   ├── Overview.jsx      # Morning summary KPIs, stock totals, live spotlight
+│   │   │   ├── Crops.jsx         # Real-time produce marketplace with multi-tier filters
+│   │   │   ├── Orders.jsx        # Active and historical consignment tracking table
+│   │   │   ├── Track.jsx         # Live EV delivery telemetry & 4-stage milestone tracker
+│   │   │   ├── Invoices.jsx      # Commercial GST tax invoices with printable layout
+│   │   │   └── Profile.jsx       # Business credentials, GSTIN, and receiving dock setup
+│   │   ├── driver/               # ⚡ EV Logistics Driver Sub-pages
+│   │   │   ├── DriverOverview.jsx # EV Cockpit, battery %, range km, green impact
+│   │   │   ├── DriverTrips.jsx   # Waypoint navigation corridors, crate verification, PIN handshake
+│   │   │   ├── DriverEarnings.jsx # Daily earnings, trip payout history, UPI withdrawals
+│   │   │   └── DriverProfile.jsx # Vehicle specs, license verification, duty toggle
+│   │   └── admin/                # 🛡️ Centralized Admin Operations Sub-pages
+│   │       ├── AdminPage.jsx     # Admin gate & shell container
+│   │       ├── AdminOverview.jsx # Executive KPI telemetry & system revenue
+│   │       ├── AdminFarmers.jsx  # Farmer moderation & landholding inspection
+│   │       ├── AdminBuyers.jsx   # Buyer governance & order tracking
+│   │       ├── AdminDeliveries.jsx # Real-time haulage logistics monitoring
+│   │       ├── AdminDrivers.jsx  # EV fleet health & driver verification
+│   │       ├── AdminReports.jsx  # Multi-module analytics & downloadable CSV exports
+│   │       └── AdminProfile.jsx  # Security credentials & session details
 │   │
-│   ├── data/
-│   │   └── mockData.js           # Production-grade seed consignments, orders, & fleet data
 │   ├── hooks/
 │   │   └── useT.js               # Lightweight reactive translation hook
 │   ├── i18n/
-│   │   ├── en.json               # English translation dictionary (529 keys)
-│   │   └── ta.json               # Tamil translation dictionary (529 keys)
+│   │   ├── en.json               # English translation dictionary (830 keys)
+│   │   └── ta.json               # Tamil translation dictionary (830 keys)
 │   ├── styles/
 │   │   ├── global.css            # Root design tokens, typography, CSS variables
 │   │   └── custom.scss           # Bootstrap 5 theme customizations
@@ -129,15 +152,8 @@ d:\mini project\
 │       └── helpers.js            # INR currency, kilogram weight, & date formatters
 │
 ├── backend/                      # Node.js Express REST API
-│   ├── models/                   # Mongoose Database Schemas
-│   │   ├── Buyer.js              # Commercial buyer profile schema
-│   │   ├── Crop.js               # Harvest lot consignment schema
-│   │   ├── Order.js              # Order schema (orderStatus & deliveryStatus decoupled)
-│   │   └── Message.js            # In-platform communications schema
-│   ├── routes/                   # RESTful API Route Controllers
-│   │   ├── auth.js               # Login, registration, & JWT generation
-│   │   ├── crops.js              # Produce catalog search & filtering
-│   │   ├── orders.js             # Order creation, farmer approval, & delivery steps
+│   ├── models/                   # Mongoose Database Schemas (Admin, Buyer, BuyerRequest, Crop, Driver, etc.)
+│   ├── routes/                   # RESTful API Route Controllers (admin, auth, crops, driver, farmer, etc.)
 │   │   ├── profile.js            # Buyer business settings update
 │   │   └── invoices.js           # Invoice generation and retrieval
 │   ├── server.js                 # Express server configuration

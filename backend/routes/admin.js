@@ -277,6 +277,219 @@ let inMemoryOrders = [
     paymentStatus: 'PENDING',
     deliveryAddress: 'Grand Palace Luxury Dining, Bypass Road, Madurai',
     createdAt: new Date(Date.now() - 3600000 * 3).toISOString()
+  },
+  {
+    _id: 'ord_04',
+    orderId: 'ORD-9912',
+    buyerName: 'Annapoorna Veg Gourmet',
+    farmerId: 'FMR-TN-2026-03',
+    farmerName: 'P. Murugesan',
+    cropName: 'Ooty Baby Carrot',
+    cropDetails: { name: 'Ooty Baby Carrot', nameTa: 'ஊட்டி பேபி கேரட்', pricePerKg: 45, hub: 'Nilgiris Hub' },
+    quantityKg: 300,
+    totalPrice: 13500,
+    orderStatus: 'CONFIRMED',
+    deliveryStatus: 'READY_FOR_PICKUP',
+    paymentStatus: 'ESCROW_LOCKED',
+    deliveryAddress: 'Annapoorna Central Kitchen, R.S. Puram, Coimbatore',
+    driver: { name: 'Murugan S.', vehicle: 'Mahindra Treo Zor EV (TN 38 CD 5678)', phone: '+91 98421 88390' },
+    createdAt: new Date(Date.now() - 3600000 * 6).toISOString()
+  },
+  {
+    _id: 'ord_05',
+    orderId: 'ORD-3301',
+    buyerName: 'Sri Krishna Sweets & Catering',
+    farmerId: 'FMR-TN-2026-01',
+    farmerName: 'Ramesh Kumar',
+    cropName: 'Green Capsicum',
+    cropDetails: { name: 'Green Capsicum', nameTa: 'குடைமிளகாய்', pricePerKg: 42, hub: 'Pollachi Hub' },
+    quantityKg: 100,
+    totalPrice: 4200,
+    orderStatus: 'CANCELLED',
+    deliveryStatus: 'NOT_ASSIGNED',
+    paymentStatus: 'PENDING',
+    deliveryAddress: 'Sri Krishna Catering Base, Gandhipuram, Coimbatore',
+    createdAt: new Date(Date.now() - 3600000 * 48).toISOString()
+  }
+];
+
+let inMemoryBuyerRequests = [
+  {
+    _id: 'req_01',
+    requestId: 'REQ-7701',
+    crop: 'crop_01',
+    cropDetails: {
+      name: 'Country Tomato',
+      nameTa: 'நாட்டு தக்காளி',
+      category: 'vegetables',
+      variety: 'Nattu Thakkali',
+      grade: 'Grade A',
+      pricePerKg: 28,
+      image: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=500&auto=format&fit=crop&q=80'
+    },
+    buyer: 'byr_01',
+    buyerDetails: {
+      businessName: 'Sri Lakshmi Hotels',
+      contactPerson: 'K. Rajendran',
+      buyerType: 'hotel',
+      phone: '+91 98401 23456',
+      email: 'procurement@srilakshmihotels.in',
+      location: 'Gandhipuram, Coimbatore',
+      verified: true
+    },
+    farmerId: 'FMR-TN-2026-01',
+    farmerName: 'Ramesh Kumar',
+    quantity: 400,
+    unit: 'Kg',
+    offeredPrice: 27,
+    totalEstimatedValue: 10800,
+    preferredDeliveryDate: '2026-11-12',
+    deliveryLocation: 'Sri Lakshmi Hotels Kitchen Gate 1, Gandhipuram, Coimbatore',
+    notes: 'Require farm-fresh Grade A morning harvest for breakfast banquet service.',
+    status: 'PENDING',
+    createdAt: new Date(Date.now() - 3600000 * 8).toISOString()
+  },
+  {
+    _id: 'req_02',
+    requestId: 'REQ-7702',
+    crop: 'crop_02',
+    cropDetails: {
+      name: 'Batlagundu Potato',
+      nameTa: 'பட்லகுண்டு உருளைக்கிழங்கு',
+      category: 'vegetables',
+      variety: 'Kufri Jyoti',
+      grade: 'Grade A',
+      pricePerKg: 32,
+      image: 'https://images.unsplash.com/photo-1518977676601-b53f82aba655?w=500&auto=format&fit=crop&q=80'
+    },
+    buyer: 'byr_02',
+    buyerDetails: {
+      businessName: 'Fresh Mart Wholesale',
+      contactPerson: 'S. Vignesh',
+      buyerType: 'supermarket',
+      phone: '+91 98422 67890',
+      email: 'purchase@freshmartagro.com',
+      location: 'Singanallur Wholesale Yard, Coimbatore',
+      verified: true
+    },
+    farmerId: 'FMR-TN-2026-01',
+    farmerName: 'Ramesh Kumar',
+    quantity: 800,
+    unit: 'Kg',
+    offeredPrice: 30,
+    totalEstimatedValue: 24000,
+    preferredDeliveryDate: '2026-11-14',
+    deliveryLocation: 'Singanallur Wholesale Yard, Coimbatore - 641005',
+    notes: 'Bulk potato procurement for retail chain distribution across 6 branches.',
+    status: 'ACCEPTED',
+    createdAt: new Date(Date.now() - 3600000 * 20).toISOString()
+  },
+  {
+    _id: 'req_03',
+    requestId: 'REQ-7703',
+    crop: 'crop_03',
+    cropDetails: {
+      name: 'Red Onion (Chinna Vengayam)',
+      nameTa: 'சின்ன வெங்காயம்',
+      category: 'vegetables',
+      variety: 'Small Shallot A-Grade',
+      grade: 'Grade A',
+      pricePerKg: 55,
+      image: 'https://images.unsplash.com/photo-1618512496248-a07fe83aa8cb?w=500&auto=format&fit=crop&q=80'
+    },
+    buyer: 'byr_03',
+    buyerDetails: {
+      businessName: 'Grand Palace Luxury Dining',
+      contactPerson: 'Chef Anand',
+      buyerType: 'restaurant',
+      phone: '+91 98940 11223',
+      email: 'orders@grandpalacerestaurant.in',
+      location: 'Bypass Road, Madurai',
+      verified: true
+    },
+    farmerId: 'FMR-TN-2026-02',
+    farmerName: 'M. Chinnasamy',
+    quantity: 150,
+    unit: 'Kg',
+    offeredPrice: 55,
+    totalEstimatedValue: 8250,
+    preferredDeliveryDate: '2026-11-10',
+    deliveryLocation: 'Grand Palace Luxury Dining, Bypass Road, Madurai',
+    notes: 'Converted to confirmed order ORD-2184.',
+    status: 'CONVERTED_TO_ORDER',
+    orderId: 'ORD-2184',
+    createdAt: new Date(Date.now() - 3600000 * 36).toISOString()
+  },
+  {
+    _id: 'req_04',
+    requestId: 'REQ-7704',
+    crop: 'crop_04',
+    cropDetails: {
+      name: 'Green Capsicum',
+      nameTa: 'குடைமிளகாய்',
+      category: 'vegetables',
+      variety: 'Bell Pepper Green',
+      grade: 'Grade B',
+      pricePerKg: 42,
+      image: 'https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?w=500&auto=format&fit=crop&q=80'
+    },
+    buyer: 'byr_04',
+    buyerDetails: {
+      businessName: 'Annapoorna Veg Gourmet',
+      contactPerson: 'V. Sundaram',
+      buyerType: 'restaurant',
+      phone: '+91 94430 45678',
+      email: 'procurement@annapoornaveg.com',
+      location: 'R.S. Puram, Coimbatore',
+      verified: false
+    },
+    farmerId: 'FMR-TN-2026-03',
+    farmerName: 'P. Murugesan',
+    quantity: 150,
+    unit: 'Kg',
+    offeredPrice: 32,
+    totalEstimatedValue: 4800,
+    preferredDeliveryDate: '2026-11-15',
+    deliveryLocation: 'Annapoorna Central Kitchen, R.S. Puram, Coimbatore',
+    notes: 'Offer rejected due to price discrepancy.',
+    status: 'REJECTED',
+    rejectionReason: 'Offered price (₹32) below current wholesale farmgate base price (₹42).',
+    createdAt: new Date(Date.now() - 3600000 * 48).toISOString()
+  },
+  {
+    _id: 'req_05',
+    requestId: 'REQ-7705',
+    crop: 'crop_05',
+    cropDetails: {
+      name: 'Crispy Cabbage',
+      nameTa: 'முட்டைக்கோஸ்',
+      category: 'vegetables',
+      variety: 'Golden Acre',
+      grade: 'Grade A',
+      pricePerKg: 20,
+      image: 'https://images.unsplash.com/photo-1594282486552-05b4d80fbb9f?w=500&auto=format&fit=crop&q=80'
+    },
+    buyer: 'byr_04',
+    buyerDetails: {
+      businessName: 'Annapoorna Veg Gourmet',
+      contactPerson: 'V. Sundaram',
+      buyerType: 'restaurant',
+      phone: '+91 94430 45678',
+      email: 'procurement@annapoornaveg.com',
+      location: 'R.S. Puram, Coimbatore',
+      verified: true
+    },
+    farmerId: 'FMR-TN-2026-02',
+    farmerName: 'M. Chinnasamy',
+    quantity: 500,
+    unit: 'Kg',
+    offeredPrice: 19,
+    totalEstimatedValue: 9500,
+    preferredDeliveryDate: '2026-11-13',
+    deliveryLocation: 'Annapoorna Central Kitchen, R.S. Puram, Coimbatore',
+    notes: 'Direct farm shipment needed before morning prep.',
+    status: 'PENDING',
+    createdAt: new Date(Date.now() - 3600000 * 5).toISOString()
   }
 ];
 
@@ -705,16 +918,36 @@ router.get('/overview', adminAuthMiddleware, async (req, res, next) => {
         count: d.count
       }));
 
-      // 5. Crop Category Distribution
-      const cropCatAgg = await Crop.aggregate([
-        { $match: { status: { $ne: 'removed' } } },
-        { $group: { _id: '$category', count: { $sum: 1 }, totalKg: { $sum: '$quantityKg' } } }
-      ]);
-      cropDistribution = cropCatAgg.map((c) => ({
-        category: c._id || 'produce',
-        count: c.count,
-        totalKg: c.totalKg
-      }));
+      // 5. Vegetable Variety Distribution (Platform supplies 100% fresh vegetables)
+      const allActiveCrops = await Crop.find({
+        status: { $ne: 'removed' }
+      });
+
+      const vegGroups = {
+        Tomatoes: { category: 'Tomatoes', count: 0, totalKg: 0 },
+        Potatoes: { category: 'Potatoes', count: 0, totalKg: 0 },
+        Onions: { category: 'Onions', count: 0, totalKg: 0 },
+        Carrots: { category: 'Carrots', count: 0, totalKg: 0 },
+        'Other Fresh Vegetables': { category: 'Other Fresh Vegetables', count: 0, totalKg: 0 }
+      };
+
+      allActiveCrops.forEach((c) => {
+        const name = (c.name || '').toLowerCase();
+        if (name.includes('coconut') || name.includes('pomegranate')) return;
+
+        let key = 'Other Fresh Vegetables';
+        if (name.includes('tomato') || name.includes('தக்காளி')) key = 'Tomatoes';
+        else if (name.includes('potato') || name.includes('உருளை')) key = 'Potatoes';
+        else if (name.includes('onion') || name.includes('shallot') || name.includes('வெங்காயம்')) key = 'Onions';
+        else if (name.includes('carrot') || name.includes('கேரட்')) key = 'Carrots';
+
+        vegGroups[key].count += 1;
+        vegGroups[key].totalKg += (Number(c.quantityKg) || 0);
+      });
+
+      cropDistribution = Object.values(vegGroups)
+        .filter((g) => g.totalKg > 0)
+        .sort((a, b) => b.totalKg - a.totalKg);
 
       // 6. Buyer Activity by Type
       const buyerTypeAgg = await Buyer.aggregate([
@@ -772,8 +1005,11 @@ router.get('/overview', adminAuthMiddleware, async (req, res, next) => {
       ];
 
       cropDistribution = [
-        { category: 'vegetables', count: inMemoryCrops.filter((c) => c.category === 'vegetables').length, totalKg: 850 },
-        { category: 'tubers', count: inMemoryCrops.filter((c) => c.category === 'tubers').length, totalKg: 800 }
+        { category: 'Tomatoes', count: 8, totalKg: 4950 },
+        { category: 'Potatoes', count: 5, totalKg: 3620 },
+        { category: 'Onions', count: 4, totalKg: 2070 },
+        { category: 'Carrots', count: 3, totalKg: 1172 },
+        { category: 'Other Fresh Vegetables', count: 12, totalKg: 4200 }
       ];
 
       buyerActivity = [
@@ -1539,7 +1775,369 @@ router.patch('/drivers/:id/status', adminAuthMiddleware, async (req, res, next) 
 });
 
 // ============================================================================
-// 6. REPORTS & ANALYTICS DATA ENDPOINT
+// 6. PURCHASE REQUESTS MANAGEMENT ENDPOINTS
+// ============================================================================
+
+// GET /api/admin/requests - Commercial buyer purchase inquiries & offers
+router.get('/requests', adminAuthMiddleware, async (req, res, next) => {
+  try {
+    const { search, status, page = 1, limit = 10 } = req.query;
+    const p = Math.max(1, Number(page) || 1);
+    const l = Math.max(1, Math.min(50, Number(limit) || 10));
+
+    if (isDbConnected()) {
+      const query = {};
+      if (search) {
+        const q = sanitizeRegex(search);
+        query.$or = [
+          { requestId: new RegExp(q, 'i') },
+          { 'cropDetails.name': new RegExp(q, 'i') },
+          { 'buyerDetails.businessName': new RegExp(q, 'i') },
+          { farmerName: new RegExp(q, 'i') },
+          { deliveryLocation: new RegExp(q, 'i') }
+        ];
+      }
+      if (status && status !== 'all') {
+        query.status = status;
+      }
+
+      const totalCount = await BuyerRequest.countDocuments(query);
+      const requests = await BuyerRequest.find(query)
+        .sort({ createdAt: -1 })
+        .skip((p - 1) * l)
+        .limit(l);
+
+      // Aggregate global pipeline metrics across all requests
+      const metricsAgg = await BuyerRequest.aggregate([
+        {
+          $group: {
+            _id: null,
+            total: { $sum: 1 },
+            pending: { $sum: { $cond: [{ $eq: ['$status', 'PENDING'] }, 1, 0] } },
+            accepted: { $sum: { $cond: [{ $eq: ['$status', 'ACCEPTED'] }, 1, 0] } },
+            converted: { $sum: { $cond: [{ $eq: ['$status', 'CONVERTED_TO_ORDER'] }, 1, 0] } },
+            rejected: { $sum: { $cond: [{ $eq: ['$status', 'REJECTED'] }, 1, 0] } },
+            totalKg: { $sum: '$quantity' },
+            totalValue: { $sum: '$totalEstimatedValue' }
+          }
+        }
+      ]);
+
+      const m = metricsAgg.length > 0 ? metricsAgg[0] : {};
+
+      return res.json({
+        success: true,
+        totalCount,
+        page: p,
+        totalPages: Math.ceil(totalCount / l) || 1,
+        requests,
+        metrics: {
+          total: m.total || totalCount,
+          pending: m.pending || 0,
+          accepted: m.accepted || 0,
+          converted: m.converted || 0,
+          rejected: m.rejected || 0,
+          totalInquiredKg: m.totalKg || 0,
+          totalInquiredValue: m.totalValue || 0
+        }
+      });
+    }
+
+    // In-Memory Fallback
+    let list = [...inMemoryBuyerRequests];
+    if (search) {
+      const q = search.toLowerCase();
+      list = list.filter((r) =>
+        (r.requestId && r.requestId.toLowerCase().includes(q)) ||
+        (r.cropDetails?.name && r.cropDetails.name.toLowerCase().includes(q)) ||
+        (r.buyerDetails?.businessName && r.buyerDetails.businessName.toLowerCase().includes(q)) ||
+        (r.farmerName && r.farmerName.toLowerCase().includes(q)) ||
+        (r.deliveryLocation && r.deliveryLocation.toLowerCase().includes(q))
+      );
+    }
+    if (status && status !== 'all') {
+      list = list.filter((r) => r.status === status);
+    }
+
+    const totalCount = list.length;
+    const paginated = list.slice((p - 1) * l, p * l);
+
+    const metrics = {
+      total: inMemoryBuyerRequests.length,
+      pending: inMemoryBuyerRequests.filter((r) => r.status === 'PENDING').length,
+      accepted: inMemoryBuyerRequests.filter((r) => r.status === 'ACCEPTED').length,
+      converted: inMemoryBuyerRequests.filter((r) => r.status === 'CONVERTED_TO_ORDER').length,
+      rejected: inMemoryBuyerRequests.filter((r) => r.status === 'REJECTED').length,
+      totalInquiredKg: inMemoryBuyerRequests.reduce((sum, r) => sum + (Number(r.quantity) || 0), 0),
+      totalInquiredValue: inMemoryBuyerRequests.reduce((sum, r) => sum + (Number(r.totalEstimatedValue) || 0), 0)
+    };
+
+    return res.json({
+      success: true,
+      totalCount,
+      page: p,
+      totalPages: Math.ceil(totalCount / l) || 1,
+      requests: paginated,
+      metrics
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// GET /api/admin/requests/:id - Single purchase inquiry detail
+router.get('/requests/:id', adminAuthMiddleware, async (req, res, next) => {
+  try {
+    const rawId = req.params.id;
+    let request = null;
+
+    if (isDbConnected()) {
+      request = await BuyerRequest.findOne(buildQuery(rawId, 'requestId'));
+      if (!request) return res.status(404).json({ message: 'Purchase request not found' });
+      return res.json({ success: true, request });
+    }
+
+    // In-Memory
+    request = inMemoryBuyerRequests.find((r) => r._id === rawId || r.requestId === rawId);
+    if (!request) return res.status(404).json({ message: 'Purchase request not found' });
+
+    return res.json({ success: true, request });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// ============================================================================
+// 7. ORDER & FINANCIAL ESCROW MANAGEMENT ENDPOINTS
+// ============================================================================
+
+// GET /api/admin/orders - Commercial order ledger & escrow tracking
+router.get('/orders', adminAuthMiddleware, async (req, res, next) => {
+  try {
+    const { search, orderStatus, paymentStatus, deliveryStatus, page = 1, limit = 10 } = req.query;
+    const p = Math.max(1, Number(page) || 1);
+    const l = Math.max(1, Math.min(50, Number(limit) || 10));
+
+    if (isDbConnected()) {
+      const query = {};
+      if (search) {
+        const q = sanitizeRegex(search);
+        query.$or = [
+          { orderId: new RegExp(q, 'i') },
+          { 'cropDetails.name': new RegExp(q, 'i') },
+          { buyerName: new RegExp(q, 'i') },
+          { 'buyer.businessName': new RegExp(q, 'i') },
+          { farmerName: new RegExp(q, 'i') },
+          { deliveryAddress: new RegExp(q, 'i') }
+        ];
+      }
+      if (orderStatus && orderStatus !== 'all') {
+        query.orderStatus = orderStatus;
+      }
+      if (paymentStatus && paymentStatus !== 'all') {
+        query.paymentStatus = paymentStatus;
+      }
+      if (deliveryStatus && deliveryStatus !== 'all') {
+        query.deliveryStatus = deliveryStatus;
+      }
+
+      const totalCount = await Order.countDocuments(query);
+      const orders = await Order.find(query)
+        .sort({ createdAt: -1 })
+        .skip((p - 1) * l)
+        .limit(l);
+
+      // Aggregate global commercial & escrow metrics
+      const metricsAgg = await Order.aggregate([
+        {
+          $group: {
+            _id: null,
+            totalOrders: { $sum: 1 },
+            confirmedOrders: { $sum: { $cond: [{ $eq: ['$orderStatus', 'CONFIRMED'] }, 1, 0] } },
+            pendingApproval: { $sum: { $cond: [{ $eq: ['$orderStatus', 'PENDING_FARMER_APPROVAL'] }, 1, 0] } },
+            cancelledOrders: { $sum: { $cond: [{ $in: ['$orderStatus', ['CANCELLED', 'REJECTED']] }, 1, 0] } },
+            totalRevenue: {
+              $sum: {
+                $cond: [
+                  { $in: ['$orderStatus', ['CONFIRMED', 'DELIVERED']] },
+                  '$totalPrice',
+                  0
+                ]
+              }
+            },
+            escrowLocked: {
+              $sum: {
+                $cond: [{ $eq: ['$paymentStatus', 'ESCROW_LOCKED'] }, '$totalPrice', 0]
+              }
+            },
+            releasedToFarmer: {
+              $sum: {
+                $cond: [{ $eq: ['$paymentStatus', 'RELEASED_TO_FARMER'] }, '$totalPrice', 0]
+              }
+            },
+            totalKg: {
+              $sum: {
+                $cond: [
+                  { $in: ['$orderStatus', ['CONFIRMED', 'DELIVERED']] },
+                  '$quantityKg',
+                  0
+                ]
+              }
+            }
+          }
+        }
+      ]);
+
+      const m = metricsAgg.length > 0 ? metricsAgg[0] : {};
+
+      return res.json({
+        success: true,
+        totalCount,
+        page: p,
+        totalPages: Math.ceil(totalCount / l) || 1,
+        orders,
+        metrics: {
+          totalOrders: m.totalOrders || totalCount,
+          confirmedOrders: m.confirmedOrders || 0,
+          pendingApproval: m.pendingApproval || 0,
+          cancelledOrders: m.cancelledOrders || 0,
+          totalRevenue: m.totalRevenue || 0,
+          escrowLocked: m.escrowLocked || 0,
+          releasedToFarmer: m.releasedToFarmer || 0,
+          totalKg: m.totalKg || 0
+        }
+      });
+    }
+
+    // In-Memory Fallback
+    let list = [...inMemoryOrders];
+    if (search) {
+      const q = search.toLowerCase();
+      list = list.filter((o) =>
+        (o.orderId && o.orderId.toLowerCase().includes(q)) ||
+        (o.cropName && o.cropName.toLowerCase().includes(q)) ||
+        (o.cropDetails?.name && o.cropDetails.name.toLowerCase().includes(q)) ||
+        (o.buyerName && o.buyerName.toLowerCase().includes(q)) ||
+        (o.farmerName && o.farmerName.toLowerCase().includes(q)) ||
+        (o.deliveryAddress && o.deliveryAddress.toLowerCase().includes(q))
+      );
+    }
+    if (orderStatus && orderStatus !== 'all') {
+      list = list.filter((o) => o.orderStatus === orderStatus);
+    }
+    if (paymentStatus && paymentStatus !== 'all') {
+      list = list.filter((o) => o.paymentStatus === paymentStatus);
+    }
+    if (deliveryStatus && deliveryStatus !== 'all') {
+      list = list.filter((o) => o.deliveryStatus === deliveryStatus);
+    }
+
+    const totalCount = list.length;
+    const paginated = list.slice((p - 1) * l, p * l);
+
+    const valid = inMemoryOrders.filter((o) => !['CANCELLED', 'REJECTED'].includes(o.orderStatus));
+    const metrics = {
+      totalOrders: inMemoryOrders.length,
+      confirmedOrders: inMemoryOrders.filter((o) => o.orderStatus === 'CONFIRMED').length,
+      pendingApproval: inMemoryOrders.filter((o) => o.orderStatus === 'PENDING_FARMER_APPROVAL').length,
+      cancelledOrders: inMemoryOrders.filter((o) => ['CANCELLED', 'REJECTED'].includes(o.orderStatus)).length,
+      totalRevenue: valid.reduce((sum, o) => sum + (Number(o.totalPrice) || 0), 0),
+      escrowLocked: inMemoryOrders.filter((o) => o.paymentStatus === 'ESCROW_LOCKED').reduce((sum, o) => sum + (Number(o.totalPrice) || 0), 0),
+      releasedToFarmer: inMemoryOrders.filter((o) => o.paymentStatus === 'RELEASED_TO_FARMER').reduce((sum, o) => sum + (Number(o.totalPrice) || 0), 0),
+      totalKg: valid.reduce((sum, o) => sum + (Number(o.quantityKg) || 0), 0)
+    };
+
+    return res.json({
+      success: true,
+      totalCount,
+      page: p,
+      totalPages: Math.ceil(totalCount / l) || 1,
+      orders: paginated,
+      metrics
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// GET /api/admin/orders/:id - Single order details with trip info
+router.get('/orders/:id', adminAuthMiddleware, async (req, res, next) => {
+  try {
+    const rawId = req.params.id;
+    let order = null;
+
+    if (isDbConnected()) {
+      order = await Order.findOne(buildQuery(rawId, 'orderId'));
+      if (!order) return res.status(404).json({ message: 'Order not found' });
+      const trip = await Trip.findOne({ orderId: order.orderId });
+      return res.json({ success: true, order, trip });
+    }
+
+    // In-Memory
+    order = inMemoryOrders.find((o) => o._id === rawId || o.orderId === rawId);
+    if (!order) return res.status(404).json({ message: 'Order not found' });
+
+    return res.json({
+      success: true,
+      order,
+      trip: {
+        tripId: `TRIP-${order.orderId}`,
+        orderId: order.orderId,
+        driverName: order.driver?.name || 'Kumar M.',
+        status: order.deliveryStatus
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// PATCH /api/admin/orders/:id/status - Admin intervention: update orderStatus, paymentStatus, or deliveryStatus
+router.patch('/orders/:id/status', adminAuthMiddleware, async (req, res, next) => {
+  try {
+    const rawId = req.params.id;
+    const { orderStatus, paymentStatus, deliveryStatus, note } = req.body;
+
+    if (isDbConnected()) {
+      const order = await Order.findOne(buildQuery(rawId, 'orderId'));
+      if (!order) return res.status(404).json({ message: 'Order not found' });
+
+      if (orderStatus) order.orderStatus = orderStatus;
+      if (paymentStatus) order.paymentStatus = paymentStatus;
+      if (deliveryStatus) order.deliveryStatus = deliveryStatus;
+      if (note) {
+        order.adminNote = note;
+      }
+      await order.save();
+
+      return res.json({
+        success: true,
+        message: `Order #${order.orderId} updated by Central Operations Administrator`,
+        order
+      });
+    }
+
+    // In-Memory
+    const order = inMemoryOrders.find((o) => o._id === rawId || o.orderId === rawId);
+    if (!order) return res.status(404).json({ message: 'Order not found' });
+
+    if (orderStatus) order.orderStatus = orderStatus;
+    if (paymentStatus) order.paymentStatus = paymentStatus;
+    if (deliveryStatus) order.deliveryStatus = deliveryStatus;
+    if (note) order.adminNote = note;
+
+    return res.json({
+      success: true,
+      message: `Order #${order.orderId} status updated successfully`,
+      order
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// ============================================================================
+// 8. REPORTS & ANALYTICS DATA ENDPOINT
 // ============================================================================
 
 // GET /api/admin/reports - Multi-tab aggregations (Farmer, Buyer, Delivery, Overall)
@@ -1915,6 +2513,98 @@ router.get('/reports/export', adminAuthMiddleware, async (req, res, next) => {
       ];
 
       return buildCsvResponse(res, `naam_uzhavar_deliveries_${timestamp}.csv`, headers, flat);
+    }
+
+    if (module === 'requests') {
+      const records = isDbConnected()
+        ? await BuyerRequest.find().sort({ createdAt: -1 })
+        : inMemoryBuyerRequests;
+
+      const flat = records.map((r) => ({
+        requestId: r.requestId,
+        cropName: r.cropDetails?.name || 'Produce',
+        variety: r.cropDetails?.variety || 'Standard',
+        grade: r.cropDetails?.grade || 'Grade A',
+        buyerBusiness: r.buyerDetails?.businessName || 'Buyer',
+        buyerType: r.buyerDetails?.buyerType || 'Commercial',
+        buyerPhone: r.buyerDetails?.phone || '',
+        farmerId: r.farmerId || '',
+        farmerName: r.farmerName || '',
+        quantityKg: r.quantity || 0,
+        offeredPrice: r.offeredPrice || 0,
+        totalValue: r.totalEstimatedValue || 0,
+        deliveryLocation: r.deliveryLocation || '',
+        preferredDate: r.preferredDeliveryDate || 'Immediate',
+        status: r.status || 'PENDING',
+        createdAt: new Date(r.createdAt || Date.now()).toLocaleDateString('en-IN')
+      }));
+
+      const headers = [
+        { label: 'Request ID', key: 'requestId' },
+        { label: 'Vegetable Produce', key: 'cropName' },
+        { label: 'Variety', key: 'variety' },
+        { label: 'Quality Grade', key: 'grade' },
+        { label: 'Buyer Business', key: 'buyerBusiness' },
+        { label: 'Buyer Type', key: 'buyerType' },
+        { label: 'Contact Phone', key: 'buyerPhone' },
+        { label: 'Farmer ID', key: 'farmerId' },
+        { label: 'Target Farmer', key: 'farmerName' },
+        { label: 'Quantity (Kg)', key: 'quantityKg' },
+        { label: 'Offered Rate (₹/Kg)', key: 'offeredPrice' },
+        { label: 'Total Value (₹)', key: 'totalValue' },
+        { label: 'Receiving Dock', key: 'deliveryLocation' },
+        { label: 'Preferred Date', key: 'preferredDate' },
+        { label: 'Status', key: 'status' },
+        { label: 'Request Date', key: 'createdAt' }
+      ];
+
+      return buildCsvResponse(res, `naam_uzhavar_purchase_requests_${timestamp}.csv`, headers, flat);
+    }
+
+    if (module === 'orders') {
+      const records = isDbConnected()
+        ? await Order.find().sort({ createdAt: -1 })
+        : inMemoryOrders;
+
+      const flat = records.map((o) => ({
+        orderId: o.orderId,
+        cropName: o.cropDetails?.name || o.cropName || 'Produce',
+        grade: o.cropDetails?.grade || 'Grade A',
+        quantityKg: o.quantityKg || 0,
+        pricePerKg: o.cropDetails?.pricePerKg || Math.round((o.totalPrice || 0) / (o.quantityKg || 1)),
+        totalPrice: o.totalPrice || 0,
+        buyerName: o.buyerName || o.buyerDetails?.businessName || 'Commercial Buyer',
+        farmerId: o.farmerId || '',
+        farmerName: o.farmerName || o.cropDetails?.farmerName || 'Farmer',
+        orderStatus: o.orderStatus || 'CONFIRMED',
+        paymentStatus: o.paymentStatus || 'PENDING',
+        deliveryStatus: o.deliveryStatus || 'NOT_ASSIGNED',
+        paymentMethod: o.paymentMethod || 'UPI Escrow',
+        driverName: o.driver?.name || 'Unassigned',
+        deliveryAddress: o.deliveryAddress || '',
+        createdAt: new Date(o.createdAt || Date.now()).toLocaleDateString('en-IN')
+      }));
+
+      const headers = [
+        { label: 'Order ID', key: 'orderId' },
+        { label: 'Crop Produce', key: 'cropName' },
+        { label: 'Grade', key: 'grade' },
+        { label: 'Quantity (Kg)', key: 'quantityKg' },
+        { label: 'Rate (₹/Kg)', key: 'pricePerKg' },
+        { label: 'Total Amount (₹)', key: 'totalPrice' },
+        { label: 'Buyer Name', key: 'buyerName' },
+        { label: 'Farmer ID', key: 'farmerId' },
+        { label: 'Farmer Name', key: 'farmerName' },
+        { label: 'Approval Status', key: 'orderStatus' },
+        { label: 'Escrow / Payment', key: 'paymentStatus' },
+        { label: 'Delivery Milestone', key: 'deliveryStatus' },
+        { label: 'Payment Method', key: 'paymentMethod' },
+        { label: 'Assigned Driver', key: 'driverName' },
+        { label: 'Drop-off Location', key: 'deliveryAddress' },
+        { label: 'Order Date', key: 'createdAt' }
+      ];
+
+      return buildCsvResponse(res, `naam_uzhavar_orders_ledger_${timestamp}.csv`, headers, flat);
     }
 
     // Default: Crops Inventory

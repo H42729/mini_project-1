@@ -13,7 +13,9 @@ import {
   Shield,
   Truck,
   X,
-  ArrowRight
+  ArrowRight,
+  ShoppingCart,
+  Package
 } from 'lucide-react';
 import { useAdmin } from '../../context/AdminContext';
 import { ROUTES } from '../../routes';
@@ -60,8 +62,10 @@ export default function AdminDashboardLayout() {
     { to: ROUTES.ADMIN, label: 'Dashboard', shortLabel: 'Dashboard', end: true },
     { to: ROUTES.ADMIN_FARMERS, label: 'Farmer Management', shortLabel: 'Farmer' },
     { to: ROUTES.ADMIN_BUYERS, label: 'Buyer Management', shortLabel: 'Buyer' },
-    { to: ROUTES.ADMIN_DELIVERIES, label: 'Delivery Logistics', shortLabel: 'Delivery' },
     { to: ROUTES.ADMIN_DRIVERS, label: 'Driver Management', shortLabel: 'Driver' },
+    { to: ROUTES.ADMIN_REQUESTS, label: 'Purchase Requests', shortLabel: 'Requests' },
+    { to: ROUTES.ADMIN_DELIVERIES, label: 'Delivery Management', shortLabel: 'Delivery' },
+    { to: ROUTES.ADMIN_ORDERS, label: 'Order Management', shortLabel: 'Orders' },
     { to: ROUTES.ADMIN_REPORTS, label: 'Reports & Analytics', shortLabel: 'Report' }
   ];
 
@@ -88,8 +92,10 @@ export default function AdminDashboardLayout() {
     const path = location.pathname.toLowerCase();
     if (path.includes('/farmers')) return 'Farmer Accounts & Crop Directory';
     if (path.includes('/buyers')) return 'Commercial Buyers & Procurement Enquiries';
-    if (path.includes('/deliveries')) return 'Live Consignments & Dispatch Status';
     if (path.includes('/drivers')) return 'Driver Roster & Fleet Assignment';
+    if (path.includes('/requests')) return 'Procurement Enquiries & Commercial Purchase Offers';
+    if (path.includes('/deliveries')) return 'Live Consignments & Dispatch Status';
+    if (path.includes('/orders')) return 'Order Lifecycle, Escrow Holds & Financial Settlements';
     if (path.includes('/reports')) return 'Operations Reports & Data Export';
     if (path.includes('/profile')) return 'Administrator Account & Security Settings';
     return 'Platform Vitality & Ledger Overview';
@@ -105,8 +111,10 @@ export default function AdminDashboardLayout() {
   const searchResults = [
     { title: 'Farmer Producers Directory', path: ROUTES.ADMIN_FARMERS, icon: Sprout, cat: 'Directory' },
     { title: 'Commercial Buyers Network', path: ROUTES.ADMIN_BUYERS, icon: User, cat: 'Directory' },
-    { title: 'Live EV Fleet Dispatches', path: ROUTES.ADMIN_DELIVERIES, icon: Truck, cat: 'Logistics' },
     { title: 'EV Fleet Driver Roster', path: ROUTES.ADMIN_DRIVERS, icon: Truck, cat: 'Logistics' },
+    { title: 'Purchase Requests & Inquiries', path: ROUTES.ADMIN_REQUESTS, icon: ShoppingCart, cat: 'Commercial' },
+    { title: 'Live EV Fleet Dispatches', path: ROUTES.ADMIN_DELIVERIES, icon: Truck, cat: 'Logistics' },
+    { title: 'Commercial Orders & Escrow Ledger', path: ROUTES.ADMIN_ORDERS, icon: Package, cat: 'Commercial' },
     { title: 'Commodity Supply & Demand Ledger', path: ROUTES.ADMIN_REPORTS, icon: FileText, cat: 'Analytics' }
   ].filter((item) => !quickSearchQuery.trim() || item.title.toLowerCase().includes(quickSearchQuery.toLowerCase()));
 
@@ -114,31 +122,25 @@ export default function AdminDashboardLayout() {
     <div className="admin-layout-wrapper">
       <div className="admin-main-container">
         {/* ================================================================= */}
-        {/* TOP NAVBAR (Nexora Brand + Pill Switcher + Circle Action Icons)   */}
+        {/* TOP HEADER (Brand Logo + Circle Action Icons)                     */}
         {/* ================================================================= */}
         <header className="admin-top-navbar">
           {/* Left Brand */}
-          <NavLink to={ROUTES.ADMIN} className="admin-brand-group">
-            <div className="admin-brand-icon-box">
-              <Sprout size={20} />
+          <NavLink to={ROUTES.ADMIN} className="admin-brand-group" title="Naam Uzhavar Central Operations">
+            <img
+              src="/logo.png"
+              alt="Naam Uzhavar"
+              className="admin-brand-logo-img"
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = '/logo-emblem.png';
+              }}
+            />
+            <div className="d-flex flex-column">
+              <h1 className="admin-brand-title">Naam Uzhavar</h1>
+              <span className="admin-brand-subtitle">Central Operations Console</span>
             </div>
-            <h1 className="admin-brand-title">Naam Uzhavar</h1>
           </NavLink>
-
-          {/* Center Segmented Pill Navigation */}
-          <nav className="admin-nav-pill-container">
-            {navLinks.map((item) => (
-              <NavLink
-                key={item.to || item.label}
-                to={item.to}
-                end={item.end}
-                className={({ isActive }) => `admin-nav-pill ${isActive ? 'active' : ''}`}
-                title={item.label}
-              >
-                <span>{item.label}</span>
-              </NavLink>
-            ))}
-          </nav>
 
           {/* Right Action Icons (Unified Harmonious Luxury Toolbar) */}
           <div className="admin-header-actions" ref={actionsRef}>
@@ -299,6 +301,25 @@ export default function AdminDashboardLayout() {
             </button>
           </div>
         </header>
+
+        {/* ================================================================= */}
+        {/* SECONDARY NAVIGATION BAR (Brought Down Under Header)              */}
+        {/* ================================================================= */}
+        <nav className="admin-navbar-subrow" aria-label="Admin Modules Navigation">
+          <div className="admin-nav-pill-container">
+            {navLinks.map((item) => (
+              <NavLink
+                key={item.to || item.label}
+                to={item.to}
+                end={item.end}
+                className={({ isActive }) => `admin-nav-pill ${isActive ? 'active' : ''}`}
+                title={item.label}
+              >
+                <span>{item.label}</span>
+              </NavLink>
+            ))}
+          </div>
+        </nav>
 
         {/* Quick Search Modal Palette */}
         {showSearchModal && (

@@ -10,18 +10,14 @@
 }
 
 /* ==========================================================================
-   1. TOP HORIZONTAL NAVIGATION (Nexora Pill Switcher)
+   1. TOP HORIZONTAL NAVIGATION (Nexora Topbar + Brought-Down Pill Switcher)
    ========================================================================== */
 .admin-top-navbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 26px;
-  position: sticky;
-  top: 14px;
-  z-index: 1000;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  margin-bottom: 20px;
+  padding: 4px 0;
 }
 
 /* Brand Logo */
@@ -33,9 +29,20 @@
   color: inherit;
 }
 
+.admin-brand-logo-img {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #16a34a;
+  box-shadow: 0 2px 8px rgba(22, 163, 74, 0.22);
+  flex-shrink: 0;
+  background: #ffffff;
+}
+
 .admin-brand-icon-box {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   background: linear-gradient(135deg, #4f6df5 0%, #3754e0 100%);
   border-radius: 12px;
   display: flex;
@@ -47,29 +54,60 @@
 }
 
 .admin-brand-title {
-  font-size: 18px;
+  font-size: 19px;
   font-weight: 800;
   color: #111827;
   letter-spacing: -0.03em;
   margin: 0;
+  line-height: 1.2;
+}
+
+.admin-brand-subtitle {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  margin-top: 1px;
+}
+
+/* ==========================================================================
+   SECONDARY NAVBAR ROW (Brought Down Below Top Header!)
+   ========================================================================== */
+.admin-navbar-subrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  position: sticky;
+  top: 16px;
+  z-index: 990;
+  padding: 4px 0;
 }
 
 /* Floating Segmented Pill Menu */
 .admin-nav-pill-container {
   background: #ffffff;
   border-radius: 9999px;
-  padding: 5px 6px;
+  padding: 6px 8px;
   display: flex;
   align-items: center;
   gap: 4px;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03), 0 1px 3px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.03);
   border: 1px solid #eef1f5;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.admin-nav-pill-container::-webkit-scrollbar {
+  display: none;
 }
 
 .admin-nav-pill {
-  padding: 8px 20px;
+  padding: 8px 18px;
   border-radius: 9999px;
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 600;
   color: #64748b;
   text-decoration: none;
@@ -78,6 +116,7 @@
   align-items: center;
   gap: 8px;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .admin-nav-pill:hover {
@@ -89,7 +128,7 @@
   background: #181e2b;
   color: #ffffff;
   font-weight: 700;
-  box-shadow: 0 2px 8px rgba(24, 30, 43, 0.15);
+  box-shadow: 0 2px 8px rgba(24, 30, 43, 0.18);
 }
 
 /* Right Header Actions (Unified Harmonious Luxury Toolbar) */
@@ -620,34 +659,30 @@
 
   .admin-top-navbar {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    top: 8px;
-    padding: 8px 12px;
-    background: rgba(243, 244, 247, 0.92);
-    border-radius: 20px;
-    margin-bottom: 20px;
-  }
-
-  .admin-brand-group {
-    order: 1;
+    padding: 6px 4px;
+    margin-bottom: 16px;
   }
 
   .admin-header-actions {
-    order: 2;
     gap: 8px;
   }
 
+  .admin-navbar-subrow {
+    justify-content: flex-start;
+    margin-bottom: 20px;
+    top: 10px;
+  }
+
   .admin-nav-pill-container {
-    order: 3;
     width: 100%;
     max-width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-    padding: 4px;
+    padding: 5px 6px;
     gap: 4px;
     justify-content: flex-start;
   }

@@ -30,6 +30,17 @@
   margin-bottom: 28px;
 }
 
+.admin-login-logo-img {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #16a34a;
+  box-shadow: 0 4px 16px rgba(22, 163, 74, 0.25);
+  margin: 0 auto 16px;
+  display: block;
+}
+
 .admin-login-badge-wrap {
   width: 56px;
   height: 56px;

@@ -43,8 +43,10 @@ export const ROUTES = {
   ADMIN_DASHBOARD: '/admin',
   ADMIN_FARMERS: '/admin/farmers',
   ADMIN_BUYERS: '/admin/buyers',
-  ADMIN_DELIVERIES: '/admin/deliveries',
   ADMIN_DRIVERS: '/admin/drivers',
+  ADMIN_REQUESTS: '/admin/requests',
+  ADMIN_DELIVERIES: '/admin/deliveries',
+  ADMIN_ORDERS: '/admin/orders',
   ADMIN_REPORTS: '/admin/reports',
   ADMIN_PROFILE: '/admin/profile',
   // Shared

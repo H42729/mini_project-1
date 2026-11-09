@@ -538,12 +538,12 @@ export default function FarmerLogin({
               {/* Supported Agricultural Crop Categories */}
               <div className="buyer-category-chips">
                 <div className="buyer-chips-row">
-                  <span className="buyer-category-chip">🌾 {t('categoryPaddy')}</span>
-                  <span className="buyer-category-chip">🍅 {t('categoryVeggies')}</span>
+                  <span className="buyer-category-chip">🍅 {t('categoryPaddy')}</span>
+                  <span className="buyer-category-chip">🧅 {t('categoryOnions') || 'Onions & Shallots'}</span>
                 </div>
                 <div className="buyer-chips-row">
-                  <span className="buyer-category-chip">🥥 {t('categoryFruits')}</span>
                   <span className="buyer-category-chip">🥔 {t('categoryTubers')}</span>
+                  <span className="buyer-category-chip">🥕 {t('categoryFruits')}</span>
                 </div>
               </div>
             </div>

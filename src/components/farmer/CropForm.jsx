@@ -46,7 +46,7 @@ const POPULAR_CROPS = [
   {
     name: 'Batlagundu Potato',
     nameTa: 'உருளைக்கிழங்கு',
-    category: 'tubers',
+    category: 'vegetables',
     variety: 'Kufri Jyoti Table',
     defaultPrice: 32,
     unit: 'Kg',
@@ -64,12 +64,12 @@ const POPULAR_CROPS = [
 ];
 
 const CATEGORIES = [
-  { value: 'vegetables', labelEn: 'Vegetables (காய்கறிகள்)', labelTa: 'காய்கறிகள்' },
-  { value: 'fruits', labelEn: 'Fruits (பழங்கள்)', labelTa: 'பழங்கள்' },
-  { value: 'tubers', labelEn: 'Tubers & Roots (கிழங்கு வகைகள்)', labelTa: 'கிழங்கு வகைகள்' },
-  { value: 'greens', labelEn: 'Greens & Herbs (கீரை வகைகள்)', labelTa: 'கீரை வகைகள்' },
-  { value: 'grains', labelEn: 'Grains & Millets (தானியங்கள்)', labelTa: 'தானியங்கள்' },
-  { value: 'pulses', labelEn: 'Pulses & Spices (பருப்பு & மசாலா)', labelTa: 'பருப்பு & மசாலா' }
+  { value: 'vegetables', labelEn: 'Fresh Vegetables (காய்கறிகள்)', labelTa: 'காய்கறிகள்' },
+  { value: 'tomatoes', labelEn: 'Tomatoes (தக்காளி வகைகள்)', labelTa: 'தக்காளி வகைகள்' },
+  { value: 'onions', labelEn: 'Onions & Shallots (வெங்காய வகைகள்)', labelTa: 'வெங்காய வகைகள்' },
+  { value: 'potatoes', labelEn: 'Potatoes & Root Veggies (உருளைக்கிழங்கு & கிழங்கு)', labelTa: 'உருளைக்கிழங்கு & கிழங்கு' },
+  { value: 'carrots', labelEn: 'Carrots (கேரட் வகைகள்)', labelTa: 'கேரட் வகைகள்' },
+  { value: 'greens', labelEn: 'Greens & Herbs (கீரை வகைகள்)', labelTa: 'கீரை வகைகள்' }
 ];
 
 const UNITS = [

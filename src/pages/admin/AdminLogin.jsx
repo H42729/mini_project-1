@@ -40,11 +40,17 @@ export default function AdminLogin() {
   return (
     <div className="admin-login-container">
       <div className="admin-login-card">
-        {/* Header with Shield Badge */}
+        {/* Header with Official Logo */}
         <div className="admin-login-header">
-          <div className="admin-login-badge-wrap">
-            <ShieldCheck size={28} />
-          </div>
+          <img
+            src="/logo.png"
+            alt="Naam Uzhavar"
+            className="admin-login-logo-img"
+            onError={(e) => {
+              e.currentTarget.onerror = null;
+              e.currentTarget.src = '/logo-emblem.png';
+            }}
+          />
           <h1 className="admin-login-title">Naam Uzhavar</h1>
           <p className="admin-login-subtitle">Centralized Operations & Logistics Administration</p>
         </div>

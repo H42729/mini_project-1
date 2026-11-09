@@ -86,24 +86,35 @@ d:/mini project/backend/
 ├── config/
 │   └── db.js                  # Mongoose MongoDB connection & lifecycle management
 ├── middleware/
-│   └── auth.js                # Bearer JWT verification, token decoding, req.buyer attachment
+│   └── auth.js                # Multi-role Bearer JWT verification (Buyer, Farmer, Driver, Admin)
 ├── models/
+│   ├── Admin.js               # Centralized operations administrator credentials & roles
 │   ├── Buyer.js               # Commercial entity schema (Hotels, Supermarkets, GSTIN)
+│   ├── BuyerRequest.js        # Commercial purchase enquiry & negotiation schema
 │   ├── Crop.js                # Harvest catalog schema (Hubs, Grades, Real-time Stock)
+│   ├── Driver.js              # EV Cargo logistics driver, Tata Ace EV specs & wallet
+│   ├── DriverWalletTransaction.js # Driver ledger transactions & UPI withdrawal records
+│   ├── Farmer.js              # Agricultural producer schema (Land acreage, masked bank info)
+│   ├── Message.js             # Dispatch thread schema (Buyer, Driver, Hub dispatcher)
 │   ├── Order.js               # Order lifecycle & EV dispatch schema (Dual-status state machine)
-│   └── Message.js             # Dispatch thread schema (Buyer, Driver, Hub dispatcher)
+│   └── Trip.js                # Logistics waypoint trip schema (Crate count, PIN handshake)
 ├── routes/
-│   ├── auth.js                # Buyer register, login, current buyer identity resolution
-│   ├── crops.js               # Public catalog search, category & grade filtering
-│   ├── orders.js              # Order generation, stock check, demo farmer & delivery simulation
+│   ├── admin.js               # Centralized operations, telemetry, moderation, and CSV reports
+│   ├── auth.js                # Buyer and Farmer registration, login, session token validation
+│   ├── crops.js               # Public catalog search, category, agro-hub, & grade filtering
+│   ├── driver.js              # Driver cockpit, trip milestones, PIN verification, wallet
+│   ├── farmer.js              # Farmer yield inventory, incoming biddings, escrow payout claims
 │   ├── invoices.js            # Dynamic GST accounting invoices derived from delivered orders
-│   ├── profile.js             # Procurement buyer profile read & update operations
-│   └── messages.js            # In-app logistical coordination chat
+│   ├── messages.js            # In-app logistical coordination chat
+│   ├── orders.js              # Order generation, stock check, demo farmer & delivery simulation
+│   └── profile.js             # Procurement buyer profile read & update operations
 ├── .env                       # Environment configuration (PORT, MONGO_URI, JWT_SECRET, CLIENT_URL)
 ├── .env.example               # Template environment configuration
 ├── package.json               # Backend dependencies (express, mongoose, bcryptjs, jsonwebtoken, cors, dotenv)
-├── seed.js                    # Database seeder script for regional crops and initial records
-└── server.js                  # Application entry point, CORS whitelist, middleware, error handlers
+├── seed.js                    # Database seeder script for regional crops, farmers, buyers, EV trips
+├── server.js                  # Application entry point, CORS whitelist, middleware, error handlers
+├── test_farmer_apis.js        # Automated regression test for Farmer REST endpoints
+└── test_full_audit.js         # 14-point comprehensive full-stack integration test suite
 ```
 
 ---
@@ -238,13 +249,16 @@ In-app communication thread between buyer, hub dispatcher, and EV driver.
    Save to MongoDB & Return HTTP 201 Created
 ```
 
-The business logic is partitioned across 6 decoupled Express routers:
-1. **`auth`**: Handles registration with duplicate checking, login with bcrypt password verification, and identity extraction.
-2. **`crops`**: Public endpoint supporting multi-attribute querying (`search`, `category`, `grade`) with regex-based multilingual search.
-3. **`orders`**: Full lifecycle management, input validation, server pricing calculation, and atomic status advancement.
-4. **`invoices`**: Dynamically derives GST invoices from completed orders (`status: 'delivered'`), including automated fallback historical items for presentation demonstrations.
+The business logic is partitioned across 9 decoupled Express routers:
+1. **`auth`**: Handles registration and login for both Buyers and Farmers with bcrypt password hashing and 7-day JWT generation.
+2. **`crops`**: Public endpoint supporting multi-attribute querying (`search`, `category`, `grade`, `hub`) with regex-based multilingual search.
+3. **`orders`**: Full order lifecycle management, stock validation, server-side price calculation, and status progression.
+4. **`invoices`**: Dynamically derives GST invoices from completed orders (`status: 'delivered'`).
 5. **`profile`**: Reads and mutates buyer profile details, updating company information, GSTIN, and profile avatars.
-6. **`messages`**: Scoped dispatch chat system ensuring buyers only access and transmit messages within their own organizational thread.
+6. **`messages`**: Logistical communication thread between buyers, hub dispatchers, and drivers.
+7. **`farmer`**: Comprehensive producer suite: yield inventory CRUD, buyer bidding acceptance/rejection, and escrow payout claims.
+8. **`driver`**: Fleet driver cockpit: Tata Ace EV telemetry, trip milestones, crate verification, 4-digit recipient PIN validation, and wallet withdrawals.
+9. **`admin`**: Centralized operations command center: platform KPI telemetry, farmer/buyer moderation, fleet monitoring, and CSV report export streaming.
 
 ---
 

@@ -401,13 +401,13 @@ export default function FarmerRegister({
               {/* Verified Agricultural Produce Categories (2 Rows Centered) */}
               <div className="buyer-reg-category-chips">
                 <div className="buyer-reg-chips-row">
-                  <span className="buyer-reg-category-chip">🌾 {t('categoryPaddy')}</span>
-                  <span className="buyer-reg-category-chip">🍅 {t('categoryVeggies')}</span>
+                  <span className="buyer-reg-category-chip">🍅 {t('categoryPaddy')}</span>
                   <span className="buyer-reg-category-chip">🧅 {t('categoryOnions')}</span>
+                  <span className="buyer-reg-category-chip">🥔 {t('categoryTubers')}</span>
                 </div>
                 <div className="buyer-reg-chips-row">
-                  <span className="buyer-reg-category-chip">🥔 {t('categoryTubers')}</span>
-                  <span className="buyer-reg-category-chip">🥥 {t('categoryFruits')}</span>
+                  <span className="buyer-reg-category-chip">🥕 {t('categoryFruits')}</span>
+                  <span className="buyer-reg-category-chip">🥬 {t('categoryVeggies')}</span>
                 </div>
               </div>
             </div>

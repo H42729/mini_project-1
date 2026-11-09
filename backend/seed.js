@@ -76,7 +76,7 @@ const SEED_CROPS = [
   {
     name: 'Batlagundu Potato',
     nameTa: 'பட்லகுண்டு உருளைக்கிழங்கு',
-    category: 'tubers',
+    category: 'vegetables',
     grade: 'Grade A',
     variety: 'Kufri Jyoti Table',
     farmingMethod: 'Natural',

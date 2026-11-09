@@ -42,8 +42,10 @@ const AdminPage = lazy(() => import('./pages/admin/AdminPage.jsx'));
 const AdminOverview = lazy(() => import('./pages/admin/AdminOverview.jsx'));
 const AdminFarmers = lazy(() => import('./pages/admin/AdminFarmers.jsx'));
 const AdminBuyers = lazy(() => import('./pages/admin/AdminBuyers.jsx'));
-const AdminDeliveries = lazy(() => import('./pages/admin/AdminDeliveries.jsx'));
 const AdminDrivers = lazy(() => import('./pages/admin/AdminDrivers.jsx'));
+const AdminRequests = lazy(() => import('./pages/admin/AdminRequests.jsx'));
+const AdminDeliveries = lazy(() => import('./pages/admin/AdminDeliveries.jsx'));
+const AdminOrders = lazy(() => import('./pages/admin/AdminOrders.jsx'));
 const AdminReports = lazy(() => import('./pages/admin/AdminReports.jsx'));
 const AdminProfile = lazy(() => import('./pages/admin/AdminProfile.jsx'));
 
@@ -472,6 +474,22 @@ export default function App() {
             }
           />
           <Route
+            path="drivers"
+            element={
+              <Suspense fallback={<AdminPageFallback />}>
+                <AdminDrivers />
+              </Suspense>
+            }
+          />
+          <Route
+            path="requests"
+            element={
+              <Suspense fallback={<AdminPageFallback />}>
+                <AdminRequests />
+              </Suspense>
+            }
+          />
+          <Route
             path="deliveries"
             element={
               <Suspense fallback={<AdminPageFallback />}>
@@ -480,10 +498,10 @@ export default function App() {
             }
           />
           <Route
-            path="drivers"
+            path="orders"
             element={
               <Suspense fallback={<AdminPageFallback />}>
-                <AdminDrivers />
+                <AdminOrders />
               </Suspense>
             }
           />

@@ -420,6 +420,13 @@
   margin-bottom: 26px;
 }
 
+.admin-charts-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 20px;
+  margin-bottom: 26px;
+}
+
 .admin-chart-card {
   background: #ffffff;
   border: 1px solid var(--bento-border);
@@ -750,7 +757,10 @@
 
 .admin-pill.active,
 .admin-pill.verified,
-.admin-pill.delivered {
+.admin-pill.delivered,
+.admin-pill.confirmed,
+.admin-pill.accepted,
+.admin-pill.converted {
   background: var(--bento-lime-light);
   color: var(--bento-lime-text);
   border: 1px solid #d9f99d;
@@ -770,8 +780,15 @@
   border: 1px solid #c7d2fe;
 }
 
+.admin-pill.escrow {
+  background: #f5f3ff;
+  color: #7c3aed;
+  border: 1px solid #ddd6fe;
+}
+
 .admin-pill.suspended,
-.admin-pill.cancelled {
+.admin-pill.cancelled,
+.admin-pill.rejected {
   background: #fef2f2;
   color: #dc2626;
   border: 1px solid #fecaca;
@@ -1023,7 +1040,8 @@
   .admin-bento-col:nth-child(3) {
     grid-column: auto;
   }
-  .admin-charts-grid {
+  .admin-charts-grid,
+  .admin-charts-grid-3 {
     grid-template-columns: 1fr;
     gap: 16px;
   }
